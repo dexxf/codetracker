@@ -1,13 +1,17 @@
 package com.io.codetracker.adapter.user.in.rest;
 
+import com.io.codetracker.application.user.command.UserProfileCommand;
 import com.io.codetracker.application.user.command.UserRegistrationCommand;
+import com.io.codetracker.application.user.dto.UserProfileDTO;
 import com.io.codetracker.application.user.dto.UserRegistrationDTO;
+import com.io.codetracker.application.user.service.UserProfileService;
 import com.io.codetracker.application.user.service.UserRegistration;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserRegistration registration;
+    private final UserProfileService userProfileService;
 
     @PostMapping("/api/user/register")
     public ResponseEntity<UserRegistrationDTO> userRegistration(@Valid @RequestBody UserRegistrationCommand command) {
@@ -23,5 +28,11 @@ public class UserController {
          return result.success() ? ResponseEntity.status(HttpStatus.OK).body(result) : ResponseEntity.badRequest().body(result);
     }
 
-    
+    @PutMapping("/api/user/profile")
+    public ResponseEntity<UserProfileDTO> updateUserProfile(@Valid @RequestBody UserProfileCommand command) {
+        UserProfileDTO result = userProfileService.execute(command);
+        return result.success() 
+                ? ResponseEntity.status(HttpStatus.OK).body(result)
+                : ResponseEntity.badRequest().body(result);
+    }
 }
