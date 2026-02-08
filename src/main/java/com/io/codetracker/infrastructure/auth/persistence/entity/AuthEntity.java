@@ -31,7 +31,7 @@ public class AuthEntity {
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = true)
     private String password;
 
     @Column(name = "created_at", nullable = false)
@@ -42,5 +42,6 @@ public class AuthEntity {
     private Status status;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "role")
     private Roles role;
 }
