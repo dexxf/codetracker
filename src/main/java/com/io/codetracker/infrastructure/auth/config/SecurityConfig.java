@@ -2,6 +2,8 @@ package com.io.codetracker.infrastructure.auth.config;
 
 
 import com.io.codetracker.adapter.auth.out.security.BCryptPasswordHasher;
+import com.io.codetracker.adapter.auth.out.security.jwt.JwtFilter;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -13,15 +15,18 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
         private final UserDetailsService userDetailsService;
+        private final JwtFilter jwtFilter;
 
-        public SecurityConfig (UserDetailsService userDetailsService) {
+        public SecurityConfig (UserDetailsService userDetailsService, JwtFilter jwtFilter) {
             this.userDetailsService = userDetailsService;
+            this.jwtFilter = jwtFilter;
         }
 
     @Bean
@@ -33,11 +38,12 @@ public class SecurityConfig {
                 .logout(e -> e.disable())
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login","/api/auth/register", "/api/user/register").permitAll()
+                        .requestMatchers("/api/oauth/github/**","/api/auth/register").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
