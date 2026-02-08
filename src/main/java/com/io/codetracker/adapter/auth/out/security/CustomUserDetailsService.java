@@ -17,9 +17,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        AuthEntity entity = repository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+    public UserDetails loadUserByUsername(String authId) throws UsernameNotFoundException {
+        AuthEntity entity = repository.findById(authId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + authId));
 
         return new AuthPrincipal(AuthMapper.toDomain(entity));
     }
