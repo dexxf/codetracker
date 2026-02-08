@@ -28,17 +28,13 @@ public final class AuthPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return auth.getEmail().getValue();
+        return auth.getAuthId();
     }
 
     public String getUserId() {
         return auth.getUserId();
     }
-
-    public String getAuthId() {
-        return auth.getAuthId();
-    }
-
+    
     @Override
     public boolean isAccountNonExpired() {
         return UserDetails.super.isAccountNonExpired();
