@@ -11,6 +11,7 @@ import com.io.codetracker.domain.auth.service.PasswordService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class AuthBeanConfig {
@@ -29,5 +30,9 @@ public class AuthBeanConfig {
     public GithubAccountCreationService githubAccountCreationService(GithubAccountDomainRepository repository, GithubAccountFactory factory) {
         return new GithubAccountCreationService(repository, factory);
     }
-
+    
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 }
