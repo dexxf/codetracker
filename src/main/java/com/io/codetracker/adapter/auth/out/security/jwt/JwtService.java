@@ -3,14 +3,13 @@ package com.io.codetracker.adapter.auth.out.security.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,18 +18,10 @@ import java.util.function.Function;
 @Service
 public final class JwtService {
 
-    private static String SECRET_KEY;
+    private final String SECRET_KEY;
 
-    static {  // Secret key is generated at runtime for testing and demo purposes only
-        KeyGenerator keyGenerator;
-        try {
-            keyGenerator = KeyGenerator.getInstance("HmacSHA256");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-        SecretKey secretKey = keyGenerator.generateKey();
-        byte[] keyBytes = secretKey.getEncoded();
-        SECRET_KEY = Encoders.BASE64.encode(keyBytes);
+    public JwtService(@Value("${jwt.secret}") String SECRET_KEY) {
+        this.SECRET_KEY = SECRET_KEY;
     }
 
     public String generateToken(String authId) {
