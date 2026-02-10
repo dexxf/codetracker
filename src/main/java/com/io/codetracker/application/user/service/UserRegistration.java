@@ -65,6 +65,7 @@ public final class UserRegistration {
             return UserRegistrationResponseDTO.fail(userFinalizeResult.getMessage());
         }
 
+        authRepository.markUserAsFullyInitialized(user.getUserId());
         repository.save(user);
 
         Map<String, Object> data = new HashMap<>();
