@@ -8,8 +8,11 @@ import com.io.codetracker.application.user.service.UserProfileService;
 import com.io.codetracker.application.user.service.UserRegistration;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,8 +26,8 @@ public class UserController {
     private final UserProfileService userProfileService;
 
     @PostMapping("/api/user/register")
-    public ResponseEntity<UserRegistrationResponseDTO> userRegistration(@Valid @RequestBody UserRegistrationCommand command) {
-        UserRegistrationResponseDTO result = registration.completeInitialization(command);
+    public ResponseEntity<UserRegistrationResponseDTO> userRegistration(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody UserRegistrationCommand command) {
+        UserRegistrationResponseDTO result = registration.completeInitialization(userDetails.getUsername(),command);
          return result.success() ? ResponseEntity.status(HttpStatus.OK).body(result) : ResponseEntity.badRequest().body(result);
     }
 
