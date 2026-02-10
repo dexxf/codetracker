@@ -2,6 +2,7 @@ package com.io.codetracker.application.user.service;
 
 import com.io.codetracker.application.user.command.UserRegistrationCommand;
 import com.io.codetracker.application.user.response.UserRegistrationResponseDTO;
+import com.io.codetracker.application.user.port.out.UserAuthPort;
 import com.io.codetracker.application.user.port.out.UserAppRepository;
 import com.io.codetracker.domain.user.entity.User;
 import com.io.codetracker.domain.user.result.UserCreationResult;
@@ -18,10 +19,12 @@ public final class UserRegistration {
 
     private final UserAppRepository repository;
     private final UserCreationService userCreationService;
+    private final UserAuthPort authRepository;
 
-    public UserRegistration(UserAppRepository repository, UserCreationService userCreationService) {
+    public UserRegistration(UserAppRepository repository, UserCreationService userCreationService, UserAuthPort authRepository) {
         this.repository = repository;
         this.userCreationService = userCreationService;
+        this.authRepository = authRepository;
     }
 
     public String createShallowUser() {
@@ -30,8 +33,10 @@ public final class UserRegistration {
         return user.getUserId();
     }
 
-    public UserRegistrationResponseDTO completeInitialization(UserRegistrationCommand command) {
-        Optional<User> userOpt = repository.findByUserId(command.userId());
+    public UserRegistrationResponseDTO completeInitialization(String authId, UserRegistrationCommand command) {
+        Optional<String> userId = authRepository.getUserIdByAuthId(authId);
+        if (userId.isEmpty()) return UserRegistrationResponseDTO.fail("User not found for the given auth ID.");
+        Optional<User> userOpt = repository.findByUserId(userId.get());
 
         if (userOpt.isEmpty()) return UserRegistrationResponseDTO.fail("User not found.");
 
