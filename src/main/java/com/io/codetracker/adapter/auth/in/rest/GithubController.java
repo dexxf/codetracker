@@ -1,6 +1,7 @@
 package com.io.codetracker.adapter.auth.in.rest;
 
 import com.io.codetracker.adapter.auth.out.github.dto.ExchangeResponse;
+import com.io.codetracker.adapter.auth.out.github.dto.GithubFetchDataResult;
 import com.io.codetracker.adapter.auth.out.github.dto.GithubUserInfoDTO;
 import com.io.codetracker.adapter.auth.out.github.service.GithubService;
 import com.io.codetracker.adapter.auth.out.security.jwt.JwtService;
@@ -104,15 +105,14 @@ public class GithubController {
 
         String accessToken = accessTokenResult.fetchResult().accessToken();
 
-        ResponseEntity<GithubUserInfoDTO> githubUserResponse =
+        GithubFetchDataResult githubUserResponse =
                 githubService.fetchGithubUser(accessToken);
 
-        if (!githubUserResponse.getStatusCode().is2xxSuccessful()
-                || githubUserResponse.getBody() == null) {
-                return ResponseEntity.badRequest().body("Failed to fetch GitHub user.");
+        if (!githubUserResponse.success() || githubUserResponse.githubUserInfoDTO() == null) {
+                return ResponseEntity.badRequest().body(githubUserResponse.message());
         }
 
-        GithubUserInfoDTO githubUser = githubUserResponse.getBody();
+        GithubUserInfoDTO githubUser = githubUserResponse.githubUserInfoDTO();
 
         Optional<GithubAccountEntity> githubAccountEntity =
                 githubAppRepository.findByGithubId(githubUser.id());

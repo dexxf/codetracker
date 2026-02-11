@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.io.codetracker.adapter.auth.out.github.dto.ExchangeResponse;
 import com.io.codetracker.adapter.auth.out.github.dto.GithubEmailDTO;
+import com.io.codetracker.adapter.auth.out.github.dto.GithubFetchDataResult;
 import com.io.codetracker.adapter.auth.out.github.dto.GithubTokenResult;
 import com.io.codetracker.adapter.auth.out.github.dto.GithubUserInfoDTO;
 
@@ -38,80 +38,88 @@ public final class GithubService {
         this.clientSecret = clientSecret;
         this.redirectUri = redirectUri;
     }
+    
+    
+    public GithubFetchDataResult fetchGithubUser(String accessToken) {
 
-    public ResponseEntity<GithubUserInfoDTO> fetchGithubUser(String accessToken) {
         if (accessToken == null || accessToken.isBlank()) {
-            return ResponseEntity.badRequest().build();
+            return GithubFetchDataResult.failure("Access token is missing");
         }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(accessToken);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        HttpEntity<Void> req = new HttpEntity<>(headers);
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(accessToken);
+            headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+            HttpEntity<Void> req = new HttpEntity<>(headers);
 
-        ResponseEntity<GithubUserInfoDTO> responseEntity = restTemplate.exchange(
-                "https://api.github.com/user",
-                HttpMethod.GET,
-                req,
-                GithubUserInfoDTO.class
-        );
-
-        if (!responseEntity.getStatusCode().is2xxSuccessful() || responseEntity.getBody() == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-
-        GithubUserInfoDTO githubUser = responseEntity.getBody();
-
-        if (githubUser.email() == null || githubUser.email().isBlank()) {
-            ResponseEntity<GithubEmailDTO[]> emailsResp = restTemplate.exchange(
-                    "https://api.github.com/user/emails",
+            ResponseEntity<GithubUserInfoDTO> responseEntity = restTemplate.exchange(
+                    "https://api.github.com/user",
                     HttpMethod.GET,
                     req,
-                    GithubEmailDTO[].class
+                    GithubUserInfoDTO.class
             );
 
-            if (!emailsResp.getStatusCode().is2xxSuccessful() || emailsResp.getBody() == null) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            if (!responseEntity.getStatusCode().is2xxSuccessful() || responseEntity.getBody() == null) {
+                return GithubFetchDataResult.failure("Failed to fetch GitHub user");
             }
 
-            GithubEmailDTO[] emails = emailsResp.getBody();
-            String selected = null;
+            GithubUserInfoDTO githubUser = responseEntity.getBody();
 
-            for (GithubEmailDTO e : emails) {
-                if (e.primary() && e.verified()) {
-                    selected = e.email();
-                    break;
+            if (githubUser.email() == null || githubUser.email().isBlank()) {
+
+                ResponseEntity<GithubEmailDTO[]> emailsResp = restTemplate.exchange(
+                        "https://api.github.com/user/emails",
+                        HttpMethod.GET,
+                        req,
+                        GithubEmailDTO[].class
+                );
+
+                if (!emailsResp.getStatusCode().is2xxSuccessful() || emailsResp.getBody() == null) {
+                    return GithubFetchDataResult.failure("Failed to fetch GitHub emails");
                 }
-            }
 
-            if (selected == null) {
+                GithubEmailDTO[] emails = emailsResp.getBody();
+                String selected = null;
+
                 for (GithubEmailDTO e : emails) {
-                    if (e.verified()) {
+                    if (e.primary() && e.verified()) {
                         selected = e.email();
                         break;
                     }
                 }
+
+                if (selected == null) {
+                    for (GithubEmailDTO e : emails) {
+                        if (e.verified()) {
+                            selected = e.email();
+                            break;
+                        }
+                    }
+                }
+
+                if (selected == null && emails.length > 0) {
+                    selected = emails[0].email();
+                }
+
+                if (selected == null || selected.isBlank()) {
+                    return GithubFetchDataResult.failure("No usable email found");
+                }
+
+                githubUser = new GithubUserInfoDTO(
+                        githubUser.id(),
+                        githubUser.login(),
+                        githubUser.repos_url(),
+                        githubUser.name(),
+                        selected,
+                        githubUser.avatar_url()
+                );
             }
 
-            if (selected == null && emails.length > 0) {
-                selected = emails[0].email();
-            }
+            return GithubFetchDataResult.success(githubUser);
 
-            if (selected == null || selected.isBlank()) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
-
-            githubUser = new GithubUserInfoDTO(
-                    githubUser.id(),
-                    githubUser.login(),
-                    githubUser.repos_url(),
-                    githubUser.name(),
-                    selected,
-                    githubUser.avatar_url()
-            );
+        } catch (Exception e) {
+            return GithubFetchDataResult.failure("GitHub API error: " + e.getMessage());
         }
-
-        return ResponseEntity.ok(githubUser);
     }
 
     public ExchangeResponse exchangeCode(String code) {
