@@ -22,8 +22,8 @@ public class AuthBeanConfig {
     }
 
     @Bean
-    public AuthCreationService authCreationService(@Qualifier("defaultAuthFactory") AuthFactory factory,@Qualifier("domainAuthRepositoryImpl") AuthDomainRepository repository, PasswordService service) {
-        return new AuthCreationService(factory,repository,service);
+    public AuthCreationService authCreationService(@Qualifier("defaultAuthFactory") AuthFactory factory,@Qualifier("domainAuthRepositoryImpl") AuthDomainRepository repository) {
+        return new AuthCreationService(factory,repository);
     }
 
     @Bean
