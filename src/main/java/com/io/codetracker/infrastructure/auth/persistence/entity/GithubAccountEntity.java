@@ -1,6 +1,6 @@
 package com.io.codetracker.infrastructure.auth.persistence.entity;
 
-import com.io.codetracker.infrastructure.auth.persistence.converter.TokenEncryptionConverter;
+import com.io.codetracker.common.util.AESEncryptionConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class GithubAccountEntity {
     @Column(name = "github_id", nullable = false)
     private Long githubId;
 
-    @Convert(converter = TokenEncryptionConverter.class)
+    @Convert(converter = AESEncryptionConverter.class)
     @Column(name = "accessToken", nullable = false)
     private String accessToken;
 
