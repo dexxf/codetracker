@@ -9,18 +9,21 @@ import com.io.codetracker.adapter.classroom.in.dto.CreateClassroomRequest;
 import com.io.codetracker.application.classroom.command.CreateClassroomCommand;
 import com.io.codetracker.application.classroom.response.CreateClassroomResponse;
 import com.io.codetracker.application.classroom.service.CreateClassroomService;
+import com.io.codetracker.application.classroom.service.GetClassroomsService;
 import com.io.codetracker.common.response.ErrorResponse;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/classroom")
+@RequestMapping("/api/classrooms")
 public class ClassroomController {
     
     private final CreateClassroomService createClassroomUseCase;
+    private final GetClassroomsService getClassroomsUseCase;
     
-    public ClassroomController(CreateClassroomService createClassroomUseCase) {
+    public ClassroomController(CreateClassroomService createClassroomUseCase, GetClassroomsService getClassroomsUseCase) {
         this.createClassroomUseCase = createClassroomUseCase;
+        this.getClassroomsUseCase = getClassroomsUseCase;
     }
     
 @PostMapping("/create")
@@ -45,5 +48,11 @@ public ResponseEntity<?> createClassroom(@AuthenticationPrincipal AuthPrincipal 
         .status(HttpStatus.CREATED)
         .body(result.data());
 }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getClassrooms(@AuthenticationPrincipal AuthPrincipal authPrincipal) {
+        var result = getClassroomsUseCase.execute(authPrincipal.getUserId());
+        return ResponseEntity.ok(result.data());
+    }
 
 }
