@@ -1,5 +1,7 @@
 package com.io.codetracker.adapter.classroom.out.persistence.repository;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 import com.io.codetracker.application.classroom.port.out.ClassroomAppRepository;
 import com.io.codetracker.domain.classroom.entity.Classroom;
@@ -25,6 +27,13 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
         entity.setSettings(settingsEntity);
         jpaClassroomRepository.save(entity);
     }
-    
+
+    @Override
+    public List<Classroom> findByInstructorUserId(String instructorUserId) {
+        return jpaClassroomRepository.findByInstructorUserId(instructorUserId)
+            .stream()
+            .map(e -> ClassroomMapper.toDomain(e))
+            .toList();
+    }
  
 }
