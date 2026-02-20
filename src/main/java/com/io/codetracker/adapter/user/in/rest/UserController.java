@@ -5,12 +5,15 @@ import com.io.codetracker.adapter.user.in.dto.MeResponse;
 import com.io.codetracker.adapter.user.in.dto.UserRegistrationRequest;
 import com.io.codetracker.application.user.command.UserProfileCommand;
 import com.io.codetracker.application.user.command.UserRegistrationCommand;
+import com.io.codetracker.application.user.response.FetchProfileDataResponse;
 import com.io.codetracker.application.user.response.UserProfileResponseDTO;
 import com.io.codetracker.application.user.response.UserRegistrationResponseDTO;
 import com.io.codetracker.application.user.service.UserProfileService;
 import com.io.codetracker.application.user.service.UserRegistration;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -61,7 +64,15 @@ public class UserController {
     @PutMapping("/profile")
     public ResponseEntity<UserProfileResponseDTO> updateUserProfile(
             @Valid @RequestBody UserProfileCommand command) {
-        UserProfileResponseDTO result = userProfileService.execute(command);
+        UserProfileResponseDTO result = userProfileService.updateProfile(command);
         return result.success() ? ResponseEntity.ok(result) : ResponseEntity.badRequest().body(result);
-    }    
+    } 
+    
+    @GetMapping("/profile")
+    public ResponseEntity<FetchProfileDataResponse> getProfileData(@AuthenticationPrincipal AuthPrincipal authPrincipal) {
+        Optional<FetchProfileDataResponse> dataOpt = userProfileService.getProfileData(authPrincipal.getUserId());
+
+        if (dataOpt.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok().body(dataOpt.get());
+    }
 }
