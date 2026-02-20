@@ -35,7 +35,7 @@ public class UserEntity {
     @Column(name = "birthday")
     private LocalDate birthday;
 
-    @Column(name = "profile_url")
+    @Column(name = "profile_url", nullable = true)
     private String profileUrl;
 
     @Column(name = "bio")
