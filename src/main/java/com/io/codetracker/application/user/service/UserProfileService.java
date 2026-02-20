@@ -1,6 +1,7 @@
 package com.io.codetracker.application.user.service;
 
 import com.io.codetracker.application.user.command.UserProfileCommand;
+import com.io.codetracker.application.user.response.FetchProfileDataResponse;
 import com.io.codetracker.application.user.response.UserProfileResponseDTO;
 import com.io.codetracker.application.user.port.out.UserAppRepository;
 import com.io.codetracker.domain.user.entity.User;
@@ -20,7 +21,7 @@ public final class UserProfileService {
            this.userProfileUpdater = userProfileUpdater;
        }
 
-       public UserProfileResponseDTO execute(UserProfileCommand command) {
+       public UserProfileResponseDTO updateProfile(UserProfileCommand command) {
            Optional<User> userOpt = repository.findByUserId(command.userId());
 
            if(userOpt.isEmpty())
@@ -36,5 +37,12 @@ public final class UserProfileService {
 
            repository.save(user);
            return UserProfileResponseDTO.ok(user);
+       }
+
+       public Optional<FetchProfileDataResponse> getProfileData(String userId) {
+            Optional<User> userOpt = repository.findByUserId(userId);
+            if (userOpt.isEmpty()) return Optional.empty();
+
+            return Optional.of(FetchProfileDataResponse.fromUser(userOpt.get()));
        }
 }
