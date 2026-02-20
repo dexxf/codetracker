@@ -1,10 +1,16 @@
 package com.io.codetracker.application.user.command;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDate;
 
-public record UserRegistrationCommand(@NotBlank String firstName,@NotBlank String lastName,
-        @NotBlank String phoneNumber,@NotBlank String gender,@NotNull LocalDate birthday,@NotBlank String profileUrl, String bio) {
+import org.springframework.web.multipart.MultipartFile;
+
+public record UserRegistrationCommand(
+        String firstName,
+        String lastName,
+        String phoneNumber,
+        String gender,
+        LocalDate birthday,
+        MultipartFile profile,
+        String bio
+) {
 }
