@@ -38,7 +38,10 @@ public class SecurityConfig {
                 .logout(e -> e.disable())
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/oauth/github/**", "/api/users/me").permitAll()
+                        .requestMatchers(
+                        "/api/oauth/github/**",
+                         "/api/auth/check"
+                        ).permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
