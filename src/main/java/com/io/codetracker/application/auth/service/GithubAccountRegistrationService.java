@@ -1,5 +1,6 @@
 package com.io.codetracker.application.auth.service;
 
+import com.io.codetracker.application.auth.command.GithubRegistrationCommand;
 import org.springframework.stereotype.Service;
 
 import com.io.codetracker.application.auth.port.out.GithubAppRepository;
@@ -23,10 +24,10 @@ public class GithubAccountRegistrationService {
         this.ghAppRepository = ghAppRepository;
     }
 
-    public GithubRegistrationResponseDTO registerGithubAccount(String authId, Long githubId, String accessToken) {
+    public GithubRegistrationResponseDTO registerGithubAccount(GithubRegistrationCommand command) {
 
         Result<GithubAccount, GithubAccountCreationResult> result =
-                ghCreationService.create(authId, githubId, accessToken);
+            ghCreationService.create(command.authId(), command.githubId(), command.accessToken());
 
         if (!result.success()) {
             return GithubRegistrationResponseDTO.failure(result.error().getMessage());

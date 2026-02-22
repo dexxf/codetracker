@@ -5,6 +5,7 @@ import com.io.codetracker.adapter.auth.out.github.dto.GithubUserInfoDTO;
 import com.io.codetracker.adapter.auth.out.github.service.GithubService;
 import com.io.codetracker.adapter.auth.out.security.jwt.JwtService;
 import com.io.codetracker.application.auth.command.AuthRegisterOAuthCommand;
+import com.io.codetracker.application.auth.command.GithubRegistrationCommand;
 import com.io.codetracker.application.auth.port.out.GithubAppRepository;
 import com.io.codetracker.application.auth.response.AuthRegistrationResponseDTO;
 import com.io.codetracker.application.auth.response.GithubRegistrationResponseDTO;
@@ -139,7 +140,7 @@ public class GithubController {
 
                 userAuthId = (String) registrationResponse.data().get("authId");
                 GithubRegistrationResponseDTO githubRegistrationResponse =
-                 ghAccountRegistrationService.registerGithubAccount(userAuthId, githubUser.id(), accessToken);
+                 ghAccountRegistrationService.registerGithubAccount(new GithubRegistrationCommand(userAuthId, githubUser.id(), accessToken));
                 
                  if(!githubRegistrationResponse.success()) {
                         return ResponseEntity.badRequest().body(githubRegistrationResponse.message());
