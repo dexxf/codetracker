@@ -21,8 +21,8 @@ public final class UserProfileService {
            this.userProfileUpdater = userProfileUpdater;
        }
 
-       public UserProfileResponseDTO updateProfile(UserProfileCommand command) {
-           Optional<User> userOpt = repository.findByUserId(command.userId());
+       public UserProfileResponseDTO updateProfile(String userId, UserProfileCommand command) {
+           Optional<User> userOpt = repository.findByUserId(userId);
 
            if(userOpt.isEmpty())
                return UserProfileResponseDTO.fail("User not found.");
