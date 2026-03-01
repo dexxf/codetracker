@@ -8,7 +8,8 @@ public enum ClassroomCreationResult {
     INVALID_NAME("Classroom name is invalid."),
     INVALID_DESCRIPTION("Classroom description is invalid."),
     SETTING_CREATION_FAILED("Failed to create classroom settings."),
-    INVALID_MAX_STUDENTS("Max students value is invalid.");
+    INVALID_MAX_STUDENTS("Max students value is invalid."),
+    INVALID_PASSCODE("Invalid Passcode.");
 
     private final String message;
 
