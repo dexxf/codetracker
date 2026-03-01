@@ -13,6 +13,7 @@ public final class ClassroomCreationService {
     private static final int MAX_NAME_LENGTH = 100;
     private static final int MIN_NAME_LENGTH = 3;
     private static final int MAX_DESCRIPTION_LENGTH = 500;
+    private static final int MIN_PASSCODE_LENGTH = 4;
 
     private final ClassroomFactory classroomFactory;
     private final ClassroomUserDomainPort classroomUserDomainPort;
@@ -50,6 +51,10 @@ public final class ClassroomCreationService {
 
         if(classroom == null) {
             return Result.fail(ClassroomCreationResult.CLASSROOM_CREATION_FAILED);
+        }
+
+        if (passcode != null && (passcode.isBlank() || passcode.length() < MIN_PASSCODE_LENGTH)) {
+            return Result.fail(ClassroomCreationResult.INVALID_PASSCODE);
         }
 
         ClassroomSettings settings = classroomFactory.createClassroomSetting(classroom.getClassroomId(), maxStudents, requireApproval, passcode);
