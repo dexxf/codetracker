@@ -76,11 +76,4 @@ public final class Classroom {
         this.status = ClassroomStatus.ARCHIVED;
         refreshUpdatedAt();
     }
-
-    public void inactive() {
-        this.status = ClassroomStatus.INACTIVE;
-        refreshUpdatedAt();
-    }
-
-
 }

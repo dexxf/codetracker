@@ -1,12 +1,12 @@
 package com.io.codetracker.adapter.classroom.out.persistence.repository;
 
-
 import org.springframework.stereotype.Repository;
 
 import com.io.codetracker.domain.classroom.repository.ClassroomDomainRepository;
 import com.io.codetracker.domain.classroom.valueObject.ClassroomStatus;
 
 import lombok.AllArgsConstructor;
+
 
 
 @Repository
@@ -22,7 +22,7 @@ public class ClassroomDomainRepositoryImpl implements ClassroomDomainRepository 
 
     @Override
     public boolean existsByActiveCode(String code) {    
-        return jpaClassroomRepository.existsByClassCodeAndStatusNot(code, ClassroomStatus.INACTIVE);
+        return jpaClassroomRepository.existsByClassCodeAndStatusNot(code, ClassroomStatus.ACTIVE);
     }
-    
+
 }

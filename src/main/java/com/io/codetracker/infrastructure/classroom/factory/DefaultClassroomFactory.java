@@ -26,13 +26,12 @@ public class DefaultClassroomFactory implements ClassroomFactory {
     @Override
     public Classroom createClassroom(String instructorUserId, String name,String description) {
         return new Classroom(classroomIdGenerator.generate(), instructorUserId, name, description,
-             codeGenerator.generateCode(),ClassroomStatus.INACTIVE,LocalDateTime.now(), LocalDateTime.now());
+             codeGenerator.generateCode(),ClassroomStatus.ACTIVE,LocalDateTime.now(), LocalDateTime.now());
     }
 
     @Override
     public ClassroomSettings createClassroomSetting(String classroomId, int maxStudents, boolean requireApproval, String passcode) {
-        ClassroomSettings classroomSetting = new ClassroomSettings(classroomId, requireApproval, passcode, maxStudents);
-        return classroomSetting;
+        return new ClassroomSettings(classroomId, requireApproval, passcode, maxStudents);
     }
 
 }
