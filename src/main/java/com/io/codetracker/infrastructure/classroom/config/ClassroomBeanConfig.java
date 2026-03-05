@@ -3,6 +3,9 @@ package com.io.codetracker.infrastructure.classroom.config;
 
 import java.security.SecureRandom;
 
+import com.io.codetracker.domain.classroom.factory.ClassroomStudentFactory;
+import com.io.codetracker.domain.classroom.repository.ClassroomStudentDomainRepository;
+import com.io.codetracker.domain.classroom.service.ClassroomStudentCreationService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,5 +25,9 @@ public class ClassroomBeanConfig {
     public ClassroomCreationService classroomCreateService(ClassroomFactory factory, ClassroomUserDomainPort classroomUserDomainPort) {
         return new ClassroomCreationService(factory, classroomUserDomainPort);
     }
-    
+
+    @Bean
+    public ClassroomStudentCreationService classroomStudentCreationService(ClassroomStudentFactory factory, ClassroomStudentDomainRepository repository) {
+        return new ClassroomStudentCreationService(factory,repository);
+    }
 }
