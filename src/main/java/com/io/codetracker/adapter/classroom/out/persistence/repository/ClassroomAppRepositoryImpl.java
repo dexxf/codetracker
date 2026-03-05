@@ -2,6 +2,7 @@ package com.io.codetracker.adapter.classroom.out.persistence.repository;
 
 import java.util.List;
 
+import com.io.codetracker.infrastructure.classroom.persistence.repository.JpaClassroomRepository;
 import org.springframework.stereotype.Repository;
 import com.io.codetracker.application.classroom.port.out.ClassroomAppRepository;
 import com.io.codetracker.domain.classroom.entity.Classroom;
@@ -32,7 +33,7 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
     public List<Classroom> findByInstructorUserId(String instructorUserId) {
         return jpaClassroomRepository.findByInstructorUserId(instructorUserId)
             .stream()
-            .map(e -> ClassroomMapper.toDomain(e))
+            .map(ClassroomMapper::toDomain)
             .toList();
     }
  

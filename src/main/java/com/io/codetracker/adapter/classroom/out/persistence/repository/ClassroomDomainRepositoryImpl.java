@@ -1,12 +1,16 @@
 package com.io.codetracker.adapter.classroom.out.persistence.repository;
 
+import com.io.codetracker.adapter.classroom.out.persistence.mapper.ClassroomMapper;
+import com.io.codetracker.domain.classroom.entity.Classroom;
+import com.io.codetracker.infrastructure.classroom.persistence.entity.ClassroomEntity;
+import com.io.codetracker.infrastructure.classroom.persistence.repository.JpaClassroomRepository;
 import org.springframework.stereotype.Repository;
 
 import com.io.codetracker.domain.classroom.repository.ClassroomDomainRepository;
-import com.io.codetracker.domain.classroom.valueObject.ClassroomStatus;
 
 import lombok.AllArgsConstructor;
 
+import java.util.Optional;
 
 
 @Repository
@@ -22,7 +26,18 @@ public class ClassroomDomainRepositoryImpl implements ClassroomDomainRepository 
 
     @Override
     public boolean existsByActiveCode(String code) {    
-        return jpaClassroomRepository.existsByClassCodeAndStatusNot(code, ClassroomStatus.ACTIVE);
+        return jpaClassroomRepository.existsByClassCode(code);
+    }
+
+    @Override
+    public Optional<Classroom> findByClassCode(String classCode) {
+        Optional<ClassroomEntity> classroomEntity = jpaClassroomRepository.findByClassCode(classCode);
+        return classroomEntity.map(ClassroomMapper::toDomain);
+    }
+
+    @Override
+    public int countActiveStudentsByClassroomId(String classroomId) {
+        return jpaClassroomRepository.countByClassroomId(classroomId);
     }
 
 }
