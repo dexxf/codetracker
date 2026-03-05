@@ -16,6 +16,7 @@ public final class ClassroomSettingsMapper {
         entity.setRequireApproval(domain.isRequireApproval());
         entity.setPasscode(domain.getPasscode());
         entity.setMaxStudents(domain.getMaxStudents());
+        entity.setClassroomId(domain.getClassroomId());
         return entity;
     }
     
