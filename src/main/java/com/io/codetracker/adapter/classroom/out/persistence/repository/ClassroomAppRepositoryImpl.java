@@ -36,5 +36,10 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
             .map(ClassroomMapper::toDomain)
             .toList();
     }
- 
+
+    @Override
+    public List<Classroom> findAllById(List<String> classroomIds) {
+        List<ClassroomEntity> entities = jpaClassroomRepository.findAllById(classroomIds);
+        return entities.stream().map(ClassroomMapper::toDomain).toList();
+    }
 }
