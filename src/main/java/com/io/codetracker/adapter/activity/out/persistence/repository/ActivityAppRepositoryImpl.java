@@ -7,6 +7,8 @@ import com.io.codetracker.infrastructure.activity.persistence.repository.JpaActi
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @AllArgsConstructor
 public class ActivityAppRepositoryImpl implements ActivityAppRepository {
@@ -19,4 +21,10 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
             return ActivityMapper.toDomain(entity);
     }
 
+    @Override
+    public List<Activity> findByClassroomId(String classroomId, String instructorId) {
+        return jpa.findByClassroomIdAndCreatedByProfessorId(classroomId, instructorId).stream().map(
+                ActivityMapper::toDomain
+        ).toList();
+    }
 }

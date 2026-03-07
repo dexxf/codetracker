@@ -12,4 +12,5 @@ public interface JpaClassroomRepository extends JpaRepository<ClassroomEntity, S
     List<ClassroomEntity> findByInstructorUserId(String instructorUserId);
     Optional<ClassroomEntity> findByClassCode(String classCode);
     int countByClassroomId(String classroomId);
+    boolean existsByClassroomId(String classroomId);
 }
