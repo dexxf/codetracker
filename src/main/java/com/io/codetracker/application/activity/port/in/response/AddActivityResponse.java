@@ -1,13 +1,13 @@
 package com.io.codetracker.application.activity.port.in.response;
 
-import com.io.codetracker.application.activity.result.AddActivityData;
+import com.io.codetracker.application.activity.result.ActivityData;
 import com.io.codetracker.domain.activity.entity.Activity;
 
-public record AddActivityResponse(boolean success, AddActivityData data, String message) {
+public record AddActivityResponse(boolean success, ActivityData data, String message) {
 
     public static AddActivityResponse success(Activity activity) {
 
-        AddActivityData data = new AddActivityData(
+        ActivityData data = new ActivityData(
                 activity.getActivityId(), activity.getClassroomId(), activity.getInstructorUserId(), activity.getTitle(),
                 activity.getDescription(), activity.getDueDate(), activity.getStatus(), activity.getMaxScore(), activity.getCreatedAt(), activity.getUpdatedAt()
         );
