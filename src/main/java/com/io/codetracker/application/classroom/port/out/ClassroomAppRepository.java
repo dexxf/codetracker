@@ -9,4 +9,5 @@ public interface ClassroomAppRepository {
     void saveClassroom(Classroom classroom, ClassroomSettings classroomSettings);
     List<Classroom> findByInstructorUserId(String instructorUserId);
     List<Classroom> findAllById(List<String> classroomIds);
+    boolean existsByClassroomIdAndInstructorUserId(String classroomId, String instructorUserId);
 }

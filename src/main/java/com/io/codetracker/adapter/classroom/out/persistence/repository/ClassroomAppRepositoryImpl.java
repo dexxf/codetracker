@@ -42,4 +42,9 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
         List<ClassroomEntity> entities = jpaClassroomRepository.findAllById(classroomIds);
         return entities.stream().map(ClassroomMapper::toDomain).toList();
     }
+
+    @Override
+    public boolean existsByClassroomIdAndInstructorUserId(String classroomId, String instructorUserId) {
+        return jpaClassroomRepository.existsByClassroomIdAndInstructorUserId(classroomId, instructorUserId);
+    }
 }
