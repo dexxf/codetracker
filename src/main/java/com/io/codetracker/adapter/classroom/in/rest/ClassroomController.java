@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.adapter.classroom.in.dto.CreateClassroomRequest;
 import com.io.codetracker.application.classroom.command.CreateClassroomCommand;
-import com.io.codetracker.application.classroom.response.CreateClassroomResponse;
+import com.io.codetracker.application.classroom.port.in.response.CreateClassroomResponse;
 import com.io.codetracker.application.classroom.service.CreateClassroomService;
 import com.io.codetracker.application.classroom.service.GetClassroomsService;
 import com.io.codetracker.common.response.ErrorResponse;

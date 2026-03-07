@@ -1,4 +1,4 @@
-package com.io.codetracker.application.classroom.response;
+package com.io.codetracker.application.classroom.port.in.response;
 
 import java.util.List;
 

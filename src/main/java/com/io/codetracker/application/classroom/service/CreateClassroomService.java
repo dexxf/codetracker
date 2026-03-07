@@ -4,7 +4,7 @@ package com.io.codetracker.application.classroom.service;
 import org.springframework.stereotype.Service;
 import com.io.codetracker.application.classroom.command.CreateClassroomCommand;
 import com.io.codetracker.application.classroom.port.out.ClassroomAppRepository;
-import com.io.codetracker.application.classroom.response.CreateClassroomResponse;
+import com.io.codetracker.application.classroom.port.in.response.CreateClassroomResponse;
 import com.io.codetracker.application.classroom.result.CreateClassroomData;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.classroom.result.ClassroomCreationEntity;

@@ -9,7 +9,7 @@ import com.io.codetracker.application.classroom.result.GetClassroomsProfessorDat
 import com.io.codetracker.domain.classroom.entity.Classroom;
 import org.springframework.stereotype.Service;
 
-import com.io.codetracker.application.classroom.response.GetClassroomsResponse;
+import com.io.codetracker.application.classroom.port.in.response.GetClassroomsResponse;
 
 @Service
 public class GetClassroomsService {

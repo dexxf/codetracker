@@ -2,7 +2,7 @@ package com.io.codetracker.application.classroom.service;
 
 import com.io.codetracker.application.classroom.command.JoinClassroomCommand;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentAppRepository;
-import com.io.codetracker.application.classroom.response.ClassroomJoinResponse;
+import com.io.codetracker.application.classroom.port.in.response.ClassroomJoinResponse;
 import com.io.codetracker.application.classroom.result.ClassroomJoinResult;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.classroom.entity.ClassroomStudent;
