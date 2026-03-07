@@ -49,4 +49,16 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
         return countMap;
     }
 
+    @Override
+    public List<ClassroomStudent> findClassroomStudents(String classroomId, StudentStatus status, boolean ascending) {
+        return ascending
+                ? mapToDomain(jpaClassroomStudentRepository.findByClassroomIdAndStatusOrderByJoinedAt(classroomId, status))
+                : mapToDomain(jpaClassroomStudentRepository.findByClassroomIdAndStatusOrderByJoinedAtDesc(classroomId, status));
+    }
+
+    private List<ClassroomStudent> mapToDomain(List<ClassroomStudentEntity> entities) {
+        return entities.stream().map(ClassroomStudentMapper::toDomain).toList();
+    }
+
+
 }
