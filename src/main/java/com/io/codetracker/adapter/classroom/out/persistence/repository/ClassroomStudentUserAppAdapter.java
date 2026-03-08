@@ -1,7 +1,7 @@
 package com.io.codetracker.adapter.classroom.out.persistence.repository;
 
 import com.io.codetracker.adapter.user.out.persistence.mapper.UserMapper;
-import com.io.codetracker.adapter.user.out.persistence.repository.JpaUserRepository;
+import com.io.codetracker.infrastructure.user.persistence.repository.JpaUserRepository;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentUserAppPort;
 import com.io.codetracker.application.classroom.result.ClassroomStudentData;
 import com.io.codetracker.domain.classroom.entity.ClassroomStudent;

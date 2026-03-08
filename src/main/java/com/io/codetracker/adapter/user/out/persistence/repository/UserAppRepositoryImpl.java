@@ -5,6 +5,7 @@ import com.io.codetracker.application.user.port.out.UserAppRepository;
 import com.io.codetracker.domain.classroom.repository.ClassroomUserDomainPort;
 import com.io.codetracker.domain.user.entity.User;
 import com.io.codetracker.infrastructure.user.persistence.entity.UserEntity;
+import com.io.codetracker.infrastructure.user.persistence.repository.JpaUserRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

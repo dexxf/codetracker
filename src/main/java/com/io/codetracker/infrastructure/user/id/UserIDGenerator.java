@@ -1,6 +1,6 @@
 package com.io.codetracker.infrastructure.user.id;
 
-import com.io.codetracker.adapter.user.out.persistence.repository.JpaUserRepository;
+import com.io.codetracker.infrastructure.user.persistence.repository.JpaUserRepository;
 import com.io.codetracker.common.id.IDGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package com.io.codetracker.adapter.activity.out.persistence.repository;
 
-import com.io.codetracker.adapter.user.out.persistence.repository.JpaUserRepository;
+import com.io.codetracker.infrastructure.user.persistence.repository.JpaUserRepository;
 import com.io.codetracker.domain.activity.repository.ActivityUserDomainPort;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
