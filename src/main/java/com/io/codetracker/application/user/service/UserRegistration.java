@@ -1,7 +1,7 @@
 package com.io.codetracker.application.user.service;
 
 import com.io.codetracker.application.user.command.UserRegistrationCommand;
-import com.io.codetracker.application.user.response.UserRegistrationResponseDTO;
+import com.io.codetracker.application.user.port.in.response.UserRegistrationResponseDTO;
 import com.io.codetracker.application.user.port.out.UserAuthPort;
 import com.io.codetracker.application.user.port.out.CloudinaryPort;
 import com.io.codetracker.application.user.port.out.UserAppRepository;

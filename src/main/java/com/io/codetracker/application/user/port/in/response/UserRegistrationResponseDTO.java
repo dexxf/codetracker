@@ -1,4 +1,4 @@
-package com.io.codetracker.application.user.response;
+package com.io.codetracker.application.user.port.in.response;
 
 import java.util.Map;
 

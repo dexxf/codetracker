@@ -1,8 +1,8 @@
 package com.io.codetracker.application.user.service;
 
 import com.io.codetracker.application.user.command.UserProfileCommand;
-import com.io.codetracker.application.user.response.FetchProfileDataResponse;
-import com.io.codetracker.application.user.response.UserProfileResponseDTO;
+import com.io.codetracker.application.user.port.in.response.FetchProfileDataResponse;
+import com.io.codetracker.application.user.port.in.response.UserProfileResponseDTO;
 import com.io.codetracker.application.user.port.out.UserAppRepository;
 import com.io.codetracker.domain.user.entity.User;
 import com.io.codetracker.domain.user.result.UserProfileUpdaterResult;
