@@ -1,4 +1,4 @@
-package com.io.codetracker.adapter.user.out.service;
+package com.io.codetracker.adapter.auth.out.service;
 
 import com.io.codetracker.application.auth.port.out.UserRegistrationPort;
 import com.io.codetracker.application.user.service.UserRegistration;
