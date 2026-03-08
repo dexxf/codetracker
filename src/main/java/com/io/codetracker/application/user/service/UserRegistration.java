@@ -57,7 +57,7 @@ public final class UserRegistration {
         String profileUrl;
         try {
              // Use UserId as their publicId for their Profile Picture
-            profileUrl = cloudinaryPort.uploadProfilePicture(command.profile(), userId); 
+            profileUrl = cloudinaryPort.uploadProfilePicture(command.profile().getBytes(), userId);
         } catch (IOException e) {
             return UserRegistrationResponseDTO.fail("Cant upload profile.");
         }

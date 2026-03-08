@@ -38,10 +38,15 @@ public class ProfilePictureService {
     @Transactional
     public UpdateProfilePictureResponse updateProfilePicture(String userId, MultipartFile imgByte) {
         try {
-            String imageUrl = cloudinaryPort.uploadProfilePicture(imgByte,userId);
-            userAppRepository.updateProfileUrlByUserId(userId, imageUrl);
-
-            return UpdateProfilePictureResponse.success(imageUrl, "Successfully updated Profile Picture.");
+            String imageUrl = cloudinaryPort.uploadProfilePicture(imgByte.getBytes(),userId);
+            int rowsAffected = userAppRepository.updateProfileUrlByUserId(userId, imageUrl);
+            if (rowsAffected == 1) {
+                return UpdateProfilePictureResponse.success(imageUrl, "Successfully updated Profile Picture.");
+            } else if (rowsAffected == 0) {
+                return UpdateProfilePictureResponse.failure("User not found or no profile picture to update.");
+            } else {
+                return UpdateProfilePictureResponse.failure("Unexpected error: multiple rows affected.");
+            }
         } catch (IOException e) {
             return UpdateProfilePictureResponse.failure("error updating profile picture.");
         }
