@@ -33,6 +33,11 @@ public class UserAppRepositoryImpl implements UserAppRepository,ClassroomUserDom
     }
 
     @Override
+    public int updateProfileUrlByUserId(String userId, String newProfileUrl) {
+        return jpa.updateProfileUrlByUserId(userId,newProfileUrl);
+    }
+
+    @Override
     public boolean existsByUserId(String instructorUserId) {
         return jpa.existsById(instructorUserId);
     }

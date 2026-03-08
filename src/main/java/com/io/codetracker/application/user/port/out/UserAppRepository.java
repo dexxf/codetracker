@@ -7,4 +7,5 @@ import java.util.Optional;
 public interface UserAppRepository {
     void save(User user);
     Optional<User> findByUserId(String userId);
+    int updateProfileUrlByUserId(String userId, String newProfileUrl);
 }
