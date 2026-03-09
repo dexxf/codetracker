@@ -3,7 +3,6 @@ package com.io.codetracker.infrastructure.classroom.persistence.repository;
 import com.io.codetracker.domain.classroom.valueObject.ClassroomStatus;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 import com.io.codetracker.infrastructure.classroom.persistence.entity.ClassroomStudentEntity;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
