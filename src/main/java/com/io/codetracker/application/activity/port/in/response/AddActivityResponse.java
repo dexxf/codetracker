@@ -6,15 +6,8 @@ import com.io.codetracker.domain.activity.entity.Activity;
 public record AddActivityResponse(boolean success, ActivityData data, String message) {
 
     public static AddActivityResponse success(Activity activity) {
-
-        ActivityData data = new ActivityData(
-                activity.getActivityId(), activity.getClassroomId(), activity.getInstructorUserId(), activity.getTitle(),
-                activity.getDescription(), activity.getDueDate(), activity.getStatus(), activity.getMaxScore(), activity.getCreatedAt(), activity.getUpdatedAt()
-        );
-
-        return new AddActivityResponse(true, data, null);
+        return new AddActivityResponse(true, ActivityData.from(activity), null);
     }
-
 
     public static AddActivityResponse fail(String message) {
         return new AddActivityResponse(false, null, message);
