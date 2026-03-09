@@ -15,4 +15,10 @@ public class ActivityClassroomAppAdapter implements ActivityClassroomAppPort {
     public boolean existsByClassroomId(String s) {
         return jpa.existsByClassroomId(s);
     }
+
+    @Override
+    public boolean existsByClassroomIdAndInstructorUserId(String classroomId, String userId) {
+        return jpa.existsByClassroomIdAndInstructorUserId(classroomId, userId);
+    }
+
 }
