@@ -5,8 +5,11 @@ import com.io.codetracker.application.activity.command.AddActivityCommand;
 import com.io.codetracker.application.activity.command.GetActivityCommand;
 import com.io.codetracker.application.activity.port.in.request.AddActivityRequest;
 import com.io.codetracker.application.activity.port.in.response.AddActivityResponse;
+import com.io.codetracker.application.activity.port.in.response.RemoveActivityResponse;
 import com.io.codetracker.application.activity.service.AddActivityService;
 import com.io.codetracker.application.activity.service.GetActivityService;
+import com.io.codetracker.application.activity.service.RemoveActivityService;
+
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,7 @@ public class ActivityController {
 
     private final AddActivityService addActivityService;
     private final GetActivityService getActivityService;
+    private final RemoveActivityService removeActivityService;
 
     @PostMapping
     public ResponseEntity<?> addActivity(@PathVariable String classroomId, @RequestBody AddActivityRequest request, @AuthenticationPrincipal AuthPrincipal principal) {
@@ -39,5 +43,12 @@ public class ActivityController {
 
             return response.success() ? ResponseEntity.ok().body(response)
                                       : ResponseEntity.badRequest().body(response);
+    }
+
+    @DeleteMapping("/{activityId}")
+    public ResponseEntity<?> removeActivity(@PathVariable String classroomId, @PathVariable String activityId, @AuthenticationPrincipal AuthPrincipal authPrincipal) {
+        RemoveActivityResponse response = removeActivityService.execute(classroomId,activityId,authPrincipal.getUserId());
+        return !response.success() ?  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response.message())
+        : ResponseEntity.ok(response);
     }
 }
