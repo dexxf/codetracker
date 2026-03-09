@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.PostMapping;
+
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 
 
@@ -18,7 +22,7 @@ import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 @RequestMapping("/api/auth")
 @AllArgsConstructor
 public class AuthController {
-        
+
 @GetMapping("/check")
 public ResponseEntity<Map<String, Object>> checkAuthentication(@AuthenticationPrincipal AuthPrincipal principal) {
     if (principal == null) {
@@ -33,5 +37,17 @@ public ResponseEntity<Map<String, Object>> checkAuthentication(@AuthenticationPr
             "username", principal.getAuthUsername()
     ));
 }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, String>> logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("jwt", "");
+        cookie.setHttpOnly(false);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
+    }
 
 }
