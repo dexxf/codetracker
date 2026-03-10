@@ -150,7 +150,7 @@ public class GithubController {
         String jwtToken = jwtService.generateToken(userAuthId);
 
         Cookie cookie = new Cookie("jwt", jwtToken);
-        cookie.setHttpOnly(true);
+        cookie.setHttpOnly(false);
         cookie.setSecure(false);
         cookie.setPath("/");
         cookie.setMaxAge(60 * 60 * 24);
