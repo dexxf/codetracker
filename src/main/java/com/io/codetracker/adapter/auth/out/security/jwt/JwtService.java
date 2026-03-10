@@ -31,7 +31,7 @@ public final class JwtService {
                 .add(claims)
                 .subject(authId)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() +  1000 * 60 * 60))
+                .expiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 7)) // temporarily set to 7 days, I will be making refresh token next time
                 .and()
                 .signWith(getKey())
                 .compact();
