@@ -24,7 +24,7 @@ public final class ClassroomCreationService {
     }
 
    
-    public Result<ClassroomCreationEntity, ClassroomCreationResult> createClassroom(String instructorUserId,String name,String description,int maxStudents,Boolean requireApproval,
+    public Result<ClassroomCreationEntity, ClassroomCreationResult> createClassroom(String instructorUserId,String name,String description,int maxStudents,boolean requireApproval,
             String passcode) {
 
         if (instructorUserId == null || instructorUserId.isBlank()) {
