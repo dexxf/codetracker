@@ -5,5 +5,5 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 
-public record EditActivityRequest(@NotBlank String title, String description, @FutureOrPresent LocalDateTime dueDate,
+public record EditActivityRequest(@NotBlank String title, String description, LocalDateTime dueDate,
                                    Integer maxScore, @NotNull ActivityStatus status) {}
