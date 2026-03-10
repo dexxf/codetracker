@@ -45,12 +45,13 @@ public class ClassroomJoinService {
         if(classroomSettingsOptional.isEmpty()) return Result.fail("Error. Settings not found.");
         ClassroomSettings classroomSettings = classroomSettingsOptional.get();
 
-        if (classroomSettings.getPasscode() == null && passcode != null && !passcode.isBlank()) {
-            return Result.fail("Classroom does not require a passcode.");
-        }
-
-        if (classroomSettings.getPasscode() != null && !Objects.equals(classroomSettings.getPasscode(), passcode)) {
-            return Result.fail("Invalid passcode.");
+        if (classroomSettings.getPasscode() != null) {
+            if(passcode == null || passcode.isEmpty()) {
+                return Result.fail("Classroom requires passcode.");
+            }
+            if(!Objects.equals(classroomSettings.getPasscode(), passcode)) {
+                return Result.fail("Wrong password.");
+            }
         }
 
         if (classroomStudentDomainRepository.existsByClassroomIdAndStudentUserId(classroom.getClassroomId(),userId)) {

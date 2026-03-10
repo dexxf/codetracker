@@ -7,5 +7,5 @@ public record CreateClassroomRequest(@NotBlank String name,
                                      @NotNull Integer maxStudents,
                                      // optional passcode. null = no passcode required.
                                      String passcode,
-                                     @NotNull Boolean requireApproval)
+                                     @NotNull boolean requireApproval)
 {}
