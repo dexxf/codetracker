@@ -7,7 +7,8 @@ public enum EditActivityResult {
     MAX_SCORE_INVALID("Max score is invalid."),
     DUE_DATE_INVALID("Due date cannot be in the past."),
     ACTIVITY_ARCHIVED("Activity is already archived and cannot be edited."),
-    INVALID_STATUS_TRANSITION("Invalid status transition.");
+    INVALID_STATUS_TRANSITION("Invalid status transition."),
+    INVALID_DESCRIPTION("Description is invalid");
 
     private final String message;
 

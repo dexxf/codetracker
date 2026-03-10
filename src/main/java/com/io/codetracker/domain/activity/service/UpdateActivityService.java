@@ -36,8 +36,8 @@ public final class UpdateActivityService {
             return Result.fail(EditActivityResult.TITLE_EMPTY);
         }
 
-        if (description == null || description.isBlank() || description.length() > MAX_DESCRIPTION_LENGTH) {
-            return Result.fail(EditActivityResult.DESCRIPTION_EMPTY);
+        if (description != null && description.length() > MAX_DESCRIPTION_LENGTH) {
+            return Result.fail(EditActivityResult.INVALID_DESCRIPTION);
         }
 
         if (maxScore != null && (maxScore < MIN_MAX_SCORE || maxScore > MAX_MAX_SCORE)) {
