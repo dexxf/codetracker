@@ -12,14 +12,11 @@ import com.io.codetracker.application.activity.service.EditActivityService;
 import com.io.codetracker.application.activity.service.GetActivityService;
 import com.io.codetracker.application.activity.service.RemoveActivityService;
 
-import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 
 @RestController

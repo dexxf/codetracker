@@ -2,6 +2,7 @@ package com.io.codetracker.application.classroom.service;
 
 import com.io.codetracker.application.classroom.port.out.ClassroomAppRepository;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentAppRepository;
+import com.io.codetracker.application.classroom.result.ClassroomData;
 import com.io.codetracker.application.classroom.result.GetJoinClassroomDataResult;
 import com.io.codetracker.domain.classroom.entity.Classroom;
 import com.io.codetracker.domain.classroom.entity.ClassroomStudent;
@@ -32,12 +33,12 @@ public class GetJoinClassroomService {
                 .distinct()
                 .toList();
 
-        List<Classroom> classrooms = classroomRepository.findAllById(classroomIds);
+        List<Classroom> classrooms = classroomRepository.findAllById(classroomIds);        
         Map<String, Integer> counts = classroomStudentRepository.countByClassroomIds(classroomIds);
 
         return classrooms.stream()
                 .map(classroom -> new GetJoinClassroomDataResult(
-                        classroom,
+                        ClassroomData.from(classroom),
                         counts.getOrDefault(classroom.getClassroomId(), 0)
                 ))
                 .toList();
