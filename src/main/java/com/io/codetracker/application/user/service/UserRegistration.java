@@ -8,7 +8,6 @@ import com.io.codetracker.application.user.port.out.UserAppRepository;
 import com.io.codetracker.domain.user.entity.User;
 import com.io.codetracker.domain.user.result.UserCreationResult;
 import com.io.codetracker.domain.user.service.UserCreationService;
-import com.io.codetracker.domain.user.valueobject.Gender;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -47,19 +46,15 @@ public final class UserRegistration {
 
         if(user.isHasFullyInitialized()) return UserRegistrationResponseDTO.fail("User already fully initialized.");
 
-        Gender gender;
-        try {
-            gender = Gender.valueOf(command.gender().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return UserRegistrationResponseDTO.fail("Invalid gender.");
-        }
+        String profileUrl = null;
+        if(command.profile() != null) {
 
-        String profileUrl;
-        try {
-             // Use UserId as their publicId for their Profile Picture
-            profileUrl = cloudinaryPort.uploadProfilePicture(command.profile().getBytes(), userId);
-        } catch (IOException e) {
-            return UserRegistrationResponseDTO.fail("Cant upload profile.");
+            try {
+                // Use UserId as their publicId for their Profile Picture
+                profileUrl = cloudinaryPort.uploadProfilePicture(command.profile().getBytes(), userId);
+            } catch (IOException e) {
+                return UserRegistrationResponseDTO.fail("Cant upload profile.");
+            }
         }
 
         UserCreationResult userFinalizeResult = userCreationService.finalizeUser(
@@ -67,14 +62,16 @@ public final class UserRegistration {
                 command.firstName(),
                 command.lastName(),
                 command.phoneNumber(),
-                gender,
+                command.gender(),
                 command.birthday(),
                 profileUrl,
                 command.bio());
 
         if (userFinalizeResult != UserCreationResult.SUCCESS) {
             try {
-                cloudinaryPort.deleteImageByPublicId(profileUrl);
+                if(profileUrl != null) {
+                    cloudinaryPort.deleteImageByPublicId(user.getUserId());
+                }
             } catch (IOException e) {
                 return UserRegistrationResponseDTO.fail("Cant upload image file.");
             }
