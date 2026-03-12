@@ -54,12 +54,15 @@ public final class UserRegistration {
             return UserRegistrationResponseDTO.fail("Invalid gender.");
         }
 
-        String profileUrl;
-        try {
-             // Use UserId as their publicId for their Profile Picture
-            profileUrl = cloudinaryPort.uploadProfilePicture(command.profile().getBytes(), userId);
-        } catch (IOException e) {
-            return UserRegistrationResponseDTO.fail("Cant upload profile.");
+        String profileUrl = null;
+        if(command.profile() != null) {
+
+            try {
+                // Use UserId as their publicId for their Profile Picture
+                profileUrl = cloudinaryPort.uploadProfilePicture(command.profile().getBytes(), userId);
+            } catch (IOException e) {
+                return UserRegistrationResponseDTO.fail("Cant upload profile.");
+            }
         }
 
         UserCreationResult userFinalizeResult = userCreationService.finalizeUser(
@@ -74,7 +77,9 @@ public final class UserRegistration {
 
         if (userFinalizeResult != UserCreationResult.SUCCESS) {
             try {
-                cloudinaryPort.deleteImageByPublicId(profileUrl);
+                if(profileUrl != null) {
+                    cloudinaryPort.deleteImageByPublicId(profileUrl);
+                }
             } catch (IOException e) {
                 return UserRegistrationResponseDTO.fail("Cant upload image file.");
             }
