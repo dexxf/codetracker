@@ -10,4 +10,5 @@ public interface ClassroomAppRepository {
     List<Classroom> findByInstructorUserId(String instructorUserId);
     List<Classroom> findAllById(List<String> classroomIds);
     boolean existsByClassroomIdAndInstructorUserId(String classroomId, String instructorUserId);
+    boolean existsByClassroomId(String classroomId);
 }

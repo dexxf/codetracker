@@ -11,9 +11,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.adapter.classroom.in.dto.CreateClassroomRequest;
+import com.io.codetracker.application.classroom.command.ClassroomStatsCommand;
 import com.io.codetracker.application.classroom.command.CreateClassroomCommand;
 import com.io.codetracker.application.classroom.port.in.response.CreateClassroomResponse;
+import com.io.codetracker.application.classroom.port.in.response.GetClassroomStatsResponse;
 import com.io.codetracker.application.classroom.service.CreateClassroomService;
+import com.io.codetracker.application.classroom.service.GetClassroomStatsService;
 import com.io.codetracker.application.classroom.service.GetClassroomsService;
 import com.io.codetracker.common.response.ErrorResponse;
 
@@ -31,6 +34,7 @@ public class ClassroomController {
     private final GetClassroomsService getClassroomsUseCase;
     private final JoinClassroomService joinClassroomService;
     private final GetJoinClassroomService getJoinClassroomService;
+    private final GetClassroomStatsService getClassroomStatsService;
     
 @PostMapping("/create")
 public ResponseEntity<?> createClassroom(@AuthenticationPrincipal AuthPrincipal authPrincipal,@Valid @RequestBody CreateClassroomRequest request) {
@@ -76,6 +80,17 @@ public ResponseEntity<?> createClassroom(@AuthenticationPrincipal AuthPrincipal 
     public ResponseEntity<?> getJoinedClassrooms(
             @AuthenticationPrincipal AuthPrincipal authPrincipal) {
         var result = getJoinClassroomService.execute(authPrincipal.getUserId());
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/{classroomId}/stats")
+    public ResponseEntity<?> getClassroomStats(
+            @AuthenticationPrincipal AuthPrincipal authPrincipal,
+            @PathVariable String classroomId) {
+        GetClassroomStatsResponse result = getClassroomStatsService.execute(new ClassroomStatsCommand(classroomId, authPrincipal.getUserId()));
+        if (!result.success()) {
+            return ResponseEntity.badRequest().body(result);
+        }
         return ResponseEntity.ok(result);
     }
 

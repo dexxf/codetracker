@@ -60,5 +60,10 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
         return entities.stream().map(ClassroomStudentMapper::toDomain).toList();
     }
 
+    @Override
+    public long countByClassroomId(String classroomId) {
+        return jpaClassroomStudentRepository.countByClassroomId(classroomId);
+    }
+
 
 }

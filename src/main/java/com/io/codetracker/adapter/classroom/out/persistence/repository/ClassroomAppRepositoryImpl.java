@@ -47,4 +47,9 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
     public boolean existsByClassroomIdAndInstructorUserId(String classroomId, String instructorUserId) {
         return jpaClassroomRepository.existsByClassroomIdAndInstructorUserId(classroomId, instructorUserId);
     }
+
+    @Override
+    public boolean existsByClassroomId(String classroomId) {
+        return jpaClassroomRepository.existsByClassroomId(classroomId);
+    }
 }
