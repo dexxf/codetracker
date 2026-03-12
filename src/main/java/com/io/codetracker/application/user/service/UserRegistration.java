@@ -78,7 +78,7 @@ public final class UserRegistration {
         if (userFinalizeResult != UserCreationResult.SUCCESS) {
             try {
                 if(profileUrl != null) {
-                    cloudinaryPort.deleteImageByPublicId(profileUrl);
+                    cloudinaryPort.deleteImageByPublicId(user.getUserId());
                 }
             } catch (IOException e) {
                 return UserRegistrationResponseDTO.fail("Cant upload image file.");
