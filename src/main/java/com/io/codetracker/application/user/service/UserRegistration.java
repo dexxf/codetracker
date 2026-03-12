@@ -8,7 +8,6 @@ import com.io.codetracker.application.user.port.out.UserAppRepository;
 import com.io.codetracker.domain.user.entity.User;
 import com.io.codetracker.domain.user.result.UserCreationResult;
 import com.io.codetracker.domain.user.service.UserCreationService;
-import com.io.codetracker.domain.user.valueobject.Gender;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -47,13 +46,6 @@ public final class UserRegistration {
 
         if(user.isHasFullyInitialized()) return UserRegistrationResponseDTO.fail("User already fully initialized.");
 
-        Gender gender;
-        try {
-            gender = Gender.valueOf(command.gender().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return UserRegistrationResponseDTO.fail("Invalid gender.");
-        }
-
         String profileUrl = null;
         if(command.profile() != null) {
 
@@ -70,7 +62,7 @@ public final class UserRegistration {
                 command.firstName(),
                 command.lastName(),
                 command.phoneNumber(),
-                gender,
+                command.gender(),
                 command.birthday(),
                 profileUrl,
                 command.bio());

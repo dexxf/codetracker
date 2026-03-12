@@ -21,7 +21,7 @@ public final class UserCreationService {
         return factory.createPartial();
     }
 
-    public UserCreationResult finalizeUser(User user, String firstName, String lastName, String phoneNumber, Gender gender, LocalDate birthday, String profileUrl, String bio) {
+    public UserCreationResult finalizeUser(User user, String firstName, String lastName, String phoneNumber, String gender, LocalDate birthday, String profileUrl, String bio) {
         if(user == null) return UserCreationResult.USER_NULL;
 
         if(firstName == null || firstName.isEmpty() || lastName == null || lastName.isEmpty()) return UserCreationResult.NAME_REQUIRED;
@@ -45,7 +45,14 @@ public final class UserCreationService {
             return UserCreationResult.INVALID_GENDER;
         }
 
-        factory.initialize(user, firstName, lastName, gender, phoneNumberResult.data(), birthdayResult.data(), profileUrl, bio);
+        Gender userGender;
+        try {
+            userGender = Gender.valueOf(gender.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return UserCreationResult.INVALID_GENDER;
+        }
+
+        factory.initialize(user, firstName, lastName, userGender, phoneNumberResult.data(), birthdayResult.data(), profileUrl, bio);
         return UserCreationResult.SUCCESS;
     }
 
