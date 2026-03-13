@@ -2,7 +2,7 @@ package com.io.codetracker.adapter.classroom.in.rest;
 
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.application.classroom.command.GetClassroomStudentCommand;
-import com.io.codetracker.application.classroom.port.in.response.GetClassroomStudentResponse;
+import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomStudentResponse;
 import com.io.codetracker.application.classroom.service.GetClassroomStudentService;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 import lombok.AllArgsConstructor;

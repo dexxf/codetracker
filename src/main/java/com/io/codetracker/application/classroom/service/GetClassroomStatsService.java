@@ -3,7 +3,7 @@ package com.io.codetracker.application.classroom.service;
 import org.springframework.stereotype.Service;
 
 import com.io.codetracker.application.classroom.command.ClassroomStatsCommand;
-import com.io.codetracker.application.classroom.port.in.response.GetClassroomStatsResponse;
+import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomStatsResponse;
 import com.io.codetracker.application.classroom.port.out.ClassroomActivityAppPort;
 import com.io.codetracker.application.classroom.port.out.ClassroomAppRepository;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentAppRepository;

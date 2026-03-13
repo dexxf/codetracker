@@ -1,6 +1,6 @@
 package com.io.codetracker.adapter.classroom.in.rest;
 
-import com.io.codetracker.application.classroom.port.in.request.JoinClassroomRequest;
+import com.io.codetracker.adapter.classroom.in.dto.request.JoinClassroomRequest;
 import com.io.codetracker.application.classroom.command.JoinClassroomCommand;
 import com.io.codetracker.application.classroom.service.GetJoinClassroomService;
 import com.io.codetracker.application.classroom.service.JoinClassroomService;
@@ -10,11 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
-import com.io.codetracker.application.classroom.port.in.request.CreateClassroomRequest;
+import com.io.codetracker.adapter.classroom.in.dto.request.CreateClassroomRequest;
 import com.io.codetracker.application.classroom.command.ClassroomStatsCommand;
 import com.io.codetracker.application.classroom.command.CreateClassroomCommand;
-import com.io.codetracker.application.classroom.port.in.response.CreateClassroomResponse;
-import com.io.codetracker.application.classroom.port.in.response.GetClassroomStatsResponse;
+import com.io.codetracker.adapter.classroom.in.dto.response.CreateClassroomResponse;
+import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomStatsResponse;
 import com.io.codetracker.application.classroom.service.CreateClassroomService;
 import com.io.codetracker.application.classroom.service.GetClassroomStatsService;
 import com.io.codetracker.application.classroom.service.GetClassroomsService;

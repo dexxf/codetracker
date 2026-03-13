@@ -1,4 +1,4 @@
-package com.io.codetracker.application.classroom.port.in.response;
+package com.io.codetracker.adapter.classroom.in.dto.response;
 
 public record GetClassroomStatsResponse(boolean success,String classroomId, long totalActivities, long activeActivities, long totalStudents, String message) {
     
