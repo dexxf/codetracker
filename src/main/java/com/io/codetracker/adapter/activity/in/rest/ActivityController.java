@@ -53,7 +53,7 @@ public class ActivityController {
     @DeleteMapping("/{activityId}")
     public ResponseEntity<ActivityResponse> removeActivity(@PathVariable String classroomId, @PathVariable String activityId, @AuthenticationPrincipal AuthPrincipal authPrincipal) {
         Result<ActivityData, String> response = removeActivityUseCase.execute(classroomId,activityId,authPrincipal.getUserId());
-        return !response.success() ?  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ActivityResponse.fail(response.error()))
+        return !response.success() ?  ResponseEntity.badRequest().body(ActivityResponse.fail(response.error()))
                 : ResponseEntity.ok(ActivityResponse.success(response.data(), "Successfully Removed Activity"));
     }
 
