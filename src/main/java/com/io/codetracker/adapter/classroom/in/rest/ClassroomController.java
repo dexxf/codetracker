@@ -4,12 +4,8 @@ import com.io.codetracker.adapter.classroom.in.dto.request.JoinClassroomRequest;
 import com.io.codetracker.adapter.classroom.in.dto.response.ClassroomJoinResponse;
 import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomsResponse;
 import com.io.codetracker.application.classroom.command.JoinClassroomCommand;
-import com.io.codetracker.application.classroom.port.in.CreateClassroomUseCase;
-import com.io.codetracker.application.classroom.port.in.GetClassroomStatsUseCase;
-import com.io.codetracker.application.classroom.port.in.GetClassroomUseCase;
-import com.io.codetracker.application.classroom.port.in.JoinClassroomUseCase;
+import com.io.codetracker.application.classroom.port.in.*;
 import com.io.codetracker.application.classroom.result.*;
-import com.io.codetracker.application.classroom.service.GetJoinClassroomService;
 import com.io.codetracker.common.result.Result;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,7 +31,7 @@ public class ClassroomController {
     private final CreateClassroomUseCase createClassroomUseCase;
     private final GetClassroomUseCase getClassroomsUseCase;
     private final JoinClassroomUseCase joinClassroomUseCase;
-    private final GetJoinClassroomService getJoinClassroomService;
+    private final GetJoinClassroomUseCase getJoinClassroomUseCase;
     private final GetClassroomStatsUseCase getClassroomStatsUseCase;
     
 @PostMapping("/create")
@@ -82,7 +78,7 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
     @GetMapping("/join")
     public ResponseEntity<List<GetJoinClassroomDataResult>> getJoinedClassrooms(
             @AuthenticationPrincipal AuthPrincipal authPrincipal) {
-        List<GetJoinClassroomDataResult> result = getJoinClassroomService.execute(authPrincipal.getUserId());
+        List<GetJoinClassroomDataResult> result = getJoinClassroomUseCase.execute(authPrincipal.getUserId());
         return ResponseEntity.ok(result);
     }
 

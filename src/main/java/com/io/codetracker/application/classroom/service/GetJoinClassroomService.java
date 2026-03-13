@@ -1,5 +1,6 @@
 package com.io.codetracker.application.classroom.service;
 
+import com.io.codetracker.application.classroom.port.in.GetJoinClassroomUseCase;
 import com.io.codetracker.application.classroom.port.out.ClassroomAppRepository;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentAppRepository;
 import com.io.codetracker.application.classroom.result.ClassroomData;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class GetJoinClassroomService {
+public class GetJoinClassroomService implements GetJoinClassroomUseCase {
 
     private final ClassroomStudentAppRepository classroomStudentRepository;
     private final ClassroomAppRepository classroomRepository;
