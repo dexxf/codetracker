@@ -1,4 +1,4 @@
-package com.io.codetracker.adapter.classroom.in.dto;
+package com.io.codetracker.application.classroom.port.in.request;
 
 import jakarta.validation.constraints.*;
 
