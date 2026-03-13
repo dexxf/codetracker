@@ -1,8 +1,8 @@
 package com.io.codetracker.application.classroom.service;
 
 import com.io.codetracker.application.classroom.command.JoinClassroomCommand;
+import com.io.codetracker.application.classroom.port.in.JoinClassroomUseCase;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentAppRepository;
-import com.io.codetracker.application.classroom.port.in.response.ClassroomJoinResponse;
 import com.io.codetracker.application.classroom.result.ClassroomJoinResult;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.classroom.entity.ClassroomStudent;
@@ -14,7 +14,7 @@ import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class JoinClassroomService {
+public final class JoinClassroomService implements JoinClassroomUseCase {
 
     private final ClassroomJoinService joinService;
     private final ClassroomStudentCreationService creationService;
@@ -27,13 +27,12 @@ public final class JoinClassroomService {
         this.studentRepository = studentRepository;
     }
 
-    public ClassroomJoinResponse execute(JoinClassroomCommand command) {
-
+    public Result<ClassroomJoinResult, String> execute(JoinClassroomCommand command) {
         Result<ClassroomJoinValidationResult, String> validation =
                 joinService.validate(command.userId(), command.code(), command.passcode());
 
         if (!validation.success()) {
-            return ClassroomJoinResponse.fail(validation.error());
+            return Result.fail(validation.error());
         }
 
         ClassroomJoinValidationResult joinResult = validation.data();
@@ -44,7 +43,7 @@ public final class JoinClassroomService {
         );
 
         if (!creation.success()) {
-            return ClassroomJoinResponse.fail(creation.error().getMessage());
+            return Result.fail(creation.error().getMessage());
         }
 
         ClassroomStudent student = creation.data();
@@ -52,6 +51,6 @@ public final class JoinClassroomService {
         studentRepository.save(student);
 
         ClassroomJoinResult resultData = ClassroomJoinResult.from(student);
-        return ClassroomJoinResponse.ok(resultData);
+        return Result.ok(resultData);
     }
 }

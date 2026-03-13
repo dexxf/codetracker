@@ -1,4 +1,4 @@
-package com.io.codetracker.application.classroom.port.in.response;
+package com.io.codetracker.adapter.classroom.in.dto.response;
 
 import com.io.codetracker.application.classroom.result.ClassroomJoinResult;
 
