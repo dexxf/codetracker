@@ -4,7 +4,9 @@ import com.io.codetracker.adapter.classroom.in.dto.request.JoinClassroomRequest;
 import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomsResponse;
 import com.io.codetracker.application.classroom.command.JoinClassroomCommand;
 import com.io.codetracker.application.classroom.port.in.CreateClassroomUseCase;
+import com.io.codetracker.application.classroom.port.in.GetClassroomStatsUseCase;
 import com.io.codetracker.application.classroom.port.in.GetClassroomUseCase;
+import com.io.codetracker.application.classroom.result.ClassroomStats;
 import com.io.codetracker.application.classroom.result.CreateClassroomData;
 import com.io.codetracker.application.classroom.result.GetClassroomsProfessorData;
 import com.io.codetracker.application.classroom.service.GetJoinClassroomService;
@@ -37,7 +39,7 @@ public class ClassroomController {
     private final GetClassroomUseCase getClassroomsUseCase;
     private final JoinClassroomService joinClassroomService;
     private final GetJoinClassroomService getJoinClassroomService;
-    private final GetClassroomStatsService getClassroomStatsService;
+    private final GetClassroomStatsUseCase getClassroomStatsUseCase;
     
 @PostMapping("/create")
 public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPrincipal AuthPrincipal authPrincipal,@Valid @RequestBody CreateClassroomRequest request) {
@@ -90,14 +92,14 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
     }
 
     @GetMapping("/{classroomId}/stats")
-    public ResponseEntity<?> getClassroomStats(
+    public ResponseEntity<GetClassroomStatsResponse> getClassroomStats(
             @AuthenticationPrincipal AuthPrincipal authPrincipal,
             @PathVariable String classroomId) {
-        GetClassroomStatsResponse result = getClassroomStatsService.execute(new ClassroomStatsCommand(classroomId, authPrincipal.getUserId()));
+        Result<ClassroomStats, String> result = getClassroomStatsUseCase.execute(new ClassroomStatsCommand(classroomId, authPrincipal.getUserId()));
         if (!result.success()) {
-            return ResponseEntity.badRequest().body(result.message());
+            return ResponseEntity.badRequest().body(GetClassroomStatsResponse.fail(result.error()));
         }
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(GetClassroomStatsResponse.success(result.data()));
     }
 
 }
