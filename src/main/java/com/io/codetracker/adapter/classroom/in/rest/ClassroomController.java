@@ -1,16 +1,15 @@
 package com.io.codetracker.adapter.classroom.in.rest;
 
 import com.io.codetracker.adapter.classroom.in.dto.request.JoinClassroomRequest;
+import com.io.codetracker.adapter.classroom.in.dto.response.ClassroomJoinResponse;
 import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomsResponse;
 import com.io.codetracker.application.classroom.command.JoinClassroomCommand;
 import com.io.codetracker.application.classroom.port.in.CreateClassroomUseCase;
 import com.io.codetracker.application.classroom.port.in.GetClassroomStatsUseCase;
 import com.io.codetracker.application.classroom.port.in.GetClassroomUseCase;
-import com.io.codetracker.application.classroom.result.ClassroomStats;
-import com.io.codetracker.application.classroom.result.CreateClassroomData;
-import com.io.codetracker.application.classroom.result.GetClassroomsProfessorData;
+import com.io.codetracker.application.classroom.port.in.JoinClassroomUseCase;
+import com.io.codetracker.application.classroom.result.*;
 import com.io.codetracker.application.classroom.service.GetJoinClassroomService;
-import com.io.codetracker.application.classroom.service.JoinClassroomService;
 import com.io.codetracker.common.result.Result;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,8 +22,6 @@ import com.io.codetracker.application.classroom.command.ClassroomStatsCommand;
 import com.io.codetracker.application.classroom.command.CreateClassroomCommand;
 import com.io.codetracker.adapter.classroom.in.dto.response.CreateClassroomResponse;
 import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomStatsResponse;
-import com.io.codetracker.application.classroom.service.GetClassroomStatsService;
-import com.io.codetracker.common.response.ErrorResponse;
 
 import jakarta.validation.Valid;
 
@@ -37,7 +34,7 @@ public class ClassroomController {
     
     private final CreateClassroomUseCase createClassroomUseCase;
     private final GetClassroomUseCase getClassroomsUseCase;
-    private final JoinClassroomService joinClassroomService;
+    private final JoinClassroomUseCase joinClassroomUseCase;
     private final GetJoinClassroomService getJoinClassroomService;
     private final GetClassroomStatsUseCase getClassroomStatsUseCase;
     
@@ -73,15 +70,13 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
     }
 
     @PostMapping("/join")
-    public ResponseEntity<?> joinClassroom(@AuthenticationPrincipal AuthPrincipal authPrincipal, @Valid @RequestBody JoinClassroomRequest request) {
-        var response = joinClassroomService.execute(
+    public ResponseEntity<ClassroomJoinResponse> joinClassroom(@AuthenticationPrincipal AuthPrincipal authPrincipal, @Valid @RequestBody JoinClassroomRequest request) {
+        Result<ClassroomJoinResult, String> response = joinClassroomUseCase.execute(
                 new JoinClassroomCommand(authPrincipal.getUserId(), request.code(), request.passcode()));
-
         if (!response.success()) {
-            return ResponseEntity.badRequest().body(ErrorResponse.of(response.error(), 400));
+            return ResponseEntity.badRequest().body(ClassroomJoinResponse.fail(response.error()));
         }
-
-        return ResponseEntity.ok(response.data());
+        return ResponseEntity.ok(ClassroomJoinResponse.ok(response.data()));
     }
 
     @GetMapping("/join")
