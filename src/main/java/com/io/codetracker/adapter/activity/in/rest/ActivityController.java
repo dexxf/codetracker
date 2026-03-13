@@ -8,8 +8,8 @@ import com.io.codetracker.adapter.activity.in.dto.request.AddActivityRequest;
 import com.io.codetracker.adapter.activity.in.dto.request.EditActivityRequest;
 import com.io.codetracker.adapter.activity.in.dto.response.ActivityResponse;
 import com.io.codetracker.application.activity.port.in.AddActivityUseCase;
+import com.io.codetracker.application.activity.port.in.EditActivityUseCase;
 import com.io.codetracker.application.activity.result.ActivityData;
-import com.io.codetracker.application.activity.service.EditActivityService;
 import com.io.codetracker.application.activity.service.GetActivityService;
 import com.io.codetracker.application.activity.service.RemoveActivityService;
 
@@ -29,7 +29,7 @@ public class ActivityController {
     private final AddActivityUseCase addActivityUseCase;
     private final GetActivityService getActivityService;
     private final RemoveActivityService removeActivityService;
-    private final EditActivityService editActivityService;
+    private final EditActivityUseCase editActivityUseCase;
 
     @PostMapping
     public ResponseEntity<ActivityResponse> addActivity(@PathVariable String classroomId, @RequestBody AddActivityRequest request, @AuthenticationPrincipal AuthPrincipal principal) {
@@ -58,10 +58,10 @@ public class ActivityController {
     }
 
     @PutMapping("/{activityId}")
-    public ResponseEntity<?> updateActivity(@PathVariable String classroomId, @PathVariable String activityId,@RequestBody EditActivityRequest request, @AuthenticationPrincipal AuthPrincipal authPrincipal) {
-        ActivityResponse response=  editActivityService.execute(new EditActivityCommand(authPrincipal.getUserId(),
+    public ResponseEntity<ActivityResponse> updateActivity(@PathVariable String classroomId, @PathVariable String activityId,@RequestBody EditActivityRequest request, @AuthenticationPrincipal AuthPrincipal authPrincipal) {
+        Result<ActivityData, String> response=  editActivityUseCase.execute(new EditActivityCommand(authPrincipal.getUserId(),
                 classroomId,activityId,request.title(),request.description(),request.dueDate(),request.status(),request.maxScore()));
-        return !response.success() ?  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response.message())
-                : ResponseEntity.ok(response);
+        return !response.success() ?  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ActivityResponse.fail(response.error()))
+                : ResponseEntity.ok(ActivityResponse.success(response.data(), "Successfully Updated Activity"));
         }
 }
