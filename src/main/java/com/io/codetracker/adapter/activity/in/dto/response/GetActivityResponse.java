@@ -1,4 +1,4 @@
-package com.io.codetracker.application.activity.port.in.response;
+package com.io.codetracker.adapter.activity.in.dto.response;
 
 import com.io.codetracker.application.activity.result.ActivityData;
 

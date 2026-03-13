@@ -2,7 +2,7 @@ package com.io.codetracker.application.activity.service;
 
 import java.util.Optional;
 
-import com.io.codetracker.application.activity.port.in.response.ActivityResponse;
+import com.io.codetracker.adapter.activity.in.dto.response.ActivityResponse;
 import org.springframework.stereotype.Service;
 
 import com.io.codetracker.application.activity.port.out.ActivityAppRepository;

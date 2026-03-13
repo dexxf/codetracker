@@ -1,7 +1,7 @@
 package com.io.codetracker.application.activity.service;
 
 import com.io.codetracker.application.activity.command.AddActivityCommand;
-import com.io.codetracker.application.activity.port.in.response.ActivityResponse;
+import com.io.codetracker.adapter.activity.in.dto.response.ActivityResponse;
 import com.io.codetracker.application.activity.port.out.ActivityAppRepository;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.activity.entity.Activity;
