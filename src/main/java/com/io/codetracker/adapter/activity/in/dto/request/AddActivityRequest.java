@@ -1,4 +1,4 @@
-package com.io.codetracker.application.activity.port.in.request;
+package com.io.codetracker.adapter.activity.in.dto.request;
 
 import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
 import jakarta.validation.constraints.*;

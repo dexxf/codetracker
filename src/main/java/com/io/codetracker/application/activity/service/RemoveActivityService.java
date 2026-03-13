@@ -2,7 +2,9 @@ package com.io.codetracker.application.activity.service;
 
 import java.util.Optional;
 
-import com.io.codetracker.application.activity.port.in.response.ActivityResponse;
+import com.io.codetracker.application.activity.port.in.RemoveActivityUseCase;
+import com.io.codetracker.application.activity.result.ActivityData;
+import com.io.codetracker.common.result.Result;
 import org.springframework.stereotype.Service;
 
 import com.io.codetracker.application.activity.port.out.ActivityAppRepository;
@@ -13,20 +15,20 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public final class RemoveActivityService {
+public final class RemoveActivityService implements RemoveActivityUseCase {
     
     private final ActivityAppRepository activityAppRepository;
     private final ActivityClassroomAppPort activityClassroomAppPort;
 
-    public ActivityResponse execute(String classroomId, String activityId, String userId) {
+    public Result<ActivityData, String> execute(String classroomId, String activityId, String userId) {
       boolean isInstructor = activityClassroomAppPort.existsByClassroomIdAndInstructorUserId(classroomId, userId);
 
-      if(!isInstructor) return ActivityResponse.fail("Instructor is not found in classroomId");
+      if(!isInstructor) return Result.fail("Instructor is not found in classroomId");
 
       Optional<Activity> activity = activityAppRepository.findById(activityId);
-      if (activity.isEmpty()) return ActivityResponse.fail("Activity is not found.");
+      if (activity.isEmpty()) return Result.fail("Activity is not found.");
 
       activityAppRepository.deleteByActivityId(activityId);
-      return ActivityResponse.success(activity.get(), "Successfully removed activity");
+      return Result.ok(ActivityData.from(activity.get()));
     }
 }
