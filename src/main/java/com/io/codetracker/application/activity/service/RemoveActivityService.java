@@ -3,6 +3,7 @@ package com.io.codetracker.application.activity.service;
 import java.util.Optional;
 
 import com.io.codetracker.adapter.activity.in.dto.response.ActivityResponse;
+import com.io.codetracker.application.activity.result.ActivityData;
 import org.springframework.stereotype.Service;
 
 import com.io.codetracker.application.activity.port.out.ActivityAppRepository;
@@ -27,6 +28,6 @@ public final class RemoveActivityService {
       if (activity.isEmpty()) return ActivityResponse.fail("Activity is not found.");
 
       activityAppRepository.deleteByActivityId(activityId);
-      return ActivityResponse.success(activity.get(), "Successfully removed activity");
+      return ActivityResponse.success(ActivityData.from(activity.get()), "Successfully Removed activity");
     }
 }

@@ -7,11 +7,13 @@ import com.io.codetracker.application.activity.command.GetActivityCommand;
 import com.io.codetracker.adapter.activity.in.dto.request.AddActivityRequest;
 import com.io.codetracker.adapter.activity.in.dto.request.EditActivityRequest;
 import com.io.codetracker.adapter.activity.in.dto.response.ActivityResponse;
-import com.io.codetracker.application.activity.service.AddActivityService;
+import com.io.codetracker.application.activity.port.in.AddActivityUseCase;
+import com.io.codetracker.application.activity.result.ActivityData;
 import com.io.codetracker.application.activity.service.EditActivityService;
 import com.io.codetracker.application.activity.service.GetActivityService;
 import com.io.codetracker.application.activity.service.RemoveActivityService;
 
+import com.io.codetracker.common.result.Result;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,20 +26,20 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class ActivityController {
 
-    private final AddActivityService addActivityService;
+    private final AddActivityUseCase addActivityUseCase;
     private final GetActivityService getActivityService;
     private final RemoveActivityService removeActivityService;
     private final EditActivityService editActivityService;
 
     @PostMapping
-    public ResponseEntity<?> addActivity(@PathVariable String classroomId, @RequestBody AddActivityRequest request, @AuthenticationPrincipal AuthPrincipal principal) {
+    public ResponseEntity<ActivityResponse> addActivity(@PathVariable String classroomId, @RequestBody AddActivityRequest request, @AuthenticationPrincipal AuthPrincipal principal) {
         AddActivityCommand command = new AddActivityCommand(classroomId, principal.getUserId(), request.title(),
                 request.description(), request.dueDate(), request.maxScore(), request.status());
 
-        ActivityResponse response = addActivityService.execute(command);
+        Result<ActivityData,String> response = addActivityUseCase.execute(command);
 
-        return response.success() ? ResponseEntity.status(HttpStatus.CREATED).body(response)
-                                  : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return response.success() ? ResponseEntity.status(HttpStatus.CREATED).body(ActivityResponse.success(response.data(), "Successfully added activity"))
+                                  : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ActivityResponse.fail(response.error()));
     }
 
     @GetMapping
