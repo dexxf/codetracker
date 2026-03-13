@@ -80,9 +80,9 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
     }
 
     @GetMapping("/join")
-    public ResponseEntity<?> getJoinedClassrooms(
+    public ResponseEntity<List<GetJoinClassroomDataResult>> getJoinedClassrooms(
             @AuthenticationPrincipal AuthPrincipal authPrincipal) {
-        var result = getJoinClassroomService.execute(authPrincipal.getUserId());
+        List<GetJoinClassroomDataResult> result = getJoinClassroomService.execute(authPrincipal.getUserId());
         return ResponseEntity.ok(result);
     }
 
