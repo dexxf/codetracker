@@ -1,9 +1,12 @@
 package com.io.codetracker.adapter.classroom.in.rest;
 
 import com.io.codetracker.adapter.classroom.in.dto.request.JoinClassroomRequest;
+import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomsResponse;
 import com.io.codetracker.application.classroom.command.JoinClassroomCommand;
 import com.io.codetracker.application.classroom.port.in.CreateClassroomUseCase;
+import com.io.codetracker.application.classroom.port.in.GetClassroomUseCase;
 import com.io.codetracker.application.classroom.result.CreateClassroomData;
+import com.io.codetracker.application.classroom.result.GetClassroomsProfessorData;
 import com.io.codetracker.application.classroom.service.GetJoinClassroomService;
 import com.io.codetracker.application.classroom.service.JoinClassroomService;
 import com.io.codetracker.common.result.Result;
@@ -19,13 +22,11 @@ import com.io.codetracker.application.classroom.command.CreateClassroomCommand;
 import com.io.codetracker.adapter.classroom.in.dto.response.CreateClassroomResponse;
 import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomStatsResponse;
 import com.io.codetracker.application.classroom.service.GetClassroomStatsService;
-import com.io.codetracker.application.classroom.service.GetClassroomsService;
 import com.io.codetracker.common.response.ErrorResponse;
 
 import jakarta.validation.Valid;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/classrooms")
@@ -33,7 +34,7 @@ import java.util.Optional;
 public class ClassroomController {
     
     private final CreateClassroomUseCase createClassroomUseCase;
-    private final GetClassroomsService getClassroomsUseCase;
+    private final GetClassroomUseCase getClassroomsUseCase;
     private final JoinClassroomService joinClassroomService;
     private final GetJoinClassroomService getJoinClassroomService;
     private final GetClassroomStatsService getClassroomStatsService;
@@ -61,9 +62,12 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
 }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getClassrooms(@AuthenticationPrincipal AuthPrincipal authPrincipal) {
-        var result = getClassroomsUseCase.execute(authPrincipal.getUserId());
-        return ResponseEntity.ok(Optional.ofNullable(result.data()).orElse(List.of()));
+    public ResponseEntity<GetClassroomsResponse> getClassrooms(@AuthenticationPrincipal AuthPrincipal authPrincipal) {
+        Result<List<GetClassroomsProfessorData>, String> result = getClassroomsUseCase.execute(authPrincipal.getUserId());
+        if(!result.success()) {
+            return ResponseEntity.badRequest().body(GetClassroomsResponse.fail(result.error()));
+        }
+        return ResponseEntity.ok(GetClassroomsResponse.ok(result.data()));
     }
 
     @PostMapping("/join")
