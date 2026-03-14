@@ -4,6 +4,7 @@ import com.io.codetracker.adapter.activity.in.dto.response.GetActivityResponse;
 import com.io.codetracker.adapter.activity.in.mapper.AddActivityHttpMapper;
 import com.io.codetracker.adapter.activity.in.mapper.EditActivityHttpMapper;
 import com.io.codetracker.adapter.activity.in.mapper.GetActivityHttpMapper;
+import com.io.codetracker.adapter.activity.in.mapper.RemoveActivityHttpMapper;
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.application.activity.command.AddActivityCommand;
 import com.io.codetracker.application.activity.command.EditActivityCommand;
@@ -14,6 +15,7 @@ import com.io.codetracker.adapter.activity.in.dto.response.ActivityResponse;
 import com.io.codetracker.application.activity.error.AddActivityError;
 import com.io.codetracker.application.activity.error.EditActivityError;
 import com.io.codetracker.application.activity.error.GetActivityError;
+import com.io.codetracker.application.activity.error.RemoveActivityError;
 import com.io.codetracker.application.activity.port.in.AddActivityUseCase;
 import com.io.codetracker.application.activity.port.in.EditActivityUseCase;
 import com.io.codetracker.application.activity.port.in.GetActivityUseCase;
@@ -58,8 +60,9 @@ public class ActivityController {
 
     @DeleteMapping("/{activityId}")
     public ResponseEntity<ActivityResponse> removeActivity(@PathVariable String classroomId, @PathVariable String activityId, @AuthenticationPrincipal AuthPrincipal authPrincipal) {
-        Result<ActivityData, String> response = removeActivityUseCase.execute(classroomId,activityId,authPrincipal.getUserId());
-        return !response.success() ?  ResponseEntity.badRequest().body(ActivityResponse.fail(response.error()))
+        Result<ActivityData, RemoveActivityError> response = removeActivityUseCase.execute(classroomId,activityId,authPrincipal.getUserId());
+        return !response.success() ?  ResponseEntity.status(RemoveActivityHttpMapper.toStatus(response.error()))
+                .body(ActivityResponse.fail(RemoveActivityHttpMapper.toMessage(response.error())))
                 : ResponseEntity.ok(ActivityResponse.success(response.data(), "Successfully Removed Activity"));
     }
 
