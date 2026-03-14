@@ -3,6 +3,7 @@ package com.io.codetracker.application.activity.service;
 import com.io.codetracker.application.activity.command.AddActivityCommand;
 import com.io.codetracker.application.activity.port.in.AddActivityUseCase;
 import com.io.codetracker.application.activity.port.out.ActivityAppRepository;
+import com.io.codetracker.application.activity.port.out.ActivityClassroomAppPort;
 import com.io.codetracker.application.activity.result.ActivityData;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.activity.entity.Activity;
@@ -17,8 +18,16 @@ public class AddActivityService implements AddActivityUseCase {
 
     private final ActivityAppRepository activityAppRepository;
     private final ActivityCreationService activityCreationService;
+    private final ActivityClassroomAppPort activityClassroomAppPort;
 
     public Result<ActivityData, String> execute(AddActivityCommand command) {
+        boolean classroomExists = activityClassroomAppPort.existsByClassroomId(command.classroomId());
+        if(!classroomExists)
+            return Result.fail("Classroom does not exists");
+
+        boolean isOwner = activityClassroomAppPort.existsByClassroomIdAndInstructorUserId(command.classroomId(),command.instructorUserId());
+        if(!isOwner)
+            return Result.fail("User is not the owner of classroom");
 
         Result<Activity, ActivityCreationResult> activityCreationRes = activityCreationService.create(
                 command.classroomId(), command.instructorUserId(), command.title(),
