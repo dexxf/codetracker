@@ -22,8 +22,10 @@ public class EditActivityService implements EditActivityUseCase {
 
     public Result<ActivityData, String> execute (EditActivityCommand command) {
 
-        boolean isInstructor = activityClassroomAppPort.existsByClassroomIdAndInstructorUserId(command.classroomId(), command.userId());
+        boolean classroomExists = activityClassroomAppPort.existsByClassroomId(command.classroomId());
+        if(!classroomExists) return Result.fail("Classroom does not exists");
 
+        boolean isInstructor = activityClassroomAppPort.existsByClassroomIdAndInstructorUserId(command.classroomId(), command.userId());
         if(!isInstructor) return Result.fail("Instructor is not found in classroomId");
 
         Result<Activity, EditActivityResult> result = updateActivityService.updateAndValidate(command.activityId(), command.title(),
