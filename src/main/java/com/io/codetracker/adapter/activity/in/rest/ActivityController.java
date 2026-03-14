@@ -55,7 +55,8 @@ public class ActivityController {
     public ResponseEntity<GetActivityResponse> getActivities(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
             Result<List<ActivityData>, GetActivityError> response =  getActivityUseCase.execute(new GetActivityCommand(classroomId,principal.getUserId()));
             return response.success() ? ResponseEntity.ok(GetActivityResponse.success(response.data()))
-                                      : ResponseEntity.badRequest().body(GetActivityResponse.fail(GetActivityHttpMapper.toMessage(response.error())));
+                                      : ResponseEntity.status(GetActivityHttpMapper.toStatus(response.error()))
+                    .body(GetActivityResponse.fail(GetActivityHttpMapper.toMessage(response.error())));
     }
 
     @DeleteMapping("/{activityId}")
