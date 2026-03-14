@@ -1,5 +1,6 @@
 package com.io.codetracker.application.activity.service;
 
+import com.io.codetracker.application.activity.error.GetActivityError;
 import com.io.codetracker.application.activity.port.in.GetActivityUseCase;
 import com.io.codetracker.application.activity.port.out.ActivityClassroomAppPort;
 import com.io.codetracker.application.activity.command.GetActivityCommand;
@@ -19,13 +20,13 @@ public class GetActivityService implements GetActivityUseCase {
     private final ActivityAppRepository activityAppRepository;
     private final ActivityClassroomAppPort activityClassroomAppPort;
 
-    public Result<List<ActivityData>, String> execute(GetActivityCommand command) {
+    public Result<List<ActivityData>, GetActivityError> execute(GetActivityCommand command) {
             if (!activityClassroomAppPort.existsByClassroomId(command.classroomId())) {
-                return Result.fail("Classroom does not exists..");
+                return Result.fail(GetActivityError.CLASSROOM_NOT_FOUND);
             }
 
             if(!activityClassroomAppPort.existsByClassroomIdAndInstructorUserId(command.classroomId(), command.instructorUserId())){
-                return Result.fail("User is not the instructor of this classroom.");
+                return Result.fail(GetActivityError.USER_NOT_CLASSROOM_INSTRUCTOR);
             }
 
             var activities =  activityAppRepository.findByClassroomId(command.classroomId(), command.instructorUserId())

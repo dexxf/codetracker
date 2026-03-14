@@ -3,6 +3,7 @@ package com.io.codetracker.adapter.activity.in.rest;
 import com.io.codetracker.adapter.activity.in.dto.response.GetActivityResponse;
 import com.io.codetracker.adapter.activity.in.mapper.AddActivityHttpMapper;
 import com.io.codetracker.adapter.activity.in.mapper.EditActivityHttpMapper;
+import com.io.codetracker.adapter.activity.in.mapper.GetActivityHttpMapper;
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.application.activity.command.AddActivityCommand;
 import com.io.codetracker.application.activity.command.EditActivityCommand;
@@ -12,6 +13,7 @@ import com.io.codetracker.adapter.activity.in.dto.request.EditActivityRequest;
 import com.io.codetracker.adapter.activity.in.dto.response.ActivityResponse;
 import com.io.codetracker.application.activity.error.AddActivityError;
 import com.io.codetracker.application.activity.error.EditActivityError;
+import com.io.codetracker.application.activity.error.GetActivityError;
 import com.io.codetracker.application.activity.port.in.AddActivityUseCase;
 import com.io.codetracker.application.activity.port.in.EditActivityUseCase;
 import com.io.codetracker.application.activity.port.in.GetActivityUseCase;
@@ -49,9 +51,9 @@ public class ActivityController {
 
     @GetMapping
     public ResponseEntity<GetActivityResponse> getActivities(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
-            Result<List<ActivityData>, String> response =  getActivityUseCase.execute(new GetActivityCommand(classroomId,principal.getUserId()));
-            return response.success() ? ResponseEntity.ok().body(GetActivityResponse.success(response.data()))
-                                      : ResponseEntity.badRequest().body(GetActivityResponse.fail(response.error()));
+            Result<List<ActivityData>, GetActivityError> response =  getActivityUseCase.execute(new GetActivityCommand(classroomId,principal.getUserId()));
+            return response.success() ? ResponseEntity.ok(GetActivityResponse.success(response.data()))
+                                      : ResponseEntity.badRequest().body(GetActivityResponse.fail(GetActivityHttpMapper.toMessage(response.error())));
     }
 
     @DeleteMapping("/{activityId}")
