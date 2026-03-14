@@ -2,6 +2,7 @@ package com.io.codetracker.adapter.activity.in.rest;
 
 import com.io.codetracker.adapter.activity.in.dto.response.GetActivityResponse;
 import com.io.codetracker.adapter.activity.in.mapper.AddActivityHttpMapper;
+import com.io.codetracker.adapter.activity.in.mapper.EditActivityHttpMapper;
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.application.activity.command.AddActivityCommand;
 import com.io.codetracker.application.activity.command.EditActivityCommand;
@@ -10,6 +11,7 @@ import com.io.codetracker.adapter.activity.in.dto.request.AddActivityRequest;
 import com.io.codetracker.adapter.activity.in.dto.request.EditActivityRequest;
 import com.io.codetracker.adapter.activity.in.dto.response.ActivityResponse;
 import com.io.codetracker.application.activity.error.AddActivityError;
+import com.io.codetracker.application.activity.error.EditActivityError;
 import com.io.codetracker.application.activity.port.in.AddActivityUseCase;
 import com.io.codetracker.application.activity.port.in.EditActivityUseCase;
 import com.io.codetracker.application.activity.port.in.GetActivityUseCase;
@@ -18,7 +20,6 @@ import com.io.codetracker.application.activity.result.ActivityData;
 
 import com.io.codetracker.common.result.Result;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -62,9 +63,11 @@ public class ActivityController {
 
     @PutMapping("/{activityId}")
     public ResponseEntity<ActivityResponse> updateActivity(@PathVariable String classroomId, @PathVariable String activityId,@RequestBody EditActivityRequest request, @AuthenticationPrincipal AuthPrincipal authPrincipal) {
-        Result<ActivityData, String> response=  editActivityUseCase.execute(new EditActivityCommand(authPrincipal.getUserId(),
+        Result<ActivityData, EditActivityError> response =  editActivityUseCase.execute(new EditActivityCommand(authPrincipal.getUserId(),
                 classroomId,activityId,request.title(),request.description(),request.dueDate(),request.status(),request.maxScore()));
-        return !response.success() ?  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ActivityResponse.fail(response.error()))
+
+        return !response.success() ?  ResponseEntity.status(EditActivityHttpMapper.toStatus(response.error()))
+                .body(ActivityResponse.fail(EditActivityHttpMapper.toMessage(response.error())))
                 : ResponseEntity.ok(ActivityResponse.success(response.data(), "Successfully Updated Activity"));
         }
 }
