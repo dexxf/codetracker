@@ -1,6 +1,7 @@
 package com.io.codetracker.application.activity.service;
 
 import com.io.codetracker.application.activity.command.EditActivityCommand;
+import com.io.codetracker.application.activity.error.EditActivityError;
 import com.io.codetracker.application.activity.port.in.EditActivityUseCase;
 import com.io.codetracker.application.activity.port.out.ActivityAppRepository;
 import com.io.codetracker.application.activity.port.out.ActivityClassroomAppPort;
@@ -20,19 +21,20 @@ public class EditActivityService implements EditActivityUseCase {
     private final ActivityClassroomAppPort activityClassroomAppPort;
     private final ActivityAppRepository activityAppRepository;
 
-    public Result<ActivityData, String> execute (EditActivityCommand command) {
 
+
+    public Result<ActivityData, EditActivityError> execute (EditActivityCommand command) {
         boolean classroomExists = activityClassroomAppPort.existsByClassroomId(command.classroomId());
-        if(!classroomExists) return Result.fail("Classroom does not exists");
+        if(!classroomExists) return Result.fail(EditActivityError.UNKNOWN_CLASSROOM);
 
         boolean isInstructor = activityClassroomAppPort.existsByClassroomIdAndInstructorUserId(command.classroomId(), command.userId());
-        if(!isInstructor) return Result.fail("Instructor is not found in classroomId");
+        if(!isInstructor) return Result.fail(EditActivityError.NOT_INSTRUCTOR);
 
         Result<Activity, EditActivityResult> result = updateActivityService.updateAndValidate(command.activityId(), command.title(),
                 command.description(), command.dueDate(), command.status(), command.maxScore());
 
         if (!result.success()) {
-            return Result.fail(result.error().getMessage());
+            return Result.fail(EditActivityError.from(result.error()));
         }
 
         Activity updatedActivity = result.data();

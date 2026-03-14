@@ -10,7 +10,9 @@ public enum EditActivityError {
     DUE_DATE_INVALID,
     ACTIVITY_ARCHIVED,
     INVALID_STATUS_TRANSITION,
-    INVALID_DESCRIPTION;
+    INVALID_DESCRIPTION,
+    NOT_INSTRUCTOR,
+    UNKNOWN_CLASSROOM;
 
     public static EditActivityError from(EditActivityResult result) {
         return switch (result) {
