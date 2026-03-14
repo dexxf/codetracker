@@ -1,6 +1,7 @@
 package com.io.codetracker.adapter.activity.in.rest;
 
 import com.io.codetracker.adapter.activity.in.dto.response.GetActivityResponse;
+import com.io.codetracker.adapter.activity.in.mapper.AddActivityHttpMapper;
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.application.activity.command.AddActivityCommand;
 import com.io.codetracker.application.activity.command.EditActivityCommand;
@@ -8,6 +9,7 @@ import com.io.codetracker.application.activity.command.GetActivityCommand;
 import com.io.codetracker.adapter.activity.in.dto.request.AddActivityRequest;
 import com.io.codetracker.adapter.activity.in.dto.request.EditActivityRequest;
 import com.io.codetracker.adapter.activity.in.dto.response.ActivityResponse;
+import com.io.codetracker.application.activity.error.AddActivityError;
 import com.io.codetracker.application.activity.port.in.AddActivityUseCase;
 import com.io.codetracker.application.activity.port.in.EditActivityUseCase;
 import com.io.codetracker.application.activity.port.in.GetActivityUseCase;
@@ -38,9 +40,10 @@ public class ActivityController {
     public ResponseEntity<ActivityResponse> addActivity(@PathVariable String classroomId, @RequestBody AddActivityRequest request, @AuthenticationPrincipal AuthPrincipal principal) {
         AddActivityCommand command = new AddActivityCommand(classroomId, principal.getUserId(), request.title(),
                 request.description(), request.dueDate(), request.maxScore(), request.status());
-        Result<ActivityData,String> response = addActivityUseCase.execute(command);
-        return response.success() ? ResponseEntity.status(HttpStatus.CREATED).body(ActivityResponse.success(response.data(), "Successfully added activity"))
-                                  : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ActivityResponse.fail(response.error()));
+        Result<ActivityData, AddActivityError> response = addActivityUseCase.execute(command);
+        return response.success() ? ResponseEntity.ok(ActivityResponse.success(response.data(), "Successfully added activity"))
+                                  : ResponseEntity.status(AddActivityHttpMapper.toStatus(response.error()))
+                .body(ActivityResponse.fail(AddActivityHttpMapper.toMessage(response.error())));
     }
 
     @GetMapping

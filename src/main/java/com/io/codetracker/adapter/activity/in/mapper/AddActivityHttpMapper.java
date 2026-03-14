@@ -10,8 +10,10 @@ public final class AddActivityHttpMapper {
     public static HttpStatus toStatus(AddActivityError error) {
         return switch (error) {
             case ACTIVITY_ALREADY_EXISTS -> HttpStatus.CONFLICT;
-            case INSTRUCTOR_NOT_FOUND -> HttpStatus.NOT_FOUND;
+            case INSTRUCTOR_NOT_FOUND,
+                 UNKNOWN_CLASSROOM -> HttpStatus.NOT_FOUND;
             case SAVE_FAILED -> HttpStatus.INTERNAL_SERVER_ERROR;
+            case NOT_CLASSROOM_INSTRUCTOR -> HttpStatus.UNAUTHORIZED;
             default -> HttpStatus.BAD_REQUEST;
         };
     }
@@ -27,6 +29,8 @@ public final class AddActivityHttpMapper {
             case INVALID_STATUS -> "Status is invalid";
             case ACTIVITY_ALREADY_EXISTS -> "Activity already exists";
             case INSTRUCTOR_NOT_FOUND -> "Instructor not found";
+            case UNKNOWN_CLASSROOM -> "Classroom does not exists";
+            case NOT_CLASSROOM_INSTRUCTOR -> "User is not the owner of this classroom";
             case SAVE_FAILED -> "Failed to save activity";
         };
     }

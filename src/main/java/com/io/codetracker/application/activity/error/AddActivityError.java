@@ -12,7 +12,8 @@ public enum AddActivityError {
     INVALID_STATUS,
     ACTIVITY_ALREADY_EXISTS,
     INSTRUCTOR_NOT_FOUND,
-    SAVE_FAILED;
+    SAVE_FAILED, UNKNOWN_CLASSROOM,
+    NOT_CLASSROOM_INSTRUCTOR;
 
     public static AddActivityError from(ActivityCreationResult error) {
         return switch (error) {
