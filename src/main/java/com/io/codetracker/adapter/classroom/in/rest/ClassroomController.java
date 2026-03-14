@@ -3,8 +3,10 @@ package com.io.codetracker.adapter.classroom.in.rest;
 import com.io.codetracker.adapter.classroom.in.dto.request.JoinClassroomRequest;
 import com.io.codetracker.adapter.classroom.in.dto.response.ClassroomJoinResponse;
 import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomsResponse;
+import com.io.codetracker.adapter.classroom.in.mapper.ClassroomJoinHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.CreateClassroomHttpMapper;
 import com.io.codetracker.application.classroom.command.JoinClassroomCommand;
+import com.io.codetracker.application.classroom.error.ClassroomJoinError;
 import com.io.codetracker.application.classroom.error.CreateClassroomError;
 import com.io.codetracker.application.classroom.port.in.*;
 import com.io.codetracker.application.classroom.result.*;
@@ -69,11 +71,13 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
 
     @PostMapping("/join")
     public ResponseEntity<ClassroomJoinResponse> joinClassroom(@AuthenticationPrincipal AuthPrincipal authPrincipal, @Valid @RequestBody JoinClassroomRequest request) {
-        Result<ClassroomJoinResult, String> response = joinClassroomUseCase.execute(
+        Result<ClassroomJoinResult, ClassroomJoinError> response = joinClassroomUseCase.execute(
                 new JoinClassroomCommand(authPrincipal.getUserId(), request.code(), request.passcode()));
         if (!response.success()) {
-            return ResponseEntity.badRequest().body(ClassroomJoinResponse.fail(response.error()));
+            return ResponseEntity.status(ClassroomJoinHttpMapper.toStatus(response.error()))
+            .body(ClassroomJoinResponse.fail(ClassroomJoinHttpMapper.toMessage(response.error())));
         }
+        
         return ResponseEntity.ok(ClassroomJoinResponse.ok(response.data()));
     }
 
