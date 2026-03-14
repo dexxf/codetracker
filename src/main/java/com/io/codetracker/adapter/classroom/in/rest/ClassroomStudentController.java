@@ -1,7 +1,9 @@
 package com.io.codetracker.adapter.classroom.in.rest;
 
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
+import com.io.codetracker.adapter.classroom.in.mapper.SimpleClassroomHttpMapper;
 import com.io.codetracker.application.classroom.command.GetClassroomStudentCommand;
+import com.io.codetracker.application.classroom.error.SimpleClassroomError;
 import com.io.codetracker.application.classroom.port.in.GetClassroomStudentUseCase;
 import com.io.codetracker.application.classroom.result.ClassroomStudentData;
 import com.io.codetracker.common.result.Result;
@@ -25,9 +27,10 @@ public class ClassroomStudentController {
                                          @RequestParam(defaultValue = "ACTIVE") StudentStatus status,
                                          @RequestParam(defaultValue = "true") boolean ascending,
                                          @AuthenticationPrincipal AuthPrincipal principal) {
-        Result<List<ClassroomStudentData>, String> response = getClassroomStudentUseCase.execute(
+        Result<List<ClassroomStudentData>, SimpleClassroomError> response = getClassroomStudentUseCase.execute(
             new GetClassroomStudentCommand(principal.getUserId(), classroomId, status, ascending));
-        return response.success() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response.error());
+        return response.success() ? ResponseEntity.ok(response) : ResponseEntity.status(SimpleClassroomHttpMapper.toStatus(response.error()))
+        .body(SimpleClassroomHttpMapper.toMessage(response.error()));
     }
 
 }

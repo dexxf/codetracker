@@ -3,6 +3,7 @@ package com.io.codetracker.application.classroom.service;
 import java.util.List;
 import java.util.Map;
 
+import com.io.codetracker.application.classroom.error.SimpleClassroomError;
 import com.io.codetracker.application.classroom.port.in.GetClassroomUseCase;
 import com.io.codetracker.application.classroom.port.out.ClassroomAppRepository;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentAppRepository;
@@ -23,10 +24,10 @@ public class GetClassroomsService implements GetClassroomUseCase {
         this.classroomAppRepository = classroomAppRepository;
     }
 
-    public Result<List<GetClassroomsProfessorData>, String> execute(String userId) {
+    public Result<List<GetClassroomsProfessorData>, SimpleClassroomError> execute(String userId) {
         List<Classroom> classroomList = classroomAppRepository.findByInstructorUserId(userId);
         if (classroomList.isEmpty()) {
-            return Result.fail("No classroom found.");
+            return Result.fail(SimpleClassroomError.NO_CLASSROOM_FOUND);
         }
 
         Map<String, Integer> classroomWithCount = classroomStudentAppRepository

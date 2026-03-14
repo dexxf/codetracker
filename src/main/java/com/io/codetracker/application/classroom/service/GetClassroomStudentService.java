@@ -1,6 +1,7 @@
 package com.io.codetracker.application.classroom.service;
 
 import com.io.codetracker.application.classroom.command.GetClassroomStudentCommand;
+import com.io.codetracker.application.classroom.error.SimpleClassroomError;
 import com.io.codetracker.application.classroom.port.in.GetClassroomStudentUseCase;
 import com.io.codetracker.application.classroom.port.out.ClassroomAppRepository;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentAppRepository;
@@ -21,9 +22,9 @@ public class GetClassroomStudentService implements GetClassroomStudentUseCase {
     private final ClassroomAppRepository classroomAppRepository;
     private final ClassroomStudentUserAppPort classroomStudentUserAppPort;
 
-    public Result<List<ClassroomStudentData>, String> execute(GetClassroomStudentCommand command) {
+    public Result<List<ClassroomStudentData>, SimpleClassroomError> execute(GetClassroomStudentCommand command) {
         if (!classroomAppRepository.existsByClassroomIdAndInstructorUserId(command.classroomId(), command.userId())){
-            return Result.fail("You are not the owner of this classroom.");
+            return Result.fail(SimpleClassroomError.USER_NOT_CLASSROOM_INSTRUCTOR);
         }
 
         List<ClassroomStudent> classroomStudents = classroomStudentAppRepository.findClassroomStudents(
