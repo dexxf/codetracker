@@ -24,6 +24,10 @@ public class GetActivityService implements GetActivityUseCase {
                 return Result.fail("Classroom does not exists..");
             }
 
+            if(!activityClassroomAppPort.existsByClassroomIdAndInstructorUserId(command.classroomId(), command.instructorUserId())){
+                return Result.fail("User is not the instructor of this classroom.");
+            }
+
             var activities =  activityAppRepository.findByClassroomId(command.classroomId(), command.instructorUserId())
                     .stream().map(ActivityData::from).toList();
 
