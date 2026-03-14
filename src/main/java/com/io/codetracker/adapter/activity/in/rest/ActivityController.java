@@ -24,6 +24,7 @@ import com.io.codetracker.application.activity.result.ActivityData;
 
 import com.io.codetracker.common.result.Result;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +47,7 @@ public class ActivityController {
         AddActivityCommand command = new AddActivityCommand(classroomId, principal.getUserId(), request.title(),
                 request.description(), request.dueDate(), request.maxScore(), request.status());
         Result<ActivityData, AddActivityError> response = addActivityUseCase.execute(command);
-        return response.success() ? ResponseEntity.ok(ActivityResponse.success(response.data(), "Successfully added activity"))
+        return response.success() ? ResponseEntity.status(HttpStatus.CREATED).body(ActivityResponse.success(response.data(), "Successfully added activity"))
                                   : ResponseEntity.status(AddActivityHttpMapper.toStatus(response.error()))
                 .body(ActivityResponse.fail(AddActivityHttpMapper.toMessage(response.error())));
     }
