@@ -4,7 +4,6 @@ import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.application.classroom.command.GetClassroomStudentCommand;
 import com.io.codetracker.application.classroom.port.in.GetClassroomStudentUseCase;
 import com.io.codetracker.application.classroom.result.ClassroomStudentData;
-import com.io.codetracker.application.classroom.service.GetClassroomStudentService;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 import lombok.AllArgsConstructor;
