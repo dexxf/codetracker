@@ -44,16 +44,9 @@ public class CreateClassroomService implements CreateClassroomUseCase {
         
         ClassroomCreationEntity creationEntity = result.data();
         classroomAppRepository.saveClassroom(creationEntity.classroom(), creationEntity.settings());
-        
-     CreateClassroomData data = new CreateClassroomData(
-        creationEntity.classroom().getClassroomId(),
-        creationEntity.classroom().getName(),
-        creationEntity.classroom().getDescription(),
-        creationEntity.classroom().getClassCode(),
-        creationEntity.classroom().getStatus().name(),
-        creationEntity.settings().getMaxStudents(),
-        creationEntity.settings().isRequireApproval()
-    );
+
+        CreateClassroomData data = 
+            CreateClassroomData.from(creationEntity);
 
         return Result.ok(data);
     }
