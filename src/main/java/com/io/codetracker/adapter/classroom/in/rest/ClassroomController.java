@@ -3,7 +3,9 @@ package com.io.codetracker.adapter.classroom.in.rest;
 import com.io.codetracker.adapter.classroom.in.dto.request.JoinClassroomRequest;
 import com.io.codetracker.adapter.classroom.in.dto.response.ClassroomJoinResponse;
 import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomsResponse;
+import com.io.codetracker.adapter.classroom.in.mapper.CreateClassroomHttpMapper;
 import com.io.codetracker.application.classroom.command.JoinClassroomCommand;
+import com.io.codetracker.application.classroom.error.CreateClassroomError;
 import com.io.codetracker.application.classroom.port.in.*;
 import com.io.codetracker.application.classroom.result.*;
 import com.io.codetracker.common.result.Result;
@@ -36,7 +38,7 @@ public class ClassroomController {
     
 @PostMapping("/create")
 public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPrincipal AuthPrincipal authPrincipal,@Valid @RequestBody CreateClassroomRequest request) {
-    Result<CreateClassroomData, String> result =
+    Result<CreateClassroomData, CreateClassroomError> result =
         createClassroomUseCase.execute(authPrincipal.getUserId(), new CreateClassroomCommand(
             request.name(),
             request.description(),
@@ -47,8 +49,8 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
 
     if (!result.success()) {
         return ResponseEntity
-            .badRequest()
-            .body(CreateClassroomResponse.fail(result.error()));
+            .status(CreateClassroomHttpMapper.toStatus(result.error()))
+            .body(CreateClassroomResponse.fail(CreateClassroomHttpMapper.toMessage(result.error())));
     }
     
     return ResponseEntity
