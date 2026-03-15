@@ -34,10 +34,6 @@ public final class UserRegistrationService implements UserShallowRegistrationUse
     }
 
     public Result<UserData, UserRegistrationError> completeInitialization(String userId, UserRegistrationCommand command) {
-        if (userId.isEmpty()) {
-            return Result.fail(UserRegistrationError.USER_NOT_FOUND);
-        }
-
         Optional<User> userOpt = repository.findByUserId(userId);
 
         if (userOpt.isEmpty()) {
