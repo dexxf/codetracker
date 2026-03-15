@@ -2,6 +2,7 @@ package com.io.codetracker.application.user.service;
 
 import com.io.codetracker.application.user.command.UserProfileCommand;
 import com.io.codetracker.application.user.error.UserProfileError;
+import com.io.codetracker.application.user.port.in.GetUserProfileDataUseCase;
 import com.io.codetracker.application.user.port.in.UpdateUserProfileUseCase;
 import com.io.codetracker.application.user.port.out.UserAppRepository;
 import com.io.codetracker.application.user.result.UserData;
@@ -17,7 +18,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public final class UserProfileService implements UpdateUserProfileUseCase {
+public final class UserProfileService implements UpdateUserProfileUseCase, GetUserProfileDataUseCase {
 
        private final UserAppRepository repository;
        private final UserProfileUpdater userProfileUpdater;
