@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public final class UserRegistration{
+public final class UserRegistrationService  {
 
     private final UserAppRepository repository;
     private final UserCreationService userCreationService;
