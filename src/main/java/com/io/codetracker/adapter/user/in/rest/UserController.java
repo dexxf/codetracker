@@ -11,6 +11,7 @@ import com.io.codetracker.application.user.command.UserRegistrationCommand;
 import com.io.codetracker.application.user.error.UserProfileError;
 import com.io.codetracker.application.user.error.UserRegistrationError;
 import com.io.codetracker.application.user.port.in.CompleteInitializationUseCase;
+import com.io.codetracker.application.user.port.in.GetUserProfileDataUseCase;
 import com.io.codetracker.application.user.port.in.UpdateUserProfileUseCase;
 import com.io.codetracker.application.user.result.UserData;
 import com.io.codetracker.application.user.service.ProfilePictureService;
@@ -35,6 +36,7 @@ public class UserController {
 
     private final CompleteInitializationUseCase completeInitializationUseCase;
     private final UpdateUserProfileUseCase updateUserProfileUseCase;
+    private final GetUserProfileDataUseCase getUserProfileDataUseCase;
     private final ProfilePictureService updateProfilePictureService;
 
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -65,11 +67,11 @@ public class UserController {
     } 
     
     @GetMapping("/profile")
-    public ResponseEntity<FetchProfileDataResponse> getProfileData(@AuthenticationPrincipal AuthPrincipal authPrincipal) {
-        Optional<FetchProfileDataResponse> dataOpt = updateUserProfileUseCase.getProfileData(authPrincipal.getUserId());
-
-        if (dataOpt.isEmpty()) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok().body(dataOpt.get());
+    public ResponseEntity<UserData> getProfileData(@AuthenticationPrincipal AuthPrincipal authPrincipal) {
+        Optional<UserData> dataOpt = getUserProfileDataUseCase.getProfileData(authPrincipal.getUserId());
+        return dataOpt.isEmpty()
+                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+                : ResponseEntity.ok(dataOpt.get());
     }
 
     @DeleteMapping("/profile/remove")
