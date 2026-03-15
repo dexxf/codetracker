@@ -11,9 +11,9 @@ import com.io.codetracker.application.user.command.UserRegistrationCommand;
 import com.io.codetracker.application.user.error.UserProfileError;
 import com.io.codetracker.application.user.error.UserRegistrationError;
 import com.io.codetracker.application.user.port.in.CompleteInitializationUseCase;
+import com.io.codetracker.application.user.port.in.UpdateUserProfileUseCase;
 import com.io.codetracker.application.user.result.UserData;
 import com.io.codetracker.application.user.service.ProfilePictureService;
-import com.io.codetracker.application.user.service.UserProfileService;
 import com.io.codetracker.common.result.Result;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -34,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
 
     private final CompleteInitializationUseCase completeInitializationUseCase;
-    private final UserProfileService userProfileService;
+    private final UpdateUserProfileUseCase updateUserProfileUseCase;
     private final ProfilePictureService updateProfilePictureService;
 
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -57,7 +57,7 @@ public class UserController {
             @AuthenticationPrincipal AuthPrincipal principal,
             @Valid @RequestBody UserProfileRequest request) {
         UserProfileCommand command = new UserProfileCommand(request.firstName(), request.lastName(), request.gender(), request.phoneNumber(), request.bio(), request.birthday());
-        Result<UserData, List<UserProfileError>> result = userProfileService.updateProfile(principal.getUserId(), command);
+        Result<UserData, List<UserProfileError>> result = updateUserProfileUseCase.updateProfile(principal.getUserId(), command);
         return result.success() ?
                 ResponseEntity.ok(UserProfileResponseDTO.ok(result.data()))
                 : ResponseEntity.status(UserProfileHttpMapper.toStatus(result.error()))
@@ -66,7 +66,7 @@ public class UserController {
     
     @GetMapping("/profile")
     public ResponseEntity<FetchProfileDataResponse> getProfileData(@AuthenticationPrincipal AuthPrincipal authPrincipal) {
-        Optional<FetchProfileDataResponse> dataOpt = userProfileService.getProfileData(authPrincipal.getUserId());
+        Optional<FetchProfileDataResponse> dataOpt = updateUserProfileUseCase.getProfileData(authPrincipal.getUserId());
 
         if (dataOpt.isEmpty()) return ResponseEntity.notFound().build();
         return ResponseEntity.ok().body(dataOpt.get());

@@ -3,26 +3,25 @@ package com.io.codetracker.application.user.service;
 import com.io.codetracker.application.user.command.UserProfileCommand;
 import com.io.codetracker.adapter.user.in.dto.response.FetchProfileDataResponse;
 import com.io.codetracker.application.user.error.UserProfileError;
+import com.io.codetracker.application.user.port.in.UpdateUserProfileUseCase;
 import com.io.codetracker.application.user.port.out.UserAppRepository;
 import com.io.codetracker.application.user.result.UserData;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.user.entity.User;
 import com.io.codetracker.domain.user.result.UserProfileUpdateResult;
 import com.io.codetracker.domain.user.service.UserProfileUpdater;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public final class UserProfileService {
+@AllArgsConstructor
+public final class UserProfileService implements UpdateUserProfileUseCase {
+
        private final UserAppRepository repository;
        private final UserProfileUpdater userProfileUpdater;
-
-       public UserProfileService (UserProfileUpdater userProfileUpdater,UserAppRepository repository) {
-           this.repository = repository;
-           this.userProfileUpdater = userProfileUpdater;
-       }
 
        public Result<UserData, List<UserProfileError>> updateProfile(String userId, UserProfileCommand command) {
            Optional<User> userOpt = repository.findByUserId(userId);
