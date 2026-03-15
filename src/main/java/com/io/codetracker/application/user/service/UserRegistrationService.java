@@ -2,6 +2,8 @@ package com.io.codetracker.application.user.service;
 
 import com.io.codetracker.application.user.command.UserRegistrationCommand;
 import com.io.codetracker.application.user.error.UserRegistrationError;
+import com.io.codetracker.application.user.port.in.CompleteInitializationUseCase;
+import com.io.codetracker.application.user.port.in.UserShallowRegistrationUseCase;
 import com.io.codetracker.application.user.port.out.UserAuthPort;
 import com.io.codetracker.application.user.port.out.CloudinaryPort;
 import com.io.codetracker.application.user.port.out.UserAppRepository;
@@ -18,7 +20,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public final class UserRegistrationService  {
+public final class UserRegistrationService implements UserShallowRegistrationUseCase, CompleteInitializationUseCase {
 
     private final UserAppRepository repository;
     private final UserCreationService userCreationService;
