@@ -1,7 +1,7 @@
 package com.io.codetracker.adapter.auth.out.service;
 
 import com.io.codetracker.application.auth.port.out.UserRegistrationPort;
-import com.io.codetracker.application.user.service.UserRegistration;
+import com.io.codetracker.application.user.port.in.UserShallowRegistrationUseCase;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,14 +12,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserRegistrationAdapter implements UserRegistrationPort {
 
-    private final UserRegistration userRegistration;
+    private final UserShallowRegistrationUseCase userShallowRegistrationUseCase;
 
-    public UserRegistrationAdapter (UserRegistration userRegistration) {
-        this.userRegistration = userRegistration;
+    public UserRegistrationAdapter (UserShallowRegistrationUseCase userShallowRegistrationUseCase) {
+        this.userShallowRegistrationUseCase = userShallowRegistrationUseCase;
     }
 
     @Override
     public String createShallowUser() {
-        return userRegistration.createShallowUser();
+        return userShallowRegistrationUseCase.createShallowUser();
     }
 }
