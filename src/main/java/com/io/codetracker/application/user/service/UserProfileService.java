@@ -1,7 +1,6 @@
 package com.io.codetracker.application.user.service;
 
 import com.io.codetracker.application.user.command.UserProfileCommand;
-import com.io.codetracker.adapter.user.in.dto.response.FetchProfileDataResponse;
 import com.io.codetracker.application.user.error.UserProfileError;
 import com.io.codetracker.application.user.port.in.UpdateUserProfileUseCase;
 import com.io.codetracker.application.user.port.out.UserAppRepository;
@@ -41,8 +40,8 @@ public final class UserProfileService implements UpdateUserProfileUseCase {
            return Result.ok(UserData.from(user));
        }
 
-       public Optional<FetchProfileDataResponse> getProfileData(String userId) {
+       public Optional<UserData> getProfileData(String userId) {
             Optional<User> userOpt = repository.findByUserId(userId);
-           return userOpt.map(FetchProfileDataResponse::fromUser);
+           return userOpt.map(UserData::from);
        }
 }
