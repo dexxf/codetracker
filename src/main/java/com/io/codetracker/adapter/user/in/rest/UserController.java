@@ -4,17 +4,16 @@ import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.adapter.user.in.dto.request.UserProfileRequest;
 import com.io.codetracker.adapter.user.in.dto.request.UserRegistrationRequest;
 import com.io.codetracker.adapter.user.in.dto.response.*;
+import com.io.codetracker.adapter.user.in.mapper.ProfilePictureHttpMapper;
 import com.io.codetracker.adapter.user.in.mapper.UserProfileHttpMapper;
 import com.io.codetracker.adapter.user.in.mapper.UserRegistrationHttpMapper;
 import com.io.codetracker.application.user.command.UserProfileCommand;
 import com.io.codetracker.application.user.command.UserRegistrationCommand;
 import com.io.codetracker.application.user.error.UserProfileError;
 import com.io.codetracker.application.user.error.UserRegistrationError;
-import com.io.codetracker.application.user.port.in.CompleteInitializationUseCase;
-import com.io.codetracker.application.user.port.in.GetUserProfileDataUseCase;
-import com.io.codetracker.application.user.port.in.UpdateUserProfileUseCase;
+import com.io.codetracker.application.user.port.in.*;
+import com.io.codetracker.application.user.result.ProfilePictureResult;
 import com.io.codetracker.application.user.result.UserData;
-import com.io.codetracker.application.user.service.ProfilePictureService;
 import com.io.codetracker.common.result.Result;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -37,7 +36,8 @@ public class UserController {
     private final CompleteInitializationUseCase completeInitializationUseCase;
     private final UpdateUserProfileUseCase updateUserProfileUseCase;
     private final GetUserProfileDataUseCase getUserProfileDataUseCase;
-    private final ProfilePictureService updateProfilePictureService;
+    private final RemoveProfilePictureUseCase removeProfilePictureUseCase;
+    private final UpdateProfilePictureUseCase updateProfilePictureUseCase;
 
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<UserInitResponse> userRegistration(@AuthenticationPrincipal AuthPrincipal principal,
@@ -75,16 +75,19 @@ public class UserController {
     }
 
     @DeleteMapping("/profile/remove")
-    public ResponseEntity<?> removeProfilePicture(@AuthenticationPrincipal AuthPrincipal principal) {
-          DeleteProfilePictureResponse res  = updateProfilePictureService.removeProfilePicture(principal.getUserId());
-          return res.success() ? ResponseEntity.ok().build() : ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<String> removeProfilePicture(@AuthenticationPrincipal AuthPrincipal principal) {
+        ProfilePictureResult res  = removeProfilePictureUseCase.removeProfilePicture(principal.getUserId());
+          return ResponseEntity
+                  .status(ProfilePictureHttpMapper.toStatus(res))
+                  .body(ProfilePictureHttpMapper.toDeleteMessage(res));
     }
 
     @PatchMapping("/profile/update")
-    public ResponseEntity<?> updateProfilePicture(@AuthenticationPrincipal AuthPrincipal principal, @RequestParam("file") MultipartFile multipartFile) {
-        UpdateProfilePictureResponse response = updateProfilePictureService.updateProfilePicture(
-                principal.getUserId(), multipartFile);
-        return response.success() ? ResponseEntity.ok(response) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.message());
+    public ResponseEntity<String> updateProfilePicture(@AuthenticationPrincipal AuthPrincipal principal, @RequestParam("file") MultipartFile multipartFile) {
+        ProfilePictureResult res = updateProfilePictureUseCase.updateProfilePicture(principal.getUserId(), multipartFile);
+        return ResponseEntity
+                .status(ProfilePictureHttpMapper.toStatus(res))
+                .body(ProfilePictureHttpMapper.toUpdateMessage(res));
     }
 
 }
