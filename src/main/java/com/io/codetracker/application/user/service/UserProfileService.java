@@ -2,13 +2,16 @@ package com.io.codetracker.application.user.service;
 
 import com.io.codetracker.application.user.command.UserProfileCommand;
 import com.io.codetracker.adapter.user.in.dto.response.FetchProfileDataResponse;
-import com.io.codetracker.adapter.user.in.dto.response.UserProfileResponseDTO;
+import com.io.codetracker.application.user.error.UserProfileError;
 import com.io.codetracker.application.user.port.out.UserAppRepository;
+import com.io.codetracker.application.user.result.UserData;
+import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.user.entity.User;
-import com.io.codetracker.domain.user.result.UserProfileUpdaterResult;
+import com.io.codetracker.domain.user.result.UserProfileUpdateResult;
 import com.io.codetracker.domain.user.service.UserProfileUpdater;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,28 +24,26 @@ public final class UserProfileService {
            this.userProfileUpdater = userProfileUpdater;
        }
 
-       public UserProfileResponseDTO updateProfile(String userId, UserProfileCommand command) {
+       public Result<UserData, List<UserProfileError>> updateProfile(String userId, UserProfileCommand command) {
            Optional<User> userOpt = repository.findByUserId(userId);
 
            if(userOpt.isEmpty())
-               return UserProfileResponseDTO.fail("User not found.");
+               return Result.fail(List.of(UserProfileError.USER_NOT_FOUND));
 
            User user = userOpt.get();
 
-           UserProfileUpdaterResult userProfileUpdaterResult = userProfileUpdater.update(user, command.firstName(), command.lastName(),
+           List<UserProfileUpdateResult> userProfileUpdaterResult = userProfileUpdater.update(user, command.firstName(), command.lastName(),
                    command.gender(), command.phoneNumber(), command.bio(), command.birthday());
 
-           if(userProfileUpdaterResult.hasErrors())
-               return UserProfileResponseDTO.fail(userProfileUpdaterResult.errors());
+           if(!userProfileUpdaterResult.isEmpty())
+               return Result.fail(UserProfileError.from(userProfileUpdaterResult));
 
            repository.save(user);
-           return UserProfileResponseDTO.ok(user);
+           return Result.ok(UserData.from(user));
        }
 
        public Optional<FetchProfileDataResponse> getProfileData(String userId) {
             Optional<User> userOpt = repository.findByUserId(userId);
-            if (userOpt.isEmpty()) return Optional.empty();
-
-            return Optional.of(FetchProfileDataResponse.fromUser(userOpt.get()));
+           return userOpt.map(FetchProfileDataResponse::fromUser);
        }
 }
