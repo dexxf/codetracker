@@ -1,32 +1,22 @@
 package com.io.codetracker.adapter.user.in.dto.response;
 
-import com.io.codetracker.domain.user.entity.User;
+import com.io.codetracker.application.user.result.UserData;
 
-import java.util.Map;
+import java.util.List;
 
-public record UserProfileResponseDTO(String message, Map<String, Object> userDetails , Map<String, Object> errorList) {
+public record UserProfileResponseDTO(UserData data , List<String> errors, String message) {
 
-    public static UserProfileResponseDTO ok(User user) {
-        return new UserProfileResponseDTO("Successfully updated user profile.",
-                Map.ofEntries(
-                        Map.entry("userId", user.getUserId()),
-                        Map.entry("firstName", user.getFirstName()),
-                        Map.entry("lastName", user.getLastName()),
-                        Map.entry("gender", user.getGender()),
-                        Map.entry("phoneNumber",user.getPhoneNumber().getValue()),
-                        Map.entry("bio", user.getBio()),
-                        Map.entry("birthday", user.getBirthday().getValue()),
-                        Map.entry("profileUrl", user.getProfileUrl())
-                ),
-                Map.of());
+    public static UserProfileResponseDTO ok(UserData userData) {
+        return new UserProfileResponseDTO(
+                userData,
+                List.of(),
+                "Successfully updated user profile.");
     }
 
-    public static UserProfileResponseDTO fail(Map<String, Object> errors) {
-        return new UserProfileResponseDTO("Failed to update user profile.",Map.of() ,errors);
+    public static UserProfileResponseDTO fail(List<String> errors) {
+        return new UserProfileResponseDTO(
+                null,
+                errors,
+                "Failed to update user profile.");
     }
-
-    public static UserProfileResponseDTO fail(String message) {
-        return new UserProfileResponseDTO(message,Map.of() ,Map.of());
-    }
-
 }
