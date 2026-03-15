@@ -3,16 +3,16 @@ package com.io.codetracker.adapter.user.in.rest;
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.adapter.user.in.dto.request.UserProfileRequest;
 import com.io.codetracker.adapter.user.in.dto.request.UserRegistrationRequest;
+import com.io.codetracker.adapter.user.in.dto.response.*;
+import com.io.codetracker.adapter.user.in.mapper.UserRegistrationHttpMapper;
 import com.io.codetracker.application.user.command.UserProfileCommand;
 import com.io.codetracker.application.user.command.UserRegistrationCommand;
-import com.io.codetracker.adapter.user.in.dto.response.FetchProfileDataResponse;
-import com.io.codetracker.adapter.user.in.dto.response.UpdateProfilePictureResponse;
-import com.io.codetracker.adapter.user.in.dto.response.UserProfileResponseDTO;
-import com.io.codetracker.adapter.user.in.dto.response.UserRegistrationResponseDTO;
+import com.io.codetracker.application.user.error.UserRegistrationError;
+import com.io.codetracker.application.user.port.in.CompleteInitializationUseCase;
+import com.io.codetracker.application.user.result.UserData;
 import com.io.codetracker.application.user.service.ProfilePictureService;
-import com.io.codetracker.adapter.user.in.dto.response.DeleteProfilePictureResponse;
 import com.io.codetracker.application.user.service.UserProfileService;
-import com.io.codetracker.application.user.service.UserRegistration;
+import com.io.codetracker.common.result.Result;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -30,20 +30,23 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserRegistration registration;
+    private final CompleteInitializationUseCase completeInitializationUseCase;
     private final UserProfileService userProfileService;
     private final ProfilePictureService updateProfilePictureService;
 
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> userRegistration(@AuthenticationPrincipal AuthPrincipal principal,
+    public ResponseEntity<UserInitResponse> userRegistration(@AuthenticationPrincipal AuthPrincipal principal,
         @RequestPart("data") @Valid UserRegistrationRequest request,
         @RequestPart(value = "profile", required = false) MultipartFile profile) {
 
         UserRegistrationCommand command = new UserRegistrationCommand(request.firstName(), request.lastName(), 
         request.phoneNumber(),request.gender(),request.birthday(),profile,request.bio());
 
-        UserRegistrationResponseDTO result = registration.completeInitialization(principal.getUserId(),command);
-        return result.success() ? ResponseEntity.status(HttpStatus.OK).body(result) : ResponseEntity.badRequest().body(result);
+        Result<UserData, UserRegistrationError> result = completeInitializationUseCase.completeInitialization(principal.getUserId(),command);
+        return result.success() ?
+                ResponseEntity.ok(UserInitResponse.ok(result.data()))
+                : ResponseEntity.status(UserRegistrationHttpMapper.toStatus(result.error()))
+                .body(UserInitResponse.fail(UserRegistrationHttpMapper.toMessage(result.error())));
     }
 
     @PutMapping("/profile")
