@@ -1,34 +1,29 @@
 package com.io.codetracker.application.user.service;
 
 import com.io.codetracker.application.user.command.UserRegistrationCommand;
-import com.io.codetracker.adapter.user.in.dto.response.UserRegistrationResponseDTO;
+import com.io.codetracker.application.user.error.UserRegistrationError;
 import com.io.codetracker.application.user.port.out.UserAuthPort;
 import com.io.codetracker.application.user.port.out.CloudinaryPort;
 import com.io.codetracker.application.user.port.out.UserAppRepository;
+import com.io.codetracker.application.user.result.UserData;
+import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.user.entity.User;
 import com.io.codetracker.domain.user.result.UserCreationResult;
 import com.io.codetracker.domain.user.service.UserCreationService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
-public final class UserRegistration {
+@AllArgsConstructor
+public final class UserRegistration{
 
     private final UserAppRepository repository;
     private final UserCreationService userCreationService;
     private final UserAuthPort authRepository;
     private final CloudinaryPort cloudinaryPort;
-
-    public UserRegistration(UserAppRepository repository, UserCreationService userCreationService, UserAuthPort authRepository, CloudinaryPort cloudinaryPort) {
-        this.repository = repository;
-        this.userCreationService = userCreationService;
-        this.authRepository = authRepository;
-        this.cloudinaryPort = cloudinaryPort;
-    }
 
     public String createShallowUser() {
         User user = userCreationService.createShallowUser();
@@ -36,28 +31,36 @@ public final class UserRegistration {
         return user.getUserId();
     }
 
-    public UserRegistrationResponseDTO completeInitialization(String userId, UserRegistrationCommand command) {
-        if (userId.isEmpty()) return UserRegistrationResponseDTO.fail("User not found for the given auth ID.");
+    public Result<UserData, UserRegistrationError> completeInitialization(String userId, UserRegistrationCommand command) {
+        if (userId.isEmpty()) {
+            return Result.fail(UserRegistrationError.USER_NOT_FOUND);
+        }
+
         Optional<User> userOpt = repository.findByUserId(userId);
 
-        if (userOpt.isEmpty()) return UserRegistrationResponseDTO.fail("User not found.");
+        if (userOpt.isEmpty()) {
+            return Result.fail(UserRegistrationError.USER_NOT_FOUND);
+        }
 
         User user = userOpt.get();
 
-        if(user.isHasFullyInitialized()) return UserRegistrationResponseDTO.fail("User already fully initialized.");
+        if (user.isHasFullyInitialized()) {
+            return Result.fail(UserRegistrationError.USER_ALREADY_INITIALIZED);
+        }
 
         String profileUrl = null;
-        if(command.profile() != null) {
-
+        if (command.profile() != null) {
             try {
-                // Use UserId as their publicId for their Profile Picture
-                profileUrl = cloudinaryPort.uploadProfilePicture(command.profile().getBytes(), userId);
+                profileUrl = cloudinaryPort.uploadProfilePicture(
+                        command.profile().getBytes(),
+                        userId
+                );
             } catch (IOException e) {
-                return UserRegistrationResponseDTO.fail("Cant upload profile.");
+                return Result.fail(UserRegistrationError.PROFILE_UPLOAD_FAILED);
             }
         }
 
-        UserCreationResult userFinalizeResult = userCreationService.finalizeUser(
+        UserCreationResult result = userCreationService.finalizeUser(
                 user,
                 command.firstName(),
                 command.lastName(),
@@ -65,35 +68,26 @@ public final class UserRegistration {
                 command.gender(),
                 command.birthday(),
                 profileUrl,
-                command.bio());
+                command.bio()
+        );
 
-        if (userFinalizeResult != UserCreationResult.SUCCESS) {
-            try {
-                if(profileUrl != null) {
+        if (result != UserCreationResult.SUCCESS) {
+
+            if (profileUrl != null) {
+                try {
                     cloudinaryPort.deleteImageByPublicId(user.getUserId());
+                } catch (IOException e) {
+                    return Result.fail(UserRegistrationError.PROFILE_DELETE_FAILED);
                 }
-            } catch (IOException e) {
-                return UserRegistrationResponseDTO.fail("Cant upload image file.");
             }
-            return UserRegistrationResponseDTO.fail(userFinalizeResult.getMessage());
+
+            return Result.fail(UserRegistrationError.INVALID_USER_DATA);
         }
 
         authRepository.markUserAsFullyInitialized(user.getUserId());
         repository.save(user);
 
-        Map<String, Object> data = new HashMap<>();
-        data.put("userId", user.getUserId());
-        data.put("firstName", user.getFirstName());
-        data.put("lastName", user.getLastName());
-        data.put("gender", user.getGender().name());
-        data.put("phoneNumber", user.getPhoneNumber().getValue());
-        data.put("birthday", user.getBirthday().getValue());
-        data.put("bio", user.getBio());
-        data.put("profileUrl", user.getProfileUrl());
-        data.put("hasFullyInitialized", user.isHasFullyInitialized());
-        data.put("createdAt", user.getCreatedAt());
-
-        return UserRegistrationResponseDTO.ok(data, "Profile completed.");
+        return Result.ok(UserData.from(user));
     }
 
 }
