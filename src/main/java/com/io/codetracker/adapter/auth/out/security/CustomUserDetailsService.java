@@ -1,8 +1,9 @@
 package com.io.codetracker.adapter.auth.out.security;
 
 import com.io.codetracker.adapter.auth.out.persistence.mapper.AuthMapper;
-import com.io.codetracker.adapter.auth.out.persistence.repository.JpaAuthRepository;
 import com.io.codetracker.infrastructure.auth.persistence.entity.AuthEntity;
+import com.io.codetracker.infrastructure.auth.persistence.repository.JpaAuthRepository;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

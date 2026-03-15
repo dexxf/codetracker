@@ -6,6 +6,8 @@ import com.io.codetracker.application.user.port.out.UserAuthPort;
 import com.io.codetracker.domain.auth.entity.Auth;
 import com.io.codetracker.domain.auth.valueobject.Status;
 import com.io.codetracker.infrastructure.auth.persistence.entity.AuthEntity;
+import com.io.codetracker.infrastructure.auth.persistence.repository.JpaAuthRepository;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 

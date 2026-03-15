@@ -1,4 +1,4 @@
-package com.io.codetracker.adapter.auth.out.persistence.repository;
+package com.io.codetracker.infrastructure.auth.persistence.repository;
 
 import com.io.codetracker.infrastructure.auth.persistence.entity.AuthEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
