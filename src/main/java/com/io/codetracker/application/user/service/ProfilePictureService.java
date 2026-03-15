@@ -30,7 +30,7 @@ public class ProfilePictureService {
                 default -> ProfilePictureResult.MULTIPLE_ROWS_AFFECTED;
             };
         } catch (IOException e) {
-            return ProfilePictureResult.DELETE_FAILED;
+            return ProfilePictureResult.MODIFICATION_FAILED;
         }
     }
 

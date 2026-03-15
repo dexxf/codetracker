@@ -5,5 +5,5 @@ public enum ProfilePictureResult {
     USER_NOT_FOUND,
     NO_PROFILE_PICTURE,
     MULTIPLE_ROWS_AFFECTED,
-    DELETE_FAILED
+    MODIFICATION_FAILED
 }
