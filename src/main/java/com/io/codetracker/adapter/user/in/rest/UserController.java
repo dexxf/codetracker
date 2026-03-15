@@ -4,9 +4,11 @@ import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.adapter.user.in.dto.request.UserProfileRequest;
 import com.io.codetracker.adapter.user.in.dto.request.UserRegistrationRequest;
 import com.io.codetracker.adapter.user.in.dto.response.*;
+import com.io.codetracker.adapter.user.in.mapper.UserProfileHttpMapper;
 import com.io.codetracker.adapter.user.in.mapper.UserRegistrationHttpMapper;
 import com.io.codetracker.application.user.command.UserProfileCommand;
 import com.io.codetracker.application.user.command.UserRegistrationCommand;
+import com.io.codetracker.application.user.error.UserProfileError;
 import com.io.codetracker.application.user.error.UserRegistrationError;
 import com.io.codetracker.application.user.port.in.CompleteInitializationUseCase;
 import com.io.codetracker.application.user.result.UserData;
@@ -16,6 +18,7 @@ import com.io.codetracker.common.result.Result;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -54,8 +57,11 @@ public class UserController {
             @AuthenticationPrincipal AuthPrincipal principal,
             @Valid @RequestBody UserProfileRequest request) {
         UserProfileCommand command = new UserProfileCommand(request.firstName(), request.lastName(), request.gender(), request.phoneNumber(), request.bio(), request.birthday());
-        UserProfileResponseDTO result = userProfileService.updateProfile(principal.getUserId(), command);
-        return result.success() ? ResponseEntity.ok(result) : ResponseEntity.badRequest().body(result);
+        Result<UserData, List<UserProfileError>> result = userProfileService.updateProfile(principal.getUserId(), command);
+        return result.success() ?
+                ResponseEntity.ok(UserProfileResponseDTO.ok(result.data()))
+                : ResponseEntity.status(UserProfileHttpMapper.toStatus(result.error()))
+                        .body(UserProfileResponseDTO.fail(UserProfileHttpMapper.toMessages(result.error())));
     } 
     
     @GetMapping("/profile")
