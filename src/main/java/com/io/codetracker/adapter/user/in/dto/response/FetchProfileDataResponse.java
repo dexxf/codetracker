@@ -1,4 +1,4 @@
-package com.io.codetracker.application.user.port.in.response;
+package com.io.codetracker.adapter.user.in.dto.response;
 
 import com.io.codetracker.domain.user.entity.User;
 import com.io.codetracker.domain.user.valueobject.Birthday;

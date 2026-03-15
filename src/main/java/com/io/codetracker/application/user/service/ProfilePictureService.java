@@ -1,7 +1,7 @@
 package com.io.codetracker.application.user.service;
 
-import com.io.codetracker.application.user.port.in.response.DeleteProfilePictureResponse;
-import com.io.codetracker.application.user.port.in.response.UpdateProfilePictureResponse;
+import com.io.codetracker.adapter.user.in.dto.response.DeleteProfilePictureResponse;
+import com.io.codetracker.adapter.user.in.dto.response.UpdateProfilePictureResponse;
 import com.io.codetracker.application.user.port.out.CloudinaryPort;
 import com.io.codetracker.application.user.port.out.UserAppRepository;
 import jakarta.transaction.Transactional;
