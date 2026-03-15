@@ -1,12 +1,12 @@
 package com.io.codetracker.adapter.user.in.dto.response;
 
-public record DeleteProfilePictureResponse(boolean success, String message) {
+public record DeleteProfilePictureResponse(String message) {
 
     public static DeleteProfilePictureResponse success(String message) {
-        return new DeleteProfilePictureResponse(true, message);
+        return new DeleteProfilePictureResponse(message);
     }
 
     public static DeleteProfilePictureResponse failure(String message) {
-        return new DeleteProfilePictureResponse(false, message);
+        return new DeleteProfilePictureResponse(message);
     }
 }

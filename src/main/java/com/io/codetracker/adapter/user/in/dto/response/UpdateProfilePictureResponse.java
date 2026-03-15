@@ -1,12 +1,12 @@
 package com.io.codetracker.adapter.user.in.dto.response;
 
-public record UpdateProfilePictureResponse(boolean success, String message, String profileUrl) {
+public record UpdateProfilePictureResponse(String message, String profileUrl) {
 
     public static UpdateProfilePictureResponse success(String profileUrl, String message) {
-        return new UpdateProfilePictureResponse(true, message, profileUrl);
+        return new UpdateProfilePictureResponse(message, profileUrl);
     }
 
     public static UpdateProfilePictureResponse failure(String message) {
-        return new UpdateProfilePictureResponse(false, message, null);
+        return new UpdateProfilePictureResponse(message, null);
     }
 }

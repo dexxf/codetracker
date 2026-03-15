@@ -4,10 +4,10 @@ import com.io.codetracker.domain.user.entity.User;
 
 import java.util.Map;
 
-public record UserProfileResponseDTO(boolean success, String message, Map<String, Object> userDetails , Map<String, Object> errorList) {
+public record UserProfileResponseDTO(String message, Map<String, Object> userDetails , Map<String, Object> errorList) {
 
     public static UserProfileResponseDTO ok(User user) {
-        return new UserProfileResponseDTO(true, "Successfully updated user profile.",
+        return new UserProfileResponseDTO("Successfully updated user profile.",
                 Map.ofEntries(
                         Map.entry("userId", user.getUserId()),
                         Map.entry("firstName", user.getFirstName()),
@@ -22,11 +22,11 @@ public record UserProfileResponseDTO(boolean success, String message, Map<String
     }
 
     public static UserProfileResponseDTO fail(Map<String, Object> errors) {
-        return new UserProfileResponseDTO(false,"Failed to update user profile.",Map.of() ,errors);
+        return new UserProfileResponseDTO("Failed to update user profile.",Map.of() ,errors);
     }
 
     public static UserProfileResponseDTO fail(String message) {
-        return new UserProfileResponseDTO(false, message,Map.of() ,Map.of());
+        return new UserProfileResponseDTO(message,Map.of() ,Map.of());
     }
 
 }
