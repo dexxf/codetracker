@@ -55,15 +55,15 @@ public class UserController {
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<UserProfileResponseDTO> updateUserProfile(
+    public ResponseEntity<UserProfileResponse> updateUserProfile(
             @AuthenticationPrincipal AuthPrincipal principal,
             @Valid @RequestBody UserProfileRequest request) {
         UserProfileCommand command = new UserProfileCommand(request.firstName(), request.lastName(), request.gender(), request.phoneNumber(), request.bio(), request.birthday());
         Result<UserData, List<UserProfileError>> result = updateUserProfileUseCase.updateProfile(principal.getUserId(), command);
         return result.success() ?
-                ResponseEntity.ok(UserProfileResponseDTO.ok(result.data()))
+                ResponseEntity.ok(UserProfileResponse.ok(result.data()))
                 : ResponseEntity.status(UserProfileHttpMapper.toStatus(result.error()))
-                        .body(UserProfileResponseDTO.fail(UserProfileHttpMapper.toMessages(result.error())));
+                        .body(UserProfileResponse.fail(UserProfileHttpMapper.toMessages(result.error())));
     } 
     
     @GetMapping("/profile")
