@@ -1,5 +1,7 @@
 package com.io.codetracker.application.user.service;
 
+import com.io.codetracker.application.user.port.in.RemoveProfilePictureUseCase;
+import com.io.codetracker.application.user.port.in.UpdateProfilePictureUseCase;
 import com.io.codetracker.application.user.port.out.CloudinaryPort;
 import com.io.codetracker.application.user.port.out.UserAppRepository;
 import com.io.codetracker.application.user.result.ProfilePictureResult;
@@ -12,7 +14,7 @@ import java.io.IOException;
 
 @Service
 @AllArgsConstructor
-public class ProfilePictureService {
+public class ProfilePictureService implements RemoveProfilePictureUseCase, UpdateProfilePictureUseCase {
 
     private final CloudinaryPort cloudinaryPort;
     private final UserAppRepository userAppRepository;
