@@ -3,7 +3,7 @@ package com.io.codetracker.application.user.service;
 import com.io.codetracker.adapter.user.in.dto.response.UpdateProfilePictureResponse;
 import com.io.codetracker.application.user.port.out.CloudinaryPort;
 import com.io.codetracker.application.user.port.out.UserAppRepository;
-import com.io.codetracker.application.user.result.RemoveProfilePictureResult;
+import com.io.codetracker.application.user.result.ProfilePictureResult;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,18 +19,18 @@ public class ProfilePictureService {
     private final UserAppRepository userAppRepository;
 
     @Transactional
-    public RemoveProfilePictureResult removeProfilePicture(String userId) {
+    public ProfilePictureResult removeProfilePicture(String userId) {
         try {
             cloudinaryPort.deleteImageByPublicId(userId);
             int rowsAffected = userAppRepository.updateProfileUrlByUserId(userId, null);
 
             return switch (rowsAffected) {
-                case 1 -> RemoveProfilePictureResult.SUCCESS;
-                case 0 -> RemoveProfilePictureResult.USER_NOT_FOUND;
-                default -> RemoveProfilePictureResult.MULTIPLE_ROWS_AFFECTED;
+                case 1 -> ProfilePictureResult.SUCCESS;
+                case 0 -> ProfilePictureResult.USER_NOT_FOUND;
+                default -> ProfilePictureResult.MULTIPLE_ROWS_AFFECTED;
             };
         } catch (IOException e) {
-            return RemoveProfilePictureResult.DELETE_FAILED;
+            return ProfilePictureResult.DELETE_FAILED;
         }
     }
 

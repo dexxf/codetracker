@@ -1,6 +1,6 @@
 package com.io.codetracker.application.user.result;
 
-public enum RemoveProfilePictureResult {
+public enum ProfilePictureResult {
     SUCCESS,
     USER_NOT_FOUND,
     NO_PROFILE_PICTURE,
