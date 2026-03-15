@@ -3,7 +3,13 @@ package com.io.codetracker.adapter.classroom.in.rest;
 import com.io.codetracker.adapter.classroom.in.dto.request.JoinClassroomRequest;
 import com.io.codetracker.adapter.classroom.in.dto.response.ClassroomJoinResponse;
 import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomsResponse;
+import com.io.codetracker.adapter.classroom.in.mapper.ClassroomJoinHttpMapper;
+import com.io.codetracker.adapter.classroom.in.mapper.CreateClassroomHttpMapper;
+import com.io.codetracker.adapter.classroom.in.mapper.SimpleClassroomHttpMapper;
 import com.io.codetracker.application.classroom.command.JoinClassroomCommand;
+import com.io.codetracker.application.classroom.error.ClassroomJoinError;
+import com.io.codetracker.application.classroom.error.CreateClassroomError;
+import com.io.codetracker.application.classroom.error.SimpleClassroomError;
 import com.io.codetracker.application.classroom.port.in.*;
 import com.io.codetracker.application.classroom.result.*;
 import com.io.codetracker.common.result.Result;
@@ -36,7 +42,7 @@ public class ClassroomController {
     
 @PostMapping("/create")
 public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPrincipal AuthPrincipal authPrincipal,@Valid @RequestBody CreateClassroomRequest request) {
-    Result<CreateClassroomData, String> result =
+    Result<CreateClassroomData, CreateClassroomError> result =
         createClassroomUseCase.execute(authPrincipal.getUserId(), new CreateClassroomCommand(
             request.name(),
             request.description(),
@@ -47,8 +53,8 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
 
     if (!result.success()) {
         return ResponseEntity
-            .badRequest()
-            .body(CreateClassroomResponse.fail(result.error()));
+            .status(CreateClassroomHttpMapper.toStatus(result.error()))
+            .body(CreateClassroomResponse.fail(CreateClassroomHttpMapper.toMessage(result.error())));
     }
     
     return ResponseEntity
@@ -58,20 +64,23 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
 
     @GetMapping("/me")
     public ResponseEntity<GetClassroomsResponse> getClassrooms(@AuthenticationPrincipal AuthPrincipal authPrincipal) {
-        Result<List<GetClassroomsProfessorData>, String> result = getClassroomsUseCase.execute(authPrincipal.getUserId());
+        Result<List<GetClassroomsProfessorData>, SimpleClassroomError> result = getClassroomsUseCase.execute(authPrincipal.getUserId());
         if(!result.success()) {
-            return ResponseEntity.badRequest().body(GetClassroomsResponse.fail(result.error()));
+            return ResponseEntity.status(SimpleClassroomHttpMapper.toStatus(result.error()))
+            .body(GetClassroomsResponse.fail(SimpleClassroomHttpMapper.toMessage(result.error())));
         }
         return ResponseEntity.ok(GetClassroomsResponse.ok(result.data()));
     }
 
     @PostMapping("/join")
     public ResponseEntity<ClassroomJoinResponse> joinClassroom(@AuthenticationPrincipal AuthPrincipal authPrincipal, @Valid @RequestBody JoinClassroomRequest request) {
-        Result<ClassroomJoinResult, String> response = joinClassroomUseCase.execute(
+        Result<ClassroomJoinResult, ClassroomJoinError> response = joinClassroomUseCase.execute(
                 new JoinClassroomCommand(authPrincipal.getUserId(), request.code(), request.passcode()));
         if (!response.success()) {
-            return ResponseEntity.badRequest().body(ClassroomJoinResponse.fail(response.error()));
+            return ResponseEntity.status(ClassroomJoinHttpMapper.toStatus(response.error()))
+            .body(ClassroomJoinResponse.fail(ClassroomJoinHttpMapper.toMessage(response.error())));
         }
+        
         return ResponseEntity.ok(ClassroomJoinResponse.ok(response.data()));
     }
 
@@ -86,9 +95,10 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
     public ResponseEntity<GetClassroomStatsResponse> getClassroomStats(
             @AuthenticationPrincipal AuthPrincipal authPrincipal,
             @PathVariable String classroomId) {
-        Result<ClassroomStats, String> result = getClassroomStatsUseCase.execute(new ClassroomStatsCommand(classroomId, authPrincipal.getUserId()));
+        Result<ClassroomStats, SimpleClassroomError> result = getClassroomStatsUseCase.execute(new ClassroomStatsCommand(classroomId, authPrincipal.getUserId()));
         if (!result.success()) {
-            return ResponseEntity.badRequest().body(GetClassroomStatsResponse.fail(result.error()));
+            return ResponseEntity.status(SimpleClassroomHttpMapper.toStatus(result.error()))
+            .body(GetClassroomStatsResponse.fail(SimpleClassroomHttpMapper.toMessage(result.error())));
         }
         return ResponseEntity.ok(GetClassroomStatsResponse.success(result.data()));
     }

@@ -4,6 +4,7 @@ package com.io.codetracker.application.classroom.service;
 import com.io.codetracker.application.classroom.port.in.CreateClassroomUseCase;
 import org.springframework.stereotype.Service;
 import com.io.codetracker.application.classroom.command.CreateClassroomCommand;
+import com.io.codetracker.application.classroom.error.CreateClassroomError;
 import com.io.codetracker.application.classroom.port.out.ClassroomAppRepository;
 import com.io.codetracker.application.classroom.result.CreateClassroomData;
 import com.io.codetracker.common.result.Result;
@@ -25,7 +26,7 @@ public class CreateClassroomService implements CreateClassroomUseCase {
         this.classroomAppRepository = classroomAppRepository;
     }
     
-    public Result<CreateClassroomData, String> execute(String userId, CreateClassroomCommand command) {
+    public Result<CreateClassroomData, CreateClassroomError> execute(String userId, CreateClassroomCommand command) {
 
         Result<ClassroomCreationEntity, ClassroomCreationResult> result =
             classroomCreationService.createClassroom(
@@ -38,21 +39,14 @@ public class CreateClassroomService implements CreateClassroomUseCase {
             );
         
         if (!result.success()) {
-            return Result.fail(result.error().getMessage());
+           return Result.fail(CreateClassroomError.from(result.error()));
         }
         
         ClassroomCreationEntity creationEntity = result.data();
         classroomAppRepository.saveClassroom(creationEntity.classroom(), creationEntity.settings());
-        
-     CreateClassroomData data = new CreateClassroomData(
-        creationEntity.classroom().getClassroomId(),
-        creationEntity.classroom().getName(),
-        creationEntity.classroom().getDescription(),
-        creationEntity.classroom().getClassCode(),
-        creationEntity.classroom().getStatus().name(),
-        creationEntity.settings().getMaxStudents(),
-        creationEntity.settings().isRequireApproval()
-    );
+
+        CreateClassroomData data = 
+            CreateClassroomData.from(creationEntity);
 
         return Result.ok(data);
     }
