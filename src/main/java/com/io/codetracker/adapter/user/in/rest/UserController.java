@@ -1,8 +1,8 @@
 package com.io.codetracker.adapter.user.in.rest;
 
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
-import com.io.codetracker.adapter.user.in.dto.UserProfileRequest;
-import com.io.codetracker.adapter.user.in.dto.UserRegistrationRequest;
+import com.io.codetracker.adapter.user.in.dto.request.UserProfileRequest;
+import com.io.codetracker.adapter.user.in.dto.request.UserRegistrationRequest;
 import com.io.codetracker.application.user.command.UserProfileCommand;
 import com.io.codetracker.application.user.command.UserRegistrationCommand;
 import com.io.codetracker.application.user.port.in.response.FetchProfileDataResponse;

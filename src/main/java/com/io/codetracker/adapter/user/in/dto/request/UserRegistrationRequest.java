@@ -1,4 +1,4 @@
-package com.io.codetracker.adapter.user.in.dto;
+package com.io.codetracker.adapter.user.in.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
