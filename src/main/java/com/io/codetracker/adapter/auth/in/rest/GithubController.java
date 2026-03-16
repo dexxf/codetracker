@@ -1,16 +1,21 @@
 package com.io.codetracker.adapter.auth.in.rest;
 
+import com.io.codetracker.adapter.auth.in.mapper.AuthRegistrationHttpMapper;
+import com.io.codetracker.adapter.auth.in.mapper.GithubAccountHttpMapper;
 import com.io.codetracker.adapter.auth.out.github.dto.ExchangeResponse;
 import com.io.codetracker.adapter.auth.out.github.dto.GithubUserInfoDTO;
 import com.io.codetracker.adapter.auth.out.github.service.GithubService;
 import com.io.codetracker.adapter.auth.out.security.jwt.JwtService;
 import com.io.codetracker.application.auth.command.AuthRegisterOAuthCommand;
 import com.io.codetracker.application.auth.command.GithubRegistrationCommand;
+import com.io.codetracker.application.auth.error.AuthRegistrationError;
+import com.io.codetracker.application.auth.error.GithubAccountRegistrationError;
+import com.io.codetracker.application.auth.port.in.AuthOAuthRegistrationUseCase;
+import com.io.codetracker.application.auth.port.in.GithubAccountRegistrationUseCase;
 import com.io.codetracker.application.auth.port.out.GithubAppRepository;
-import com.io.codetracker.application.auth.response.AuthRegistrationResponseDTO;
-import com.io.codetracker.application.auth.response.GithubRegistrationResponseDTO;
-import com.io.codetracker.application.auth.service.AuthRegistration;
-import com.io.codetracker.application.auth.service.GithubAccountRegistrationService;
+import com.io.codetracker.application.auth.result.AuthData;
+import com.io.codetracker.application.auth.result.GithubAccountAttributes;
+import com.io.codetracker.common.result.Result;
 import com.io.codetracker.infrastructure.auth.persistence.entity.GithubAccountEntity;
 
 import jakarta.servlet.http.Cookie;
@@ -35,10 +40,10 @@ import java.util.UUID;
 public class GithubController {
 
         private final JwtService jwtService;
-        private final AuthRegistration registration;
+        private final AuthOAuthRegistrationUseCase authOAuthRegistrationUseCase;
         private final GithubService githubService;
         private final GithubAppRepository githubAppRepository;
-        private final GithubAccountRegistrationService ghAccountRegistrationService;
+        private final GithubAccountRegistrationUseCase githubAccountRegistrationUseCase;
    
         private final String scope;
         private final boolean allowSignup;
@@ -48,25 +53,26 @@ public class GithubController {
 
     public GithubController(
             JwtService jwtService,
-            AuthRegistration registration,
+            AuthOAuthRegistrationUseCase authOAuthRegistrationUseCase,
             GithubService githubService,
             GithubAppRepository githubAppRepository,
-            GithubAccountRegistrationService ghAccountRegistrationService,
+            GithubAccountRegistrationUseCase githubAccountRegistrationUseCase,
             @Value("${github.scope}") String scope,
             @Value("${github.allow-signup}") boolean allowSignup,
             @Value("${github.prompt-consent}") boolean promptConsent,
             @Value("${app.cors.allowed-origins}") String frontendOrigin
     ) {
         this.jwtService = jwtService;
-        this.registration = registration;
+        this.authOAuthRegistrationUseCase = authOAuthRegistrationUseCase;
         this.githubService = githubService;
         this.githubAppRepository = githubAppRepository;
-        this.ghAccountRegistrationService = ghAccountRegistrationService;
+        this.githubAccountRegistrationUseCase = githubAccountRegistrationUseCase;
         this.scope = scope;
         this.allowSignup = allowSignup;
         this.promptConsent = promptConsent;
         this.frontendOrigin = frontendOrigin;
     }
+
 
         @GetMapping("/github/authorize")
         public ResponseEntity<?> initiateOAuth(HttpSession session) {
@@ -83,6 +89,7 @@ public class GithubController {
 
         return ResponseEntity.ok(Map.of("state", state, "authUrl", authUrl));
         }
+
 
         @GetMapping("/github/callback")
         public ResponseEntity<String> githubCallback(
@@ -131,19 +138,21 @@ public class GithubController {
                                 "USER"
                         );
 
-                AuthRegistrationResponseDTO registrationResponse =
-                        registration.registerWithOAuth(command);
+                Result<AuthData, AuthRegistrationError> registrationResponse =
+                        authOAuthRegistrationUseCase.registerWithOAuth(command);
                         
                         if (!registrationResponse.success()) {
-                return ResponseEntity.badRequest().body(registrationResponse.message());
+                return ResponseEntity.status(AuthRegistrationHttpMapper
+                        .toStatus(registrationResponse.error())).body(AuthRegistrationHttpMapper.toMessage(registrationResponse.error()));
                 }
 
-                userAuthId = (String) registrationResponse.data().get("authId");
-                GithubRegistrationResponseDTO githubRegistrationResponse =
-                 ghAccountRegistrationService.registerGithubAccount(new GithubRegistrationCommand(userAuthId, githubUser.id(), accessToken));
+                userAuthId = registrationResponse.data().authId();
+                Result<GithubAccountAttributes, GithubAccountRegistrationError> result =
+                 githubAccountRegistrationUseCase.registerGithubAccount(new GithubRegistrationCommand(userAuthId, githubUser.id(), accessToken));
                 
-                 if(!githubRegistrationResponse.success()) {
-                        return ResponseEntity.badRequest().body(githubRegistrationResponse.message());
+                 if(!result.success()) {
+                        return ResponseEntity.status(GithubAccountHttpMapper
+                                .toStatus(result.error())).body(GithubAccountHttpMapper.toMessage(result.error()));
                  }
         }
 
@@ -184,4 +193,4 @@ public class GithubController {
                 .body(html);
         }
 
-        }
+}

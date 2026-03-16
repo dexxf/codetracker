@@ -1,6 +1,8 @@
 package com.io.codetracker.adapter.auth.out.persistence.repository;
 
 import com.io.codetracker.domain.auth.repository.AuthDomainRepository;
+import com.io.codetracker.infrastructure.auth.persistence.repository.JpaAuthRepository;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
