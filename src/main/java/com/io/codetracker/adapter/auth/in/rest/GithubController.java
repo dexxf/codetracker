@@ -1,6 +1,7 @@
 package com.io.codetracker.adapter.auth.in.rest;
 
-import com.io.codetracker.adapter.auth.in.dto.response.GithubRegistrationResponseDTO;
+import com.io.codetracker.adapter.auth.in.mapper.AuthRegistrationHttpMapper;
+import com.io.codetracker.adapter.auth.in.mapper.GithubAccountHttpMapper;
 import com.io.codetracker.adapter.auth.out.github.dto.ExchangeResponse;
 import com.io.codetracker.adapter.auth.out.github.dto.GithubUserInfoDTO;
 import com.io.codetracker.adapter.auth.out.github.service.GithubService;
@@ -8,9 +9,11 @@ import com.io.codetracker.adapter.auth.out.security.jwt.JwtService;
 import com.io.codetracker.application.auth.command.AuthRegisterOAuthCommand;
 import com.io.codetracker.application.auth.command.GithubRegistrationCommand;
 import com.io.codetracker.application.auth.error.AuthRegistrationError;
+import com.io.codetracker.application.auth.error.GithubAccountRegistrationError;
 import com.io.codetracker.application.auth.port.in.AuthOAuthRegistrationUseCase;
 import com.io.codetracker.application.auth.port.out.GithubAppRepository;
 import com.io.codetracker.application.auth.result.AuthData;
+import com.io.codetracker.application.auth.result.GithubAccountAttributes;
 import com.io.codetracker.application.auth.service.GithubAccountRegistrationService;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.infrastructure.auth.persistence.entity.GithubAccountEntity;
@@ -139,15 +142,17 @@ public class GithubController {
                         authOAuthRegistrationUseCase.registerWithOAuth(command);
                         
                         if (!registrationResponse.success()) {
-                return ResponseEntity.badRequest().body(registrationResponse.error().name());
+                return ResponseEntity.status(AuthRegistrationHttpMapper
+                        .toStatus(registrationResponse.error())).body(AuthRegistrationHttpMapper.toMessage(registrationResponse.error()));
                 }
 
-                userAuthId = (String) registrationResponse.data().authId();
-                GithubRegistrationResponseDTO githubRegistrationResponse =
+                userAuthId = registrationResponse.data().authId();
+                Result<GithubAccountAttributes, GithubAccountRegistrationError> result =
                  ghAccountRegistrationService.registerGithubAccount(new GithubRegistrationCommand(userAuthId, githubUser.id(), accessToken));
                 
-                 if(!githubRegistrationResponse.success()) {
-                        return ResponseEntity.badRequest().body(githubRegistrationResponse.message());
+                 if(!result.success()) {
+                        return ResponseEntity.status(GithubAccountHttpMapper
+                                .toStatus(result.error())).body(GithubAccountHttpMapper.toMessage(result.error()));
                  }
         }
 
@@ -188,4 +193,4 @@ public class GithubController {
                 .body(html);
         }
 
-        }
+}
