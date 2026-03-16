@@ -6,11 +6,13 @@ import com.io.codetracker.adapter.auth.out.github.service.GithubService;
 import com.io.codetracker.adapter.auth.out.security.jwt.JwtService;
 import com.io.codetracker.application.auth.command.AuthRegisterOAuthCommand;
 import com.io.codetracker.application.auth.command.GithubRegistrationCommand;
+import com.io.codetracker.application.auth.error.AuthRegistrationError;
 import com.io.codetracker.application.auth.port.out.GithubAppRepository;
-import com.io.codetracker.application.auth.response.AuthRegistrationResponseDTO;
 import com.io.codetracker.application.auth.response.GithubRegistrationResponseDTO;
+import com.io.codetracker.application.auth.result.AuthData;
 import com.io.codetracker.application.auth.service.AuthRegistration;
 import com.io.codetracker.application.auth.service.GithubAccountRegistrationService;
+import com.io.codetracker.common.result.Result;
 import com.io.codetracker.infrastructure.auth.persistence.entity.GithubAccountEntity;
 
 import jakarta.servlet.http.Cookie;
@@ -131,14 +133,14 @@ public class GithubController {
                                 "USER"
                         );
 
-                AuthRegistrationResponseDTO registrationResponse =
+                Result<AuthData, AuthRegistrationError> registrationResponse =
                         registration.registerWithOAuth(command);
                         
                         if (!registrationResponse.success()) {
-                return ResponseEntity.badRequest().body(registrationResponse.message());
+                return ResponseEntity.badRequest().body(registrationResponse.error().name());
                 }
 
-                userAuthId = (String) registrationResponse.data().get("authId");
+                userAuthId = (String) registrationResponse.data().authId();
                 GithubRegistrationResponseDTO githubRegistrationResponse =
                  ghAccountRegistrationService.registerGithubAccount(new GithubRegistrationCommand(userAuthId, githubUser.id(), accessToken));
                 

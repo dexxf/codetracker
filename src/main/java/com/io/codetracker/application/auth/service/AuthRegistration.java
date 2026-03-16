@@ -1,7 +1,8 @@
 package com.io.codetracker.application.auth.service;
 
 import com.io.codetracker.application.auth.command.AuthRegisterOAuthCommand;
-import com.io.codetracker.application.auth.response.AuthRegistrationResponseDTO;
+import com.io.codetracker.application.auth.error.AuthRegistrationError;
+import com.io.codetracker.application.auth.result.AuthData;
 import com.io.codetracker.application.auth.port.out.AuthAppRepository;
 import com.io.codetracker.application.auth.port.out.UserRegistrationPort;
 import com.io.codetracker.common.result.Result;
@@ -23,9 +24,9 @@ public final class AuthRegistration {
         this.userRegistration = userRegistration;
     }
 
-    public AuthRegistrationResponseDTO registerWithOAuth(AuthRegisterOAuthCommand command) {
+    public Result<AuthData, AuthRegistrationError> registerWithOAuth(AuthRegisterOAuthCommand command) {
         if(authAppRepository.emailExists(command.email())) {
-            return AuthRegistrationResponseDTO.fail("Email taken.");
+            return Result.fail(AuthRegistrationError.EMAIL_TAKEN);
         }
 
         String userId = userRegistration.createShallowUser();
@@ -33,13 +34,13 @@ public final class AuthRegistration {
         authCreationService.createAuthWithOAuth(userId, command.email(), command.username(), command.role().toUpperCase());
 
         if(!authCreationResult.success()) {
-            return AuthRegistrationResponseDTO.fail(authCreationResult.error().getMessage());
+            return Result.fail(AuthRegistrationError.from(authCreationResult.error()));
         }
 
         Auth auth = authCreationResult.data();
 
         authAppRepository.save(authCreationResult.data());
-        return AuthRegistrationResponseDTO.success(auth);
+        return Result.ok(AuthData.from(auth));
     }
 
 }
