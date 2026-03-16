@@ -3,6 +3,7 @@ package com.io.codetracker.application.auth.service;
 import com.io.codetracker.application.auth.command.AuthRegisterOAuthCommand;
 import com.io.codetracker.application.auth.error.AuthRegistrationError;
 import com.io.codetracker.application.auth.result.AuthData;
+import com.io.codetracker.application.auth.port.in.AuthOAuthRegistrationUseCase;
 import com.io.codetracker.application.auth.port.out.AuthAppRepository;
 import com.io.codetracker.application.auth.port.out.UserRegistrationPort;
 import com.io.codetracker.common.result.Result;
@@ -12,7 +13,7 @@ import com.io.codetracker.domain.auth.service.AuthCreationService;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class AuthRegistrationService {
+public final class AuthRegistrationService implements AuthOAuthRegistrationUseCase{
 
     private final AuthCreationService authCreationService;
     private final AuthAppRepository authAppRepository;
