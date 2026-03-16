@@ -11,10 +11,10 @@ import com.io.codetracker.application.auth.command.GithubRegistrationCommand;
 import com.io.codetracker.application.auth.error.AuthRegistrationError;
 import com.io.codetracker.application.auth.error.GithubAccountRegistrationError;
 import com.io.codetracker.application.auth.port.in.AuthOAuthRegistrationUseCase;
+import com.io.codetracker.application.auth.port.in.GithubAccountRegistrationUseCase;
 import com.io.codetracker.application.auth.port.out.GithubAppRepository;
 import com.io.codetracker.application.auth.result.AuthData;
 import com.io.codetracker.application.auth.result.GithubAccountAttributes;
-import com.io.codetracker.application.auth.service.GithubAccountRegistrationService;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.infrastructure.auth.persistence.entity.GithubAccountEntity;
 
@@ -43,7 +43,7 @@ public class GithubController {
         private final AuthOAuthRegistrationUseCase authOAuthRegistrationUseCase;
         private final GithubService githubService;
         private final GithubAppRepository githubAppRepository;
-        private final GithubAccountRegistrationService ghAccountRegistrationService;
+        private final GithubAccountRegistrationUseCase githubAccountRegistrationUseCase;
    
         private final String scope;
         private final boolean allowSignup;
@@ -56,7 +56,7 @@ public class GithubController {
             AuthOAuthRegistrationUseCase authOAuthRegistrationUseCase,
             GithubService githubService,
             GithubAppRepository githubAppRepository,
-            GithubAccountRegistrationService ghAccountRegistrationService,
+            GithubAccountRegistrationUseCase githubAccountRegistrationUseCase,
             @Value("${github.scope}") String scope,
             @Value("${github.allow-signup}") boolean allowSignup,
             @Value("${github.prompt-consent}") boolean promptConsent,
@@ -66,7 +66,7 @@ public class GithubController {
         this.authOAuthRegistrationUseCase = authOAuthRegistrationUseCase;
         this.githubService = githubService;
         this.githubAppRepository = githubAppRepository;
-        this.ghAccountRegistrationService = ghAccountRegistrationService;
+        this.githubAccountRegistrationUseCase = githubAccountRegistrationUseCase;
         this.scope = scope;
         this.allowSignup = allowSignup;
         this.promptConsent = promptConsent;
@@ -148,7 +148,7 @@ public class GithubController {
 
                 userAuthId = registrationResponse.data().authId();
                 Result<GithubAccountAttributes, GithubAccountRegistrationError> result =
-                 ghAccountRegistrationService.registerGithubAccount(new GithubRegistrationCommand(userAuthId, githubUser.id(), accessToken));
+                 githubAccountRegistrationUseCase.registerGithubAccount(new GithubRegistrationCommand(userAuthId, githubUser.id(), accessToken));
                 
                  if(!result.success()) {
                         return ResponseEntity.status(GithubAccountHttpMapper
