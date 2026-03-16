@@ -5,6 +5,7 @@ import com.io.codetracker.application.auth.error.GithubAccountRegistrationError;
 
 import org.springframework.stereotype.Service;
 
+import com.io.codetracker.application.auth.port.in.GithubAccountRegistrationUseCase;
 import com.io.codetracker.application.auth.port.out.GithubAppRepository;
 import com.io.codetracker.application.auth.result.GithubAccountAttributes;
 import com.io.codetracker.common.result.Result;
@@ -13,7 +14,7 @@ import com.io.codetracker.domain.auth.result.GithubAccountCreationResult;
 import com.io.codetracker.domain.auth.service.GithubAccountCreationService;
 
 @Service
-public class GithubAccountRegistrationService {
+public class GithubAccountRegistrationService implements GithubAccountRegistrationUseCase{
 
     private final GithubAccountCreationService ghCreationService;
     private final GithubAppRepository ghAppRepository;
