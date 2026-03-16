@@ -1,10 +1,10 @@
 package com.io.codetracker.application.auth.service;
 
+import com.io.codetracker.adapter.auth.in.dto.response.GithubRegistrationResponseDTO;
 import com.io.codetracker.application.auth.command.GithubRegistrationCommand;
 import org.springframework.stereotype.Service;
 
 import com.io.codetracker.application.auth.port.out.GithubAppRepository;
-import com.io.codetracker.application.auth.response.GithubRegistrationResponseDTO;
 import com.io.codetracker.application.auth.result.GithubAccountAttributes;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.auth.entity.GithubAccount;

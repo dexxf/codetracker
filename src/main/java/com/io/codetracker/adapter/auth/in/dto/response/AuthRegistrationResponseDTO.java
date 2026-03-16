@@ -1,4 +1,4 @@
-package com.io.codetracker.application.auth.response;
+package com.io.codetracker.adapter.auth.in.dto.response;
 
 import com.io.codetracker.domain.auth.entity.Auth;
 

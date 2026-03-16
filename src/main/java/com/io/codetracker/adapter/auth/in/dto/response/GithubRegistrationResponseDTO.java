@@ -1,4 +1,4 @@
-package com.io.codetracker.application.auth.response;
+package com.io.codetracker.adapter.auth.in.dto.response;
 
 import java.util.Map;
 import com.io.codetracker.application.auth.result.GithubAccountAttributes;

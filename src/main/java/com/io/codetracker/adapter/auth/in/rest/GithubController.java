@@ -1,5 +1,6 @@
 package com.io.codetracker.adapter.auth.in.rest;
 
+import com.io.codetracker.adapter.auth.in.dto.response.GithubRegistrationResponseDTO;
 import com.io.codetracker.adapter.auth.out.github.dto.ExchangeResponse;
 import com.io.codetracker.adapter.auth.out.github.dto.GithubUserInfoDTO;
 import com.io.codetracker.adapter.auth.out.github.service.GithubService;
@@ -8,7 +9,6 @@ import com.io.codetracker.application.auth.command.AuthRegisterOAuthCommand;
 import com.io.codetracker.application.auth.command.GithubRegistrationCommand;
 import com.io.codetracker.application.auth.error.AuthRegistrationError;
 import com.io.codetracker.application.auth.port.out.GithubAppRepository;
-import com.io.codetracker.application.auth.response.GithubRegistrationResponseDTO;
 import com.io.codetracker.application.auth.result.AuthData;
 import com.io.codetracker.application.auth.service.AuthRegistration;
 import com.io.codetracker.application.auth.service.GithubAccountRegistrationService;
