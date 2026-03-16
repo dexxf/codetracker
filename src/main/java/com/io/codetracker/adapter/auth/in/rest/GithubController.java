@@ -10,7 +10,7 @@ import com.io.codetracker.application.auth.command.GithubRegistrationCommand;
 import com.io.codetracker.application.auth.error.AuthRegistrationError;
 import com.io.codetracker.application.auth.port.out.GithubAppRepository;
 import com.io.codetracker.application.auth.result.AuthData;
-import com.io.codetracker.application.auth.service.AuthRegistration;
+import com.io.codetracker.application.auth.service.AuthRegistrationService;
 import com.io.codetracker.application.auth.service.GithubAccountRegistrationService;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.infrastructure.auth.persistence.entity.GithubAccountEntity;
@@ -37,7 +37,7 @@ import java.util.UUID;
 public class GithubController {
 
         private final JwtService jwtService;
-        private final AuthRegistration registration;
+        private final AuthRegistrationService registration;
         private final GithubService githubService;
         private final GithubAppRepository githubAppRepository;
         private final GithubAccountRegistrationService ghAccountRegistrationService;
@@ -50,7 +50,7 @@ public class GithubController {
 
     public GithubController(
             JwtService jwtService,
-            AuthRegistration registration,
+            AuthRegistrationService registration,
             GithubService githubService,
             GithubAppRepository githubAppRepository,
             GithubAccountRegistrationService ghAccountRegistrationService,

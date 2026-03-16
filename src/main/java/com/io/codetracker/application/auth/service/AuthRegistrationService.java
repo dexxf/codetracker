@@ -12,13 +12,13 @@ import com.io.codetracker.domain.auth.service.AuthCreationService;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class AuthRegistration {
+public final class AuthRegistrationService {
 
     private final AuthCreationService authCreationService;
     private final AuthAppRepository authAppRepository;
     private final UserRegistrationPort userRegistration;
 
-    public AuthRegistration(AuthCreationService authCreationService, AuthAppRepository authAppRepository, UserRegistrationPort userRegistration) {
+    public AuthRegistrationService(AuthCreationService authCreationService, AuthAppRepository authAppRepository, UserRegistrationPort userRegistration) {
         this.authCreationService = authCreationService;
         this.authAppRepository = authAppRepository;
         this.userRegistration = userRegistration;
