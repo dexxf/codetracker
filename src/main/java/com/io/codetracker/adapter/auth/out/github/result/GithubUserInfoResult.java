@@ -1,4 +1,4 @@
-package com.io.codetracker.adapter.auth.out.github.dto;
+package com.io.codetracker.adapter.auth.out.github.result;
 
 public record GithubUserInfoResult(
     Long id,

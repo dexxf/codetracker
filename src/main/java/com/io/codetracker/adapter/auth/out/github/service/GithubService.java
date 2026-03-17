@@ -14,10 +14,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.io.codetracker.adapter.auth.out.github.dto.GithubExchangeResult;
-import com.io.codetracker.adapter.auth.out.github.dto.GithubEmailResult;
-import com.io.codetracker.adapter.auth.out.github.dto.GithubTokenResult;
-import com.io.codetracker.adapter.auth.out.github.dto.GithubUserInfoResult;
+import com.io.codetracker.adapter.auth.out.github.result.GithubExchangeResult;
+import com.io.codetracker.adapter.auth.out.github.result.GithubEmailResult;
+import com.io.codetracker.adapter.auth.out.github.result.GithubTokenResult;
+import com.io.codetracker.adapter.auth.out.github.result.GithubUserInfoResult;
 
 @Service
 public final class GithubService {
