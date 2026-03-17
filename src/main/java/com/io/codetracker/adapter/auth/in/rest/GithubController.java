@@ -1,22 +1,15 @@
 package com.io.codetracker.adapter.auth.in.rest;
 
-import com.io.codetracker.adapter.auth.in.mapper.AuthRegistrationHttpMapper;
-import com.io.codetracker.adapter.auth.in.mapper.GithubAccountHttpMapper;
+import com.io.codetracker.adapter.auth.in.mapper.GithubOAuthHttpMapper;
 import com.io.codetracker.adapter.auth.out.github.dto.ExchangeResponse;
 import com.io.codetracker.adapter.auth.out.github.dto.GithubUserInfoDTO;
 import com.io.codetracker.adapter.auth.out.github.service.GithubService;
 import com.io.codetracker.adapter.auth.out.security.jwt.JwtService;
-import com.io.codetracker.application.auth.command.AuthRegisterOAuthCommand;
-import com.io.codetracker.application.auth.command.GithubRegistrationCommand;
-import com.io.codetracker.application.auth.error.AuthRegistrationError;
-import com.io.codetracker.application.auth.error.GithubAccountRegistrationError;
-import com.io.codetracker.application.auth.port.in.AuthOAuthRegistrationUseCase;
-import com.io.codetracker.application.auth.port.in.GithubAccountRegistrationUseCase;
-import com.io.codetracker.application.auth.port.out.GithubAppRepository;
-import com.io.codetracker.application.auth.result.AuthData;
-import com.io.codetracker.application.auth.result.GithubAccountAttributes;
+import com.io.codetracker.application.auth.command.GithubOAuthLoginCommand;
+import com.io.codetracker.application.auth.error.GithubOAuthLoginError;
+import com.io.codetracker.application.auth.port.in.GithubOAuthLoginUseCase;
+import com.io.codetracker.application.auth.result.GithubOAuthLoginData;
 import com.io.codetracker.common.result.Result;
-import com.io.codetracker.infrastructure.auth.persistence.entity.GithubAccountEntity;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,19 +25,19 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/oauth")
 public class GithubController {
 
+        private static final String OAUTH_STATE_KEY = "oauth_state";
+        private static final int JWT_COOKIE_MAX_AGE = 60 * 60 * 24;
+
         private final JwtService jwtService;
-        private final AuthOAuthRegistrationUseCase authOAuthRegistrationUseCase;
         private final GithubService githubService;
-        private final GithubAppRepository githubAppRepository;
-        private final GithubAccountRegistrationUseCase githubAccountRegistrationUseCase;
-   
+        private final GithubOAuthLoginUseCase githubOAuthLoginUseCase;
+
         private final String scope;
         private final boolean allowSignup;
         private final boolean promptConsent;
@@ -53,20 +46,16 @@ public class GithubController {
 
     public GithubController(
             JwtService jwtService,
-            AuthOAuthRegistrationUseCase authOAuthRegistrationUseCase,
             GithubService githubService,
-            GithubAppRepository githubAppRepository,
-            GithubAccountRegistrationUseCase githubAccountRegistrationUseCase,
+                        GithubOAuthLoginUseCase githubOAuthLoginUseCase,
             @Value("${github.scope}") String scope,
             @Value("${github.allow-signup}") boolean allowSignup,
             @Value("${github.prompt-consent}") boolean promptConsent,
             @Value("${app.cors.allowed-origins}") String frontendOrigin
     ) {
         this.jwtService = jwtService;
-        this.authOAuthRegistrationUseCase = authOAuthRegistrationUseCase;
         this.githubService = githubService;
-        this.githubAppRepository = githubAppRepository;
-        this.githubAccountRegistrationUseCase = githubAccountRegistrationUseCase;
+                this.githubOAuthLoginUseCase = githubOAuthLoginUseCase;
         this.scope = scope;
         this.allowSignup = allowSignup;
         this.promptConsent = promptConsent;
@@ -77,7 +66,7 @@ public class GithubController {
         @GetMapping("/github/authorize")
         public ResponseEntity<?> initiateOAuth(HttpSession session) {
         String state = UUID.randomUUID().toString();
-        session.setAttribute("oauth_state", state);
+                session.setAttribute(OAUTH_STATE_KEY, state);
 
         String authUrl = "https://github.com/login/oauth/authorize" +
                         "?client_id=" + URLEncoder.encode(githubService.getClientId(), StandardCharsets.UTF_8) +
@@ -88,83 +77,81 @@ public class GithubController {
                         "&prompt=" + (promptConsent ? "consent" : "none");
 
         return ResponseEntity.ok(Map.of("state", state, "authUrl", authUrl));
+    }
+
+
+    @GetMapping("/github/callback")
+    public ResponseEntity<String> githubCallback(
+            @RequestParam("code") String code,
+            @RequestParam(value = "state", required = false) String state,
+            HttpSession session,
+            HttpServletResponse response
+    ) {
+        if (!isValidState(session, state)) {
+            return ResponseEntity.badRequest().body("Invalid state parameter.");
         }
 
-
-        @GetMapping("/github/callback")
-        public ResponseEntity<String> githubCallback(
-                @RequestParam("code") String code,
-                @RequestParam(value = "state", required = false) String state,
-                HttpSession session,
-                HttpServletResponse response
-        ) {
-
-        String storedState = (String) session.getAttribute("oauth_state");
-        if (storedState == null || !storedState.equals(state)) {
-                return ResponseEntity.badRequest().body("Invalid state parameter.");
-        }
-        session.removeAttribute("oauth_state");
+        session.removeAttribute(OAUTH_STATE_KEY);
 
         ExchangeResponse accessTokenResult = githubService.exchangeCode(code);
         if (!accessTokenResult.success()) {
-                return ResponseEntity.badRequest().body(accessTokenResult.message());
+            return ResponseEntity.badRequest().body(accessTokenResult.message());
         }
 
         String accessToken = accessTokenResult.fetchResult().accessToken();
+        ResponseEntity<GithubUserInfoDTO> githubUserResponse = githubService.fetchGithubUser(accessToken);
 
-        ResponseEntity<GithubUserInfoDTO> githubUserResponse =
-                githubService.fetchGithubUser(accessToken);
-
-        if (!githubUserResponse.getStatusCode().is2xxSuccessful()
-                || githubUserResponse.getBody() == null) {
-                return ResponseEntity.badRequest().body("Failed to fetch GitHub user.");
+        if (!githubUserResponse.getStatusCode().is2xxSuccessful() || githubUserResponse.getBody() == null) {
+            return ResponseEntity.badRequest().body("Failed to fetch GitHub user.");
         }
 
         GithubUserInfoDTO githubUser = githubUserResponse.getBody();
-
-        Optional<GithubAccountEntity> githubAccountEntity =
-                githubAppRepository.findByGithubId(githubUser.id());
-
-        boolean alreadyRegistered = githubAccountEntity.isPresent();
-        String userAuthId;
-
-        if (alreadyRegistered) {
-                userAuthId = githubAccountEntity.get().getAuthId();
-        } else {
-                AuthRegisterOAuthCommand command =
-                        new AuthRegisterOAuthCommand(
+        Result<GithubOAuthLoginData, GithubOAuthLoginError> loginResult =
+                githubOAuthLoginUseCase.loginOrRegister(
+                        new GithubOAuthLoginCommand(
                                 githubUser.email(),
                                 githubUser.login(),
-                                "USER"
-                        );
+                                githubUser.id(),
+                                accessToken
+                        )
+                );
 
-                Result<AuthData, AuthRegistrationError> registrationResponse =
-                        authOAuthRegistrationUseCase.registerWithOAuth(command);
-                        
-                        if (!registrationResponse.success()) {
-                return ResponseEntity.status(AuthRegistrationHttpMapper
-                        .toStatus(registrationResponse.error())).body(AuthRegistrationHttpMapper.toMessage(registrationResponse.error()));
-                }
-
-                userAuthId = registrationResponse.data().authId();
-                Result<GithubAccountAttributes, GithubAccountRegistrationError> result =
-                 githubAccountRegistrationUseCase.registerGithubAccount(new GithubRegistrationCommand(userAuthId, githubUser.id(), accessToken));
-                
-                 if(!result.success()) {
-                        return ResponseEntity.status(GithubAccountHttpMapper
-                                .toStatus(result.error())).body(GithubAccountHttpMapper.toMessage(result.error()));
-                 }
+        if (!loginResult.success()) {
+            return ResponseEntity
+                    .status(GithubOAuthHttpMapper.toStatus(loginResult.error()))
+                    .body(GithubOAuthHttpMapper.toMessage(loginResult.error()));
         }
 
-        String jwtToken = jwtService.generateToken(userAuthId);
+        GithubOAuthLoginData loginData = loginResult.data();
+        addJwtCookie(response, loginData.authId());
+
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.TEXT_HTML)
+                .body(buildSuccessHtml(loginData.alreadyRegistered()));
+    }
+
+    private boolean isValidState(HttpSession session, String state) {
+        String storedState = (String) session.getAttribute(OAUTH_STATE_KEY);
+        if (storedState == null) {
+            return false;
+        }
+
+        return storedState.equals(state);
+    }
+
+    private void addJwtCookie(HttpServletResponse response, String authId) {
+        String jwtToken = jwtService.generateToken(authId);
 
         Cookie cookie = new Cookie("jwt", jwtToken);
         cookie.setHttpOnly(true);
         cookie.setSecure(false);
         cookie.setPath("/");
-        cookie.setMaxAge(60 * 60 * 24);
+        cookie.setMaxAge(JWT_COOKIE_MAX_AGE);
         response.addCookie(cookie);
+    }
 
+    private String buildSuccessHtml(boolean alreadyRegistered) {
         String html = """
         <!DOCTYPE html>
         <html>
@@ -187,10 +174,6 @@ public class GithubController {
         </html>
         """.formatted(alreadyRegistered, frontendOrigin);
 
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.TEXT_HTML)
-                .body(html);
-        }
-
+        return html;
+    }
 }
