@@ -1,6 +1,6 @@
-package com.io.codetracker.adapter.auth.out.github.dto;
+package com.io.codetracker.adapter.auth.out.github.result;
 
-public record GithubUserInfoDTO(
+public record GithubUserInfoResult(
     Long id,
     String login,
     String repos_url,
