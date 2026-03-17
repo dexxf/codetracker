@@ -1,8 +1,8 @@
 package com.io.codetracker.adapter.auth.in.rest;
 
 import com.io.codetracker.adapter.auth.in.mapper.GithubOAuthHttpMapper;
-import com.io.codetracker.adapter.auth.out.github.dto.ExchangeResponse;
-import com.io.codetracker.adapter.auth.out.github.dto.GithubUserInfoDTO;
+import com.io.codetracker.adapter.auth.out.github.dto.GithubExchangeResult;
+import com.io.codetracker.adapter.auth.out.github.dto.GithubUserInfoResult;
 import com.io.codetracker.adapter.auth.out.github.service.GithubService;
 import com.io.codetracker.adapter.auth.out.security.jwt.JwtService;
 import com.io.codetracker.application.auth.command.GithubOAuthLoginCommand;
@@ -93,19 +93,19 @@ public class GithubController {
 
         session.removeAttribute(OAUTH_STATE_KEY);
 
-        ExchangeResponse accessTokenResult = githubService.exchangeCode(code);
+        GithubExchangeResult accessTokenResult = githubService.exchangeCode(code);
         if (!accessTokenResult.success()) {
             return ResponseEntity.badRequest().body(accessTokenResult.message());
         }
 
         String accessToken = accessTokenResult.fetchResult().accessToken();
-        ResponseEntity<GithubUserInfoDTO> githubUserResponse = githubService.fetchGithubUser(accessToken);
+        ResponseEntity<GithubUserInfoResult> githubUserResponse = githubService.fetchGithubUser(accessToken);
 
         if (!githubUserResponse.getStatusCode().is2xxSuccessful() || githubUserResponse.getBody() == null) {
             return ResponseEntity.badRequest().body("Failed to fetch GitHub user.");
         }
 
-        GithubUserInfoDTO githubUser = githubUserResponse.getBody();
+        GithubUserInfoResult githubUser = githubUserResponse.getBody();
         Result<GithubOAuthLoginData, GithubOAuthLoginError> loginResult =
                 githubOAuthLoginUseCase.loginOrRegister(
                         new GithubOAuthLoginCommand(

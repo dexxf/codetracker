@@ -14,10 +14,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.io.codetracker.adapter.auth.out.github.dto.ExchangeResponse;
-import com.io.codetracker.adapter.auth.out.github.dto.GithubEmailDTO;
+import com.io.codetracker.adapter.auth.out.github.dto.GithubExchangeResult;
+import com.io.codetracker.adapter.auth.out.github.dto.GithubEmailResult;
 import com.io.codetracker.adapter.auth.out.github.dto.GithubTokenResult;
-import com.io.codetracker.adapter.auth.out.github.dto.GithubUserInfoDTO;
+import com.io.codetracker.adapter.auth.out.github.dto.GithubUserInfoResult;
 
 @Service
 public final class GithubService {
@@ -39,7 +39,7 @@ public final class GithubService {
         this.redirectUri = redirectUri;
     }
 
-    public ResponseEntity<GithubUserInfoDTO> fetchGithubUser(String accessToken) {
+    public ResponseEntity<GithubUserInfoResult> fetchGithubUser(String accessToken) {
         if (accessToken == null || accessToken.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
@@ -49,35 +49,35 @@ public final class GithubService {
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         HttpEntity<Void> req = new HttpEntity<>(headers);
 
-        ResponseEntity<GithubUserInfoDTO> responseEntity = restTemplate.exchange(
+        ResponseEntity<GithubUserInfoResult> responseEntity = restTemplate.exchange(
                 "https://api.github.com/user",
                 HttpMethod.GET,
                 req,
-                GithubUserInfoDTO.class
+                GithubUserInfoResult.class
         );
 
         if (!responseEntity.getStatusCode().is2xxSuccessful() || responseEntity.getBody() == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
-        GithubUserInfoDTO githubUser = responseEntity.getBody();
+        GithubUserInfoResult githubUser = responseEntity.getBody();
 
         if (githubUser.email() == null || githubUser.email().isBlank()) {
-            ResponseEntity<GithubEmailDTO[]> emailsResp = restTemplate.exchange(
+            ResponseEntity<GithubEmailResult[]> emailsResp = restTemplate.exchange(
                     "https://api.github.com/user/emails",
                     HttpMethod.GET,
                     req,
-                    GithubEmailDTO[].class
+                    GithubEmailResult[].class
             );
 
             if (!emailsResp.getStatusCode().is2xxSuccessful() || emailsResp.getBody() == null) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
 
-            GithubEmailDTO[] emails = emailsResp.getBody();
+            GithubEmailResult[] emails = emailsResp.getBody();
             String selected = null;
 
-            for (GithubEmailDTO e : emails) {
+            for (GithubEmailResult e : emails) {
                 if (e.primary() && e.verified()) {
                     selected = e.email();
                     break;
@@ -85,7 +85,7 @@ public final class GithubService {
             }
 
             if (selected == null) {
-                for (GithubEmailDTO e : emails) {
+                for (GithubEmailResult e : emails) {
                     if (e.verified()) {
                         selected = e.email();
                         break;
@@ -101,7 +101,7 @@ public final class GithubService {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
 
-            githubUser = new GithubUserInfoDTO(
+            githubUser = new GithubUserInfoResult(
                     githubUser.id(),
                     githubUser.login(),
                     githubUser.repos_url(),
@@ -114,9 +114,9 @@ public final class GithubService {
         return ResponseEntity.ok(githubUser);
     }
 
-    public ExchangeResponse exchangeCode(String code) {
+    public GithubExchangeResult exchangeCode(String code) {
         if (code == null || code.isBlank()) {
-            return ExchangeResponse.fail("Missing code");
+            return GithubExchangeResult.fail("Missing code");
         }
 
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
@@ -138,15 +138,15 @@ public final class GithubService {
         );
 
         if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
-            return ExchangeResponse.fail("Token exchange failed.");
+            return GithubExchangeResult.fail("Token exchange failed.");
         }
 
         GithubTokenResult tokenResult = response.getBody();
         if (tokenResult.accessToken() == null || tokenResult.accessToken().isBlank()) {
-            return ExchangeResponse.fail("No access token received.");
+            return GithubExchangeResult.fail("No access token received.");
         }
 
-        return ExchangeResponse.ok(tokenResult);
+        return GithubExchangeResult.ok(tokenResult);
     }
 
     public String getClientId() {

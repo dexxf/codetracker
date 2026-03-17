@@ -1,6 +1,6 @@
 package com.io.codetracker.adapter.auth.out.github.dto;
 
-public record GithubEmailDTO(
+public record GithubEmailResult(
     String email,
     boolean primary,
     boolean verified,
