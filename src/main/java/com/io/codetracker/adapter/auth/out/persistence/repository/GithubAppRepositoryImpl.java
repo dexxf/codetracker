@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.io.codetracker.adapter.auth.out.persistence.mapper.GithubAccountMapper;
 import com.io.codetracker.application.auth.port.out.GithubAppRepository;
 import com.io.codetracker.domain.auth.entity.GithubAccount;
-import com.io.codetracker.infrastructure.auth.persistence.entity.GithubAccountEntity;
 import com.io.codetracker.infrastructure.auth.persistence.repository.JpaGithubAccountRepository;
 
 @Repository
@@ -26,12 +25,14 @@ public class GithubAppRepositoryImpl implements GithubAppRepository {
     }
 
     @Override
-    public Optional<GithubAccountEntity> findByAuthId(String authId) {
-        return jpaGithubAccountRepository.findByAuthId(authId);
+    public Optional<GithubAccount> findByAuthId(String authId) {
+        return jpaGithubAccountRepository.findByAuthId(authId)
+                .map(GithubAccountMapper::toDomain);
     }
 
     @Override
-    public Optional<GithubAccountEntity> findByGithubId(Long id) {
-        return jpaGithubAccountRepository.findByGithubId(id);
+    public Optional<GithubAccount> findByGithubId(Long id) {
+        return jpaGithubAccountRepository.findByGithubId(id)
+                .map(GithubAccountMapper::toDomain);
     }
 }
