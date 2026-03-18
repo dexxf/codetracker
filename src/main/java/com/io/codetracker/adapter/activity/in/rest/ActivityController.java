@@ -23,6 +23,7 @@ import com.io.codetracker.application.activity.port.in.RemoveActivityUseCase;
 import com.io.codetracker.application.activity.result.ActivityData;
 
 import com.io.codetracker.common.result.Result;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ public class ActivityController {
     private final EditActivityUseCase editActivityUseCase;
 
     @PostMapping
-    public ResponseEntity<ActivityResponse> addActivity(@PathVariable String classroomId, @RequestBody AddActivityRequest request, @AuthenticationPrincipal AuthPrincipal principal) {
+        public ResponseEntity<ActivityResponse> addActivity(@PathVariable String classroomId, @Valid @RequestBody AddActivityRequest request, @AuthenticationPrincipal AuthPrincipal principal) {
         AddActivityCommand command = new AddActivityCommand(classroomId, principal.getUserId(), request.title(),
                 request.description(), request.dueDate(), request.maxScore(), request.status());
         Result<ActivityData, AddActivityError> response = addActivityUseCase.execute(command);
@@ -69,7 +70,7 @@ public class ActivityController {
     }
 
     @PutMapping("/{activityId}")
-    public ResponseEntity<ActivityResponse> updateActivity(@PathVariable String classroomId, @PathVariable String activityId,@RequestBody EditActivityRequest request, @AuthenticationPrincipal AuthPrincipal authPrincipal) {
+    public ResponseEntity<ActivityResponse> updateActivity(@PathVariable String classroomId, @PathVariable String activityId, @Valid @RequestBody EditActivityRequest request, @AuthenticationPrincipal AuthPrincipal authPrincipal) {
         Result<ActivityData, EditActivityError> response =  editActivityUseCase.execute(new EditActivityCommand(authPrincipal.getUserId(),
                 classroomId,activityId,request.title(),request.description(),request.dueDate(),request.status(),request.maxScore()));
 
