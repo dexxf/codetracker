@@ -18,11 +18,12 @@ public class ClassroomStudentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "classroom_id", nullable = false)
-    private String classroomId;
-
     @Column(name = "student_user_id", nullable = false)
     private String studentUserId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "classroom_id", nullable = false)
+    private ClassroomEntity classroom;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -35,5 +36,5 @@ public class ClassroomStudentEntity {
     private LocalDateTime joinedAt;
 
     @Column(name = "left_at", nullable = true)
-    private LocalDateTime leftAT;
+    private LocalDateTime leftAt;
 }

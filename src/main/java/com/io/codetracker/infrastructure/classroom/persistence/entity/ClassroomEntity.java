@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Table(name = "classroom")
@@ -48,6 +50,14 @@ public class ClassroomEntity {
             optional = false
     )
     private ClassroomSettingsEntity settings;
+
+    @OneToMany(
+            mappedBy = "classroom",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @MapKey(name = "studentUserId")
+    private Map<String, ClassroomStudentEntity> students = new HashMap<>();
 
     public void setSettings(ClassroomSettingsEntity settings) {
         this.settings = settings;

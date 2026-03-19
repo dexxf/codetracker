@@ -1,5 +1,6 @@
 package com.io.codetracker.adapter.classroom.out.persistence.mapper;
 
+import com.io.codetracker.domain.classroom.entity.Classroom;
 import com.io.codetracker.domain.classroom.entity.ClassroomStudent;
 import com.io.codetracker.infrastructure.classroom.persistence.entity.ClassroomStudentEntity;
 
@@ -10,16 +11,16 @@ public final class ClassroomStudentMapper {
     private ClassroomStudentMapper() {
     }
 
-    public static ClassroomStudentEntity toEntity(ClassroomStudent domain) {
+    public static ClassroomStudentEntity toEntity(ClassroomStudent domain, Classroom classroom) {
         if (Objects.isNull(domain)) return null;
 
         ClassroomStudentEntity entity = new ClassroomStudentEntity();
-        entity.setClassroomId(domain.getClassroomId());
+        entity.setClassroom(ClassroomMapper.toEntity(classroom));
         entity.setStudentUserId(domain.getStudentUserId());
         entity.setStatus(domain.getStatus());
         entity.setJoinedAt(domain.getJoinedAt());
         entity.setLastActiveAt(domain.getLastActiveAt());
-        entity.setLeftAT(domain.getLeftAt());
+        entity.setLeftAt(domain.getLeftAt());
         return entity;
     }
 
@@ -27,12 +28,12 @@ public final class ClassroomStudentMapper {
         if (Objects.isNull(entity)) return null;
 
         return new ClassroomStudent(
-                entity.getClassroomId(),
+                entity.getClassroom() != null ? entity.getClassroom().getClassroomId() : null,
                 entity.getStudentUserId(),
                 entity.getStatus(),
                 entity.getJoinedAt(),
                 entity.getLastActiveAt(),
-                entity.getLeftAT()
+                entity.getLeftAt()
         );
     }
 }

@@ -13,6 +13,6 @@ public class ClassroomStudentDomainRepositoryImpl implements ClassroomStudentDom
 
     @Override
     public boolean existsByClassroomIdAndStudentUserId(String classroomId, String studentUserId) {
-        return classroomStudentRepository.existsByClassroomIdAndStudentUserId(classroomId, studentUserId);
+        return classroomStudentRepository.existsByClassroom_ClassroomIdAndStudentUserId(classroomId, studentUserId);
     }
 }
