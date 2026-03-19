@@ -81,4 +81,8 @@ public final class Classroom {
         this.description = description;
         refreshUpdatedAt();
     }
+
+    public boolean isClosed() {
+        return this.status == ClassroomStatus.CLOSED;
+    }
 }
