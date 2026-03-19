@@ -8,8 +8,10 @@ import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomsRespons
 import com.io.codetracker.adapter.classroom.in.mapper.ClassroomJoinHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.CloseClassroomHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.CreateClassroomHttpMapper;
+import com.io.codetracker.adapter.classroom.in.mapper.DeleteClassroomHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.EditClassroomHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.SimpleClassroomHttpMapper;
+import com.io.codetracker.application.classroom.command.DeleteClassroomCommand;
 import com.io.codetracker.application.classroom.command.EditClassroomCommand;
 import com.io.codetracker.application.classroom.command.JoinClassroomCommand;
 import com.io.codetracker.application.classroom.command.CloseClassroomCommand;
@@ -50,6 +52,7 @@ public class ClassroomController {
     private final GetClassroomStatsUseCase getClassroomStatsUseCase;
     private final EditClassroomUseCase editClassroomUseCase;
     private final CloseClassroomUseCase closeClassroomUseCase;
+    private final DeleteClassroomUseCase deleteClassroomUseCase;
     
 @PostMapping("/create")
 public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPrincipal AuthPrincipal authPrincipal,@Valid @RequestBody CreateClassroomRequest request) {
@@ -151,6 +154,22 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
 
         return ResponseEntity.ok(Map.of("message", "Classroom closed successfully",
                                          "data", result.data()));
+    }
+
+    @DeleteMapping("/{classroomId}")
+    public ResponseEntity<String> deleteClassroom(
+            @AuthenticationPrincipal AuthPrincipal authPrincipal,
+            @PathVariable String classroomId) {
+        DeleteClassroomResult result = deleteClassroomUseCase.execute(
+            new DeleteClassroomCommand(authPrincipal.getUserId(), classroomId)
+        );
+        
+        if (result != DeleteClassroomResult.SUCCESS) {
+            return ResponseEntity.status(DeleteClassroomHttpMapper.toStatus(result))
+                    .body(DeleteClassroomHttpMapper.toMessage(result));
+        }
+
+        return ResponseEntity.ok("Classroom deleted successfully");
     }
 
 }
