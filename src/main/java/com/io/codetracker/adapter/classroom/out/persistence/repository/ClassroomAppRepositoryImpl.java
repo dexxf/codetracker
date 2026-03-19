@@ -35,6 +35,11 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
     }
 
     @Override
+    public void deleteByClassroomId(String classroomId) {
+        jpaClassroomRepository.deleteById(classroomId);
+    }
+
+    @Override
     public List<Classroom> findByInstructorUserId(String instructorUserId) {
         return jpaClassroomRepository.findByInstructorUserId(instructorUserId)
             .stream()
