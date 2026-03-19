@@ -35,7 +35,7 @@ public class AddActivityService implements AddActivityUseCase {
                 command.description(), command.dueDate(), command.maxScore(), command.status());
 
         if(!activityCreationRes.success()) {
-            Result.fail(AddActivityError.from(activityCreationRes.error()));
+            return Result.fail(AddActivityError.from(activityCreationRes.error()));
         }
 
         Activity saveRes = activityAppRepository.save(activityCreationRes.data());
