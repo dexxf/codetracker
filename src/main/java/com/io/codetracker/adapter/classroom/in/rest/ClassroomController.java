@@ -11,10 +11,12 @@ import com.io.codetracker.adapter.classroom.in.mapper.EditClassroomHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.SimpleClassroomHttpMapper;
 import com.io.codetracker.application.classroom.command.EditClassroomCommand;
 import com.io.codetracker.application.classroom.command.JoinClassroomCommand;
+import com.io.codetracker.application.classroom.command.CloseClassroomCommand;
 import com.io.codetracker.application.classroom.error.ClassroomJoinError;
 import com.io.codetracker.application.classroom.error.CreateClassroomError;
 import com.io.codetracker.application.classroom.error.EditClassroomError;
 import com.io.codetracker.application.classroom.error.SimpleClassroomError;
+import com.io.codetracker.application.classroom.error.CloseClassroomError;
 import com.io.codetracker.application.classroom.port.in.*;
 import com.io.codetracker.application.classroom.result.*;
 import com.io.codetracker.common.result.Result;
@@ -33,6 +35,7 @@ import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomStatsRes
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/classrooms")
@@ -45,6 +48,7 @@ public class ClassroomController {
     private final GetJoinClassroomUseCase getJoinClassroomUseCase;
     private final GetClassroomStatsUseCase getClassroomStatsUseCase;
     private final EditClassroomUseCase editClassroomUseCase;
+    private final CloseClassroomUseCase closeClassroomUseCase;
     
 @PostMapping("/create")
 public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPrincipal AuthPrincipal authPrincipal,@Valid @RequestBody CreateClassroomRequest request) {
@@ -129,6 +133,23 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
         }
 
         return ResponseEntity.ok(EditClassroomResponse.ok(result.data()));
+    }
+
+    @PutMapping("/{classroomId}/close")
+    public ResponseEntity<Map<String, Object>> closeClassroom(
+            @AuthenticationPrincipal AuthPrincipal authPrincipal,
+            @PathVariable String classroomId) {
+        Result<ClassroomData, CloseClassroomError> result = closeClassroomUseCase.execute(
+                new CloseClassroomCommand(authPrincipal.getUserId(), classroomId)
+        );
+
+        if (!result.success()) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", result.error().toString()));
+        }
+
+        return ResponseEntity.ok(Map.of("message", "Classroom closed successfully",
+                                         "data", result.data()));
     }
 
 }
