@@ -7,6 +7,7 @@ import java.util.Optional;
 public interface ClassroomDomainRepository {
     boolean existsByClassroomId(String classroomId);
     boolean existsByActiveCode(String code);
+    Optional<Classroom> findByClassroomId(String classroomId);
     Optional<Classroom> findByClassCode(String classCode);
     int countActiveStudentsByClassroomId(String classroomId);
 }

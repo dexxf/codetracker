@@ -30,6 +30,11 @@ public class ClassroomDomainRepositoryImpl implements ClassroomDomainRepository 
     }
 
     @Override
+    public Optional<Classroom> findByClassroomId(String classroomId) {
+        return jpaClassroomRepository.findById(classroomId).map(ClassroomMapper::toDomain);
+    }
+
+    @Override
     public Optional<Classroom> findByClassCode(String classCode) {
         Optional<ClassroomEntity> classroomEntity = jpaClassroomRepository.findByClassCode(classCode);
         return classroomEntity.map(ClassroomMapper::toDomain);
