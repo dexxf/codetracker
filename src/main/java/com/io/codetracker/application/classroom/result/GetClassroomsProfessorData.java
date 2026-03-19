@@ -3,7 +3,7 @@ package com.io.codetracker.application.classroom.result;
 import com.io.codetracker.domain.classroom.entity.Classroom;
 
 public record GetClassroomsProfessorData (String classroomId,String className, String classCode, String description,
-                                          String instructorId, int studentCount) {
+                                          String instructorId, int studentCount, String status) {
 
     public static GetClassroomsProfessorData from(Classroom classroom, int studentCount) {
         return new GetClassroomsProfessorData(
@@ -12,7 +12,8 @@ public record GetClassroomsProfessorData (String classroomId,String className, S
                 classroom.getClassCode(),
                 classroom.getDescription(),
                 classroom.getInstructorUserId(),
-                studentCount
+                studentCount,
+                classroom.getStatus().name()
         );
     }
 
