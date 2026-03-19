@@ -6,6 +6,7 @@ import com.io.codetracker.adapter.classroom.in.dto.response.ClassroomJoinRespons
 import com.io.codetracker.adapter.classroom.in.dto.response.EditClassroomResponse;
 import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomsResponse;
 import com.io.codetracker.adapter.classroom.in.mapper.ClassroomJoinHttpMapper;
+import com.io.codetracker.adapter.classroom.in.mapper.CloseClassroomHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.CreateClassroomHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.EditClassroomHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.SimpleClassroomHttpMapper;
@@ -144,8 +145,8 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
         );
 
         if (!result.success()) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("error", result.error().toString()));
+            return ResponseEntity.status(CloseClassroomHttpMapper.toStatus(result.error()))
+                    .body(Map.of("error", CloseClassroomHttpMapper.toMessage(result.error())));
         }
 
         return ResponseEntity.ok(Map.of("message", "Classroom closed successfully",
