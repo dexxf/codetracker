@@ -1,14 +1,19 @@
 package com.io.codetracker.adapter.classroom.in.rest;
 
 import com.io.codetracker.adapter.classroom.in.dto.request.JoinClassroomRequest;
+import com.io.codetracker.adapter.classroom.in.dto.request.EditClassroomRequest;
 import com.io.codetracker.adapter.classroom.in.dto.response.ClassroomJoinResponse;
+import com.io.codetracker.adapter.classroom.in.dto.response.EditClassroomResponse;
 import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomsResponse;
 import com.io.codetracker.adapter.classroom.in.mapper.ClassroomJoinHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.CreateClassroomHttpMapper;
+import com.io.codetracker.adapter.classroom.in.mapper.EditClassroomHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.SimpleClassroomHttpMapper;
+import com.io.codetracker.application.classroom.command.EditClassroomCommand;
 import com.io.codetracker.application.classroom.command.JoinClassroomCommand;
 import com.io.codetracker.application.classroom.error.ClassroomJoinError;
 import com.io.codetracker.application.classroom.error.CreateClassroomError;
+import com.io.codetracker.application.classroom.error.EditClassroomError;
 import com.io.codetracker.application.classroom.error.SimpleClassroomError;
 import com.io.codetracker.application.classroom.port.in.*;
 import com.io.codetracker.application.classroom.result.*;
@@ -39,6 +44,7 @@ public class ClassroomController {
     private final JoinClassroomUseCase joinClassroomUseCase;
     private final GetJoinClassroomUseCase getJoinClassroomUseCase;
     private final GetClassroomStatsUseCase getClassroomStatsUseCase;
+    private final EditClassroomUseCase editClassroomUseCase;
     
 @PostMapping("/create")
 public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPrincipal AuthPrincipal authPrincipal,@Valid @RequestBody CreateClassroomRequest request) {
@@ -101,6 +107,28 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
             .body(GetClassroomStatsResponse.fail(SimpleClassroomHttpMapper.toMessage(result.error())));
         }
         return ResponseEntity.ok(GetClassroomStatsResponse.success(result.data()));
+    }
+
+    @PutMapping("/{classroomId}")
+    public ResponseEntity<EditClassroomResponse> updateClassroom(
+            @AuthenticationPrincipal AuthPrincipal authPrincipal,
+            @PathVariable String classroomId,
+            @Valid @RequestBody EditClassroomRequest request) {
+        Result<ClassroomData, EditClassroomError> result = editClassroomUseCase.execute(
+                new EditClassroomCommand(
+                        authPrincipal.getUserId(),
+                        classroomId,
+                        request.name(),
+                        request.description(),
+                    request.maxStudents()
+                ));
+
+        if (!result.success()) {
+            return ResponseEntity.status(EditClassroomHttpMapper.toStatus(result.error()))
+                    .body(EditClassroomResponse.fail(EditClassroomHttpMapper.toMessage(result.error())));
+        }
+
+        return ResponseEntity.ok(EditClassroomResponse.ok(result.data()));
     }
 
 }
