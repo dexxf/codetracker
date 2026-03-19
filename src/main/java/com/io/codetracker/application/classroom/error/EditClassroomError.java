@@ -16,6 +16,7 @@ public enum EditClassroomError {
             case CLASSROOM_NOT_FOUND -> CLASSROOM_NOT_FOUND;
             case INVALID_NAME -> INVALID_NAME;
             case INVALID_DESCRIPTION -> INVALID_DESCRIPTION;
+            case CLASSROOM_CLOSED -> CLASSROOM_NOT_FOUND;
         };
     }
 }

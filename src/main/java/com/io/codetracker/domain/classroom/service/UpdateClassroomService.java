@@ -24,6 +24,10 @@ public final class UpdateClassroomService {
             return Result.fail(EditClassroomResult.CLASSROOM_NOT_FOUND);
         }
 
+        if (classroom.isClosed()) {
+            return Result.fail(EditClassroomResult.CLASSROOM_CLOSED);
+        }
+
         if (name == null || name.isBlank() || name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
             return Result.fail(EditClassroomResult.INVALID_NAME);
         }
