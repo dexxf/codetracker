@@ -8,8 +8,8 @@ public final class Classroom {
     
     private final String classroomId;
     private final String instructorUserId;
-    private final String name;
-    private final String description;
+    private String name;
+    private String description;
     private final String classCode;
     private ClassroomStatus status;
     private final LocalDateTime createdAt;
@@ -74,6 +74,16 @@ public final class Classroom {
 
     public void archive() {
         this.status = ClassroomStatus.ARCHIVED;
+        refreshUpdatedAt();
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+        refreshUpdatedAt();
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
         refreshUpdatedAt();
     }
 }
