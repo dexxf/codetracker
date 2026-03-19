@@ -8,6 +8,7 @@ import com.io.codetracker.domain.classroom.repository.ClassroomSettingsDomainRep
 import com.io.codetracker.domain.classroom.repository.ClassroomStudentDomainRepository;
 import com.io.codetracker.domain.classroom.service.ClassroomJoinService;
 import com.io.codetracker.domain.classroom.service.ClassroomStudentCreationService;
+import com.io.codetracker.domain.classroom.service.UpdateClassroomService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -37,5 +38,10 @@ public class ClassroomBeanConfig {
     public ClassroomJoinService classroomJoinService(ClassroomDomainRepository classroomDomainRepository, ClassroomSettingsDomainRepository classroomSettingsDomainRepository,
                                                      ClassroomStudentDomainRepository classroomStudentDomainRepository) {
         return new ClassroomJoinService(classroomDomainRepository,classroomSettingsDomainRepository, classroomStudentDomainRepository);
+    }
+
+    @Bean
+    public UpdateClassroomService updateClassroomService(ClassroomDomainRepository classroomDomainRepository) {
+        return new UpdateClassroomService(classroomDomainRepository);
     }
 }
