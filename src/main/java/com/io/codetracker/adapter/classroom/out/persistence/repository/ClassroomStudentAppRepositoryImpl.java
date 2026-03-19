@@ -2,6 +2,7 @@ package com.io.codetracker.adapter.classroom.out.persistence.repository;
 
 import com.io.codetracker.adapter.classroom.out.persistence.mapper.ClassroomStudentMapper;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentAppRepository;
+import com.io.codetracker.domain.classroom.entity.Classroom;
 import com.io.codetracker.domain.classroom.entity.ClassroomStudent;
 import com.io.codetracker.domain.classroom.valueObject.ClassroomStatus;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
@@ -22,8 +23,9 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     private final JpaClassroomStudentRepository jpaClassroomStudentRepository;
 
     @Override
-    public boolean save(ClassroomStudent classroomStudent) {
-        ClassroomStudentEntity entity = ClassroomStudentMapper.toEntity(classroomStudent);
+    public boolean save(ClassroomStudent classroomStudent, Classroom classroom) {
+        
+        ClassroomStudentEntity entity = ClassroomStudentMapper.toEntity(classroomStudent, classroom);
         if(entity == null) return false;
 
         jpaClassroomStudentRepository.save(entity);
@@ -43,7 +45,7 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     public Map<String, Integer> countByClassroomIds(List<String> classroomIds) {
         Map<String, Integer> countMap = new HashMap<>();
         for (String classroomId : classroomIds) {
-            int count = jpaClassroomStudentRepository.countByClassroomId(classroomId);
+            int count = jpaClassroomStudentRepository.countByClassroom_ClassroomId(classroomId);
             countMap.put(classroomId, count);
         }
         return countMap;
@@ -52,8 +54,8 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     @Override
     public List<ClassroomStudent> findClassroomStudents(String classroomId, StudentStatus status, boolean ascending) {
         return ascending
-                ? mapToDomain(jpaClassroomStudentRepository.findByClassroomIdAndStatusOrderByJoinedAt(classroomId, status))
-                : mapToDomain(jpaClassroomStudentRepository.findByClassroomIdAndStatusOrderByJoinedAtDesc(classroomId, status));
+                ? mapToDomain(jpaClassroomStudentRepository.findByClassroom_ClassroomIdAndStatusOrderByJoinedAt(classroomId, status))
+                : mapToDomain(jpaClassroomStudentRepository.findByClassroom_ClassroomIdAndStatusOrderByJoinedAtDesc(classroomId, status));
     }
 
     private List<ClassroomStudent> mapToDomain(List<ClassroomStudentEntity> entities) {
@@ -62,7 +64,7 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
 
     @Override
     public long countByClassroomId(String classroomId) {
-        return jpaClassroomStudentRepository.countByClassroomId(classroomId);
+        return jpaClassroomStudentRepository.countByClassroom_ClassroomId(classroomId);
     }
 
 }
