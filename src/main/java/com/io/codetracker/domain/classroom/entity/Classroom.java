@@ -72,11 +72,6 @@ public final class Classroom {
         refreshUpdatedAt();
     }
 
-    public void archive() {
-        this.status = ClassroomStatus.ARCHIVED;
-        refreshUpdatedAt();
-    }
-
     public void updateName(String name) {
         this.name = name;
         refreshUpdatedAt();
