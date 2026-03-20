@@ -41,7 +41,19 @@ public class GithubOAuthLoginService implements GithubOAuthLoginUseCase {
         Optional<GithubAccount> existingAccount = githubAppRepository.findByGithubId(command.githubId());
 
         if (existingAccount.isPresent()) {
-            return Result.ok(new GithubOAuthLoginData(existingAccount.get().getAuthId(), true));
+            GithubAccount existing = existingAccount.get();
+            if (command.accessToken() != null
+                    && !command.accessToken().isBlank()
+                    && !command.accessToken().equals(existing.getAccessToken())) {
+                GithubAccount updatedAccount = new GithubAccount(
+                        existing.getGithubAccountId(),
+                        existing.getAuthId(),
+                        existing.getGithubId(),
+                        command.accessToken()
+                );
+                githubAppRepository.save(updatedAccount);
+            }
+            return Result.ok(new GithubOAuthLoginData(existing.getAuthId(), true));
         }
 
         Result<AuthData, AuthRegistrationError> authRegistrationResult =
