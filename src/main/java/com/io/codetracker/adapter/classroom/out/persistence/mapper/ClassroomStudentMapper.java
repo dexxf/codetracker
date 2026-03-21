@@ -1,6 +1,5 @@
 package com.io.codetracker.adapter.classroom.out.persistence.mapper;
 
-import com.io.codetracker.domain.classroom.entity.Classroom;
 import com.io.codetracker.domain.classroom.entity.ClassroomStudent;
 import com.io.codetracker.infrastructure.classroom.persistence.entity.ClassroomStudentEntity;
 
@@ -11,11 +10,10 @@ public final class ClassroomStudentMapper {
     private ClassroomStudentMapper() {
     }
 
-    public static ClassroomStudentEntity toEntity(ClassroomStudent domain, Classroom classroom) {
+    public static ClassroomStudentEntity toEntity(ClassroomStudent domain) {
         if (Objects.isNull(domain)) return null;
 
         ClassroomStudentEntity entity = new ClassroomStudentEntity();
-        entity.setClassroom(ClassroomMapper.toEntity(classroom));
         entity.setStudentUserId(domain.getStudentUserId());
         entity.setStatus(domain.getStatus());
         entity.setJoinedAt(domain.getJoinedAt());

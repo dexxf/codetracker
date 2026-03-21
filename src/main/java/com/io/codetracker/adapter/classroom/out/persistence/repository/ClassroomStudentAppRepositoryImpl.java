@@ -2,11 +2,12 @@ package com.io.codetracker.adapter.classroom.out.persistence.repository;
 
 import com.io.codetracker.adapter.classroom.out.persistence.mapper.ClassroomStudentMapper;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentAppRepository;
-import com.io.codetracker.domain.classroom.entity.Classroom;
 import com.io.codetracker.domain.classroom.entity.ClassroomStudent;
 import com.io.codetracker.domain.classroom.valueObject.ClassroomStatus;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
+import com.io.codetracker.infrastructure.classroom.persistence.entity.ClassroomEntity;
 import com.io.codetracker.infrastructure.classroom.persistence.entity.ClassroomStudentEntity;
+import com.io.codetracker.infrastructure.classroom.persistence.repository.JpaClassroomRepository;
 import com.io.codetracker.infrastructure.classroom.persistence.repository.JpaClassroomStudentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -21,13 +22,16 @@ import java.util.Map;
 public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRepository {
 
     private final JpaClassroomStudentRepository jpaClassroomStudentRepository;
+    private final JpaClassroomRepository jpaClassroomRepository;
 
     @Override
-    public boolean save(ClassroomStudent classroomStudent, Classroom classroom) {
-        
-        ClassroomStudentEntity entity = ClassroomStudentMapper.toEntity(classroomStudent, classroom);
-        if(entity == null) return false;
+    public boolean save(ClassroomStudent classroomStudent) {
+        ClassroomEntity classroomEntity = jpaClassroomRepository.findById(classroomStudent.getClassroomId())
+                .orElse(null);
+        if (classroomEntity == null) return false;
 
+        ClassroomStudentEntity entity = ClassroomStudentMapper.toEntity(classroomStudent);
+        classroomEntity.addStudent(entity);
         jpaClassroomStudentRepository.save(entity);
         return true;
     }

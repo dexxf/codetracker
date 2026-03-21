@@ -49,7 +49,7 @@ public final class JoinClassroomService implements JoinClassroomUseCase {
 
         ClassroomStudent student = creation.data();
 
-        studentRepository.save(student, joinResult.classroom());
+        studentRepository.save(student);
 
         return Result.ok(ClassroomJoinResult.from(student));
     }
