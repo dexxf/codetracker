@@ -36,7 +36,8 @@ public class GetClassroomsService implements GetClassroomUseCase {
         List<GetClassroomsProfessorData> dataList = classroomList.stream()
                 .map(classroom -> GetClassroomsProfessorData.from(
                         classroom,
-                        classroomWithCount.getOrDefault(classroom.getClassroomId(), 0)
+                        classroomWithCount.getOrDefault(classroom.getClassroomId(), 0),
+                        classroomAppRepository.findMaxStudentByClassroomId(classroom.getClassroomId()) // ill fix this later if i see any performance issue
                 ))
                 .toList();
 
