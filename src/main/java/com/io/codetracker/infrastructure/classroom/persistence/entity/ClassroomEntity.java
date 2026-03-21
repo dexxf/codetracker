@@ -1,6 +1,8 @@
 package com.io.codetracker.infrastructure.classroom.persistence.entity;
 
 import com.io.codetracker.domain.classroom.valueObject.ClassroomStatus;
+import com.io.codetracker.infrastructure.activity.persistence.entity.ActivityEntity;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +15,6 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ClassroomEntity {
 
     @Id
@@ -59,8 +60,27 @@ public class ClassroomEntity {
     @MapKey(name = "studentUserId")
     private Map<String, ClassroomStudentEntity> students = new HashMap<>();
 
+    @OneToMany(
+    mappedBy = "classroomEntity",
+    cascade = CascadeType.REMOVE,
+    fetch = FetchType.LAZY)
+    @MapKey(name = "activityId")
+    private Map<String, ActivityEntity> activities = new HashMap<>();
+
     public void setSettings(ClassroomSettingsEntity settings) {
         this.settings = settings;
         settings.setClassroom(this);
     }
+
+    public void addStudent(ClassroomStudentEntity student) {
+    students.put(student.getStudentUserId(), student);
+    student.setClassroom(this);
+        }
+
+    public void addActivity(ActivityEntity activity) {
+    activities.put(activity.getActivityId(), activity
+            );
+    activity.setClassroomEntity(this);
+        }
+
 }
