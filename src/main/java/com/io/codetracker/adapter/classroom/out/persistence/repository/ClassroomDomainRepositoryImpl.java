@@ -40,9 +40,4 @@ public class ClassroomDomainRepositoryImpl implements ClassroomDomainRepository 
         return classroomEntity.map(ClassroomMapper::toDomain);
     }
 
-    @Override
-    public int countActiveStudentsByClassroomId(String classroomId) {
-        return jpaClassroomRepository.countByClassroomId(classroomId);
-    }
-
 }

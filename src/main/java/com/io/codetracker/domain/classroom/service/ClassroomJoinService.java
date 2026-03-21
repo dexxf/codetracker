@@ -60,7 +60,7 @@ public class ClassroomJoinService {
             return Result.fail(ClassroomJoinFailResult.USER_ALREADY_IN_CLASSROOM);
         }
 
-        int currentStudentCount = classroomDomainRepository.countActiveStudentsByClassroomId(classroom.getClassroomId());
+        int currentStudentCount = classroomStudentDomainRepository.countByClassroomId(classroom.getClassroomId());
         if(currentStudentCount >= classroomSettings.getMaxStudents()) {
             return Result.fail(ClassroomJoinFailResult.CLASSROOM_FULL);
         }

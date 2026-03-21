@@ -9,5 +9,4 @@ public interface ClassroomDomainRepository {
     boolean existsByActiveCode(String code);
     Optional<Classroom> findByClassroomId(String classroomId);
     Optional<Classroom> findByClassCode(String classCode);
-    int countActiveStudentsByClassroomId(String classroomId);
 }
