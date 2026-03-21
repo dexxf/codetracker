@@ -40,7 +40,8 @@ public class GetJoinClassroomService implements GetJoinClassroomUseCase {
         return classrooms.stream()
                 .map(classroom -> new GetJoinClassroomDataResult(
                         ClassroomData.from(classroom),
-                        counts.getOrDefault(classroom.getClassroomId(), 0)
+                        counts.getOrDefault(classroom.getClassroomId(), 0),
+                        classroomRepository.findMaxStudentByClassroomId(classroom.getClassroomId()) // ill fix this later if i see any performance issue
                 ))
                 .toList();
     }
