@@ -17,7 +17,7 @@ public class ActivityDomainRepositoryImpl implements ActivityDomainRepository {
 
     @Override
     public boolean existsByClassroomIdAndActivityId(String classroomId, String activityId) {
-        return jpa.existsByClassroomIdAndActivityId(classroomId, activityId);
+        return jpa.existsByClassroomEntity_ClassroomIdAndActivityId(classroomId, activityId);
     }
 
     @Override

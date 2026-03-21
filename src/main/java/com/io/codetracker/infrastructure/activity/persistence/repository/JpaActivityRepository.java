@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface JpaActivityRepository extends JpaRepository<ActivityEntity, String> {
-    boolean existsByClassroomIdAndActivityId(String classroomId, String activityId);
-    List<ActivityEntity> findByClassroomIdAndCreatedByProfessorId(String classroomId, String createdByProfessorId);
-    long countByClassroomIdAndStatus(String classroomId, ActivityStatus status);
-    long countByClassroomId(String classroomId);
-}
+    boolean existsByClassroomEntity_ClassroomIdAndActivityId(String classroomId, String activityId);
+    List<ActivityEntity> findByClassroomEntity_ClassroomIdAndClassroomEntity_InstructorUserId(String classroomId, String instructorUserId);
+    long countByClassroomEntity_ClassroomIdAndStatus(String classroomId, ActivityStatus status);
+    long countByClassroomEntity_ClassroomId(String classroomId);
+}   

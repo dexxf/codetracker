@@ -5,6 +5,7 @@ import com.io.codetracker.application.activity.port.out.ActivityAppRepository;
 import com.io.codetracker.domain.activity.entity.Activity;
 import com.io.codetracker.infrastructure.activity.persistence.entity.ActivityEntity;
 import com.io.codetracker.infrastructure.activity.persistence.repository.JpaActivityRepository;
+import com.io.codetracker.infrastructure.classroom.persistence.repository.JpaClassroomRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -16,16 +17,19 @@ import java.util.Optional;
 public class ActivityAppRepositoryImpl implements ActivityAppRepository {
 
     private final JpaActivityRepository jpa;
+    private final JpaClassroomRepository classroomJpa;
 
     @Override
     public Activity save(Activity data) {
-            var entity = jpa.save(ActivityMapper.toEntity(data));
+            var classroomEntity = classroomJpa.findById(data.getClassroomId())
+                    .orElseThrow(() -> new RuntimeException("Classroom not found"));
+            var entity = jpa.save(ActivityMapper.toEntity(data, classroomEntity));
             return ActivityMapper.toDomain(entity);
     }
 
     @Override
     public List<Activity> findByClassroomId(String classroomId, String instructorId) {
-        return jpa.findByClassroomIdAndCreatedByProfessorId(classroomId, instructorId).stream().map(
+        return jpa.findByClassroomEntity_ClassroomIdAndClassroomEntity_InstructorUserId(classroomId, instructorId).stream().map(
                 ActivityMapper::toDomain
         ).toList();
     }

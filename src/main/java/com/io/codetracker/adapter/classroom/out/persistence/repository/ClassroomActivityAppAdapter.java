@@ -16,12 +16,12 @@ public class ClassroomActivityAppAdapter implements ClassroomActivityAppPort {
 
     @Override
     public long countByClassroomId(String classroomId) {
-        return jpaActivityRepository.countByClassroomId(classroomId);
+        return jpaActivityRepository.countByClassroomEntity_ClassroomId(classroomId);
     }
 
     @Override
     public long countActiveActivitiesByClassroomId(String classroomId) {
-        return jpaActivityRepository.countByClassroomIdAndStatus(classroomId, ActivityStatus.PUBLISHED);
+        return jpaActivityRepository.countByClassroomEntity_ClassroomIdAndStatus(classroomId, ActivityStatus.PUBLISHED);
     }
 
 
