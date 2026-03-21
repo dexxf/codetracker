@@ -53,8 +53,8 @@ public class ClassroomEntity {
 
     @OneToMany(
             mappedBy = "classroom",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+            cascade = CascadeType.REMOVE,
+            fetch = FetchType.LAZY
     )
     @MapKey(name = "studentUserId")
     private Map<String, ClassroomStudentEntity> students = new HashMap<>();
