@@ -5,6 +5,7 @@ import com.io.codetracker.application.activity.port.out.ActivityAppRepository;
 import com.io.codetracker.domain.activity.entity.Activity;
 import com.io.codetracker.infrastructure.activity.persistence.entity.ActivityEntity;
 import com.io.codetracker.infrastructure.activity.persistence.repository.JpaActivityRepository;
+import com.io.codetracker.infrastructure.classroom.persistence.entity.ClassroomEntity;
 import com.io.codetracker.infrastructure.classroom.persistence.repository.JpaClassroomRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -21,10 +22,13 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
 
     @Override
     public Activity save(Activity data) {
-            var classroomEntity = classroomJpa.findById(data.getClassroomId())
-                    .orElseThrow(() -> new RuntimeException("Classroom not found"));
-            var entity = jpa.save(ActivityMapper.toEntity(data, classroomEntity));
-            return ActivityMapper.toDomain(entity);
+        ClassroomEntity classroomEntity = classroomJpa.findById(data.getClassroomId())
+                .orElseThrow(() -> new RuntimeException("Classroom not found"));
+
+        ActivityEntity entity = ActivityMapper.toEntity(data);
+        classroomEntity.addActivity(entity);
+        jpa.save(entity);
+        return ActivityMapper.toDomain(entity);
     }
 
     @Override
