@@ -15,4 +15,9 @@ public class ClassroomStudentDomainRepositoryImpl implements ClassroomStudentDom
     public boolean existsByClassroomIdAndStudentUserId(String classroomId, String studentUserId) {
         return classroomStudentRepository.existsByClassroom_ClassroomIdAndStudentUserId(classroomId, studentUserId);
     }
+
+    @Override
+    public int countByClassroomId(String classroomId) {
+        return classroomStudentRepository.countByClassroom_ClassroomId(classroomId);
+    }
 }
