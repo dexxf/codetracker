@@ -1,6 +1,8 @@
 package com.io.codetracker.infrastructure.activity.persistence.entity;
 
 import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
+import com.io.codetracker.infrastructure.classroom.persistence.entity.ClassroomEntity;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,11 +20,9 @@ public class ActivityEntity {
     @Column(name = "activity_id", nullable = false)
     private String activityId;
 
-    @Column(name = "classroom_id", nullable = false)
-    private String classroomId;
-
-    @Column(name = "created_by_professor_id", nullable = false)
-    private String createdByProfessorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "classroom_id", nullable = false)
+    private ClassroomEntity classroomEntity;
 
     @Column(name = "title", nullable = false, length = 100)
     private String title;
@@ -40,7 +40,7 @@ public class ActivityEntity {
     @Column(name = "max_score", nullable = true)
     private Integer maxScore;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false,updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
