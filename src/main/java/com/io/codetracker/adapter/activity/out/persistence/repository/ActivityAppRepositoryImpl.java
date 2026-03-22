@@ -48,4 +48,12 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
     public void deleteByActivityId(String activityId) {
         jpa.deleteById(activityId);
     }
+
+    @Override
+    public void update(Activity updatedActivity) {
+        ActivityEntity entity = jpa.findById(updatedActivity.getActivityId())
+                .orElseThrow(() -> new RuntimeException("Activity not found"));
+        ActivityMapper.updateEntity(updatedActivity, entity);
+        jpa.save(entity);
+    }
 }

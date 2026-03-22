@@ -10,4 +10,5 @@ public interface ActivityAppRepository {
     List<Activity> findByClassroomId(String classroomId, String instructorId);
     Optional<Activity> findById(String activityId);
     void deleteByActivityId(String activityId);
+    void update(Activity updatedActivity);
 }

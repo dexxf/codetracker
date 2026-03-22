@@ -34,4 +34,13 @@ public class ActivityMapper {
                 entity.getUpdatedAt()
         );
     }
+
+    public static void updateEntity(Activity updatedActivity, ActivityEntity entity) {
+        entity.setTitle(updatedActivity.getTitle());
+        entity.setDescription(updatedActivity.getDescription());
+        entity.setDueDate(updatedActivity.getDueDate());
+        entity.setStatus(updatedActivity.getStatus());
+        entity.setMaxScore(updatedActivity.getMaxScore());
+        entity.setUpdatedAt(updatedActivity.getUpdatedAt());
+    }
 }

@@ -39,7 +39,7 @@ public class EditActivityService implements EditActivityUseCase {
 
         Activity updatedActivity = result.data();
 
-        activityAppRepository.save(updatedActivity);
+        activityAppRepository.update(updatedActivity);
         return Result.ok(ActivityData.from(updatedActivity));
     }
 
