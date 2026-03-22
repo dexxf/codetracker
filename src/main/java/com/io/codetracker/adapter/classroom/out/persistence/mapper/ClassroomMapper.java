@@ -40,4 +40,14 @@ public final class ClassroomMapper {
             entity.getUpdatedAt()
         );
     }
+
+    public static void updateEntity(Classroom domain, ClassroomEntity entity) {
+        if (domain == null || entity == null) {
+            throw new IllegalArgumentException("Neither domain nor entity can be null");
+        }
+        entity.setName(domain.getName());
+        entity.setDescription(domain.getDescription());
+        entity.setStatus(domain.getStatus());
+        entity.setUpdatedAt(domain.getUpdatedAt());
+    }
 }

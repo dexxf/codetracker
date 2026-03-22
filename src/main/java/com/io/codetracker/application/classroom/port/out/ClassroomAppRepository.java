@@ -16,4 +16,5 @@ public interface ClassroomAppRepository {
     boolean existsByClassroomId(String classroomId);
     boolean existsByClassroomIdAndInstructorUserId(String classroomId, String instructorUserId);
     Integer findMaxStudentByClassroomId(String classroomId);
+    void updateClassroom(Classroom updatedClassroom, ClassroomSettings classroomSettings);
 }

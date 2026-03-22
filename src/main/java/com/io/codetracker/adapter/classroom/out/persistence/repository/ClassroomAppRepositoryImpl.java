@@ -78,4 +78,18 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
     public Integer findMaxStudentByClassroomId(String classroomId) {
         return jpaClassroomSettingsRepository.findMaxStudentByClassroomId(classroomId);
     }
+
+    @Override
+    public void updateClassroom(Classroom updatedClassroom, ClassroomSettings classroomSettings) {
+        ClassroomEntity entity = jpaClassroomRepository.findById(updatedClassroom.getClassroomId())
+                .orElseThrow(() -> new RuntimeException("Classroom not found"));
+        ClassroomMapper.updateEntity(updatedClassroom, entity); 
+        ClassroomSettingsEntity settingsEntity = entity.getSettings();
+        if (settingsEntity != null) {
+            ClassroomSettingsMapper.updateEntity(classroomSettings, settingsEntity);
+        } else {
+            entity.setSettings(ClassroomSettingsMapper.toEntity(classroomSettings));
+        }
+        jpaClassroomRepository.save(entity);
+    }
 }

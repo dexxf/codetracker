@@ -33,4 +33,13 @@ public final class ClassroomSettingsMapper {
     );
 }
 
+    public static void updateEntity(ClassroomSettings domain, ClassroomSettingsEntity entity) {
+       if (domain == null || entity == null) {
+           throw new IllegalArgumentException("Neither domain nor entity can be null");
+       }
+       entity.setRequireApproval(domain.isRequireApproval());
+       entity.setPasscode(domain.getPasscode());
+       entity.setMaxStudents(domain.getMaxStudents());
+}   
+
 }

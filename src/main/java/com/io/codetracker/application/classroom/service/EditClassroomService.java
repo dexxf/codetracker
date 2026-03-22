@@ -65,7 +65,7 @@ public class EditClassroomService implements EditClassroomUseCase {
         }
 
         Classroom updatedClassroom = result.data();
-        classroomAppRepository.saveClassroom(updatedClassroom, classroomSettings);
+        classroomAppRepository.updateClassroom(updatedClassroom, classroomSettings);
         return Result.ok(ClassroomData.from(updatedClassroom));
     }
 }
