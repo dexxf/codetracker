@@ -26,6 +26,7 @@ public final class EditClassroomHttpMapper {
             case INVALID_MAX_STUDENTS -> "Invalid maximum number of students.";
             case MAX_STUDENTS_LESS_THAN_ENROLLED -> "Max students cannot be lower than current enrolled students.";
             case NOT_INSTRUCTOR -> "User is not the owner of classroom.";
+            case CLASSROOM_CLOSED -> "Classroom is closed.";
         };
     }
 }
