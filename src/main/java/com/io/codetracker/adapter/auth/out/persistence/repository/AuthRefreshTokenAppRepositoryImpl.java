@@ -66,4 +66,8 @@ public class AuthRefreshTokenAppRepositoryImpl implements AuthRefreshTokenAppRep
         }
     }
 
+    @Override
+    public Optional<AuthRefreshToken> findByRefreshTokenId(UUID refreshTokenId) {
+        return jpaRTRepository.findById(refreshTokenId).map(AuthRefreshTokenMapper::toDomain);
+    }
 }
