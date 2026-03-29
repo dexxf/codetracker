@@ -32,7 +32,7 @@ import java.util.UUID;
 public class GithubController {
 
         private static final String OAUTH_STATE_KEY = "oauth_state";
-        private static final int JWT_COOKIE_MAX_AGE = 60 * 60 * 24;
+        private final int JWT_COOKIE_MAX_AGE_IN_MS;
 
         private final JwtService jwtService;
         private final GithubService githubService;
@@ -47,7 +47,8 @@ public class GithubController {
     public GithubController(
             JwtService jwtService,
             GithubService githubService,
-                        GithubOAuthLoginUseCase githubOAuthLoginUseCase,
+            GithubOAuthLoginUseCase githubOAuthLoginUseCase,
+            @Value("${jwt.expiration.ms}") int JWT_COOKIE_MAX_AGE_IN_MS,
             @Value("${github.scope}") String scope,
             @Value("${github.allow-signup}") boolean allowSignup,
             @Value("${github.prompt-consent}") boolean promptConsent,
@@ -55,7 +56,8 @@ public class GithubController {
     ) {
         this.jwtService = jwtService;
         this.githubService = githubService;
-                this.githubOAuthLoginUseCase = githubOAuthLoginUseCase;
+        this.githubOAuthLoginUseCase = githubOAuthLoginUseCase;
+        this.JWT_COOKIE_MAX_AGE_IN_MS = JWT_COOKIE_MAX_AGE_IN_MS;
         this.scope = scope;
         this.allowSignup = allowSignup;
         this.promptConsent = promptConsent;
@@ -147,7 +149,7 @@ public class GithubController {
         cookie.setHttpOnly(true);
         cookie.setSecure(false);
         cookie.setPath("/");
-        cookie.setMaxAge(JWT_COOKIE_MAX_AGE);
+        cookie.setMaxAge(JWT_COOKIE_MAX_AGE_IN_MS / 1000);
         response.addCookie(cookie);
     }
 
