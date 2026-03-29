@@ -4,10 +4,7 @@ import com.io.codetracker.domain.auth.factory.AuthFactory;
 import com.io.codetracker.domain.auth.factory.GithubAccountFactory;
 import com.io.codetracker.domain.auth.repository.AuthDomainRepository;
 import com.io.codetracker.domain.auth.repository.GithubAccountDomainRepository;
-import com.io.codetracker.domain.auth.service.AuthCreationService;
-import com.io.codetracker.domain.auth.service.GithubAccountCreationService;
-import com.io.codetracker.domain.auth.service.PasswordHasher;
-import com.io.codetracker.domain.auth.service.PasswordService;
+import com.io.codetracker.domain.auth.service.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,4 +32,10 @@ public class AuthBeanConfig {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
+    @Bean
+    public RefreshTokenCreationService refreshTokenCreationService (RefreshTokenLifetimePolicy refreshTokenLifetimePolicy) {
+        return new RefreshTokenCreationService(refreshTokenLifetimePolicy);
+    }
+
 }
