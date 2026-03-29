@@ -4,7 +4,7 @@ import com.io.codetracker.adapter.auth.in.mapper.GithubOAuthHttpMapper;
 import com.io.codetracker.adapter.auth.out.github.result.GithubExchangeResult;
 import com.io.codetracker.adapter.auth.out.github.result.GithubUserInfoResult;
 import com.io.codetracker.adapter.auth.out.github.service.GithubService;
-import com.io.codetracker.adapter.auth.out.security.jwt.JwtService;
+import com.io.codetracker.adapter.auth.out.service.JwtService;
 import com.io.codetracker.application.auth.command.GithubOAuthLoginCommand;
 import com.io.codetracker.application.auth.error.GithubOAuthLoginError;
 import com.io.codetracker.application.auth.port.in.GithubOAuthLoginUseCase;

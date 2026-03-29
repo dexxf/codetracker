@@ -2,7 +2,7 @@ package com.io.codetracker.infrastructure.auth.config;
 
 
 import com.io.codetracker.adapter.auth.out.security.BCryptPasswordHasher;
-import com.io.codetracker.adapter.auth.out.security.jwt.JwtFilter;
+import com.io.codetracker.infrastructure.auth.filter.JwtFilter;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

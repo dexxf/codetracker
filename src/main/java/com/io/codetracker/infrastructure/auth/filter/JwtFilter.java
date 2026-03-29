@@ -1,6 +1,7 @@
-package com.io.codetracker.adapter.auth.out.security.jwt;
+package com.io.codetracker.infrastructure.auth.filter;
 
 import com.io.codetracker.adapter.auth.out.security.CustomUserDetailsService;
+import com.io.codetracker.adapter.auth.out.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
