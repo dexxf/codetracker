@@ -8,4 +8,5 @@ public interface AuthAppRepository {
     void save(Auth auth);
     boolean emailExists(String email);
     Optional<Auth> findByEmail(String email);
+    boolean existsByAuthId(String authId);
 }

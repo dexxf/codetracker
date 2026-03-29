@@ -35,7 +35,12 @@ public class AuthAppRepositoryImpl implements AuthAppRepository,UserAuthPort {
     @Override
     public Optional<Auth> findByEmail(String email) {
         Optional<AuthEntity> authEntity = jpa.findByEmail(email);
-        return authEntity.map(e -> AuthMapper.toDomain(e));
+        return authEntity.map(AuthMapper::toDomain);
+    }
+
+    @Override
+    public boolean existsByAuthId(String authId) {
+        return jpa.existsById(authId);
     }
 
     @Override
