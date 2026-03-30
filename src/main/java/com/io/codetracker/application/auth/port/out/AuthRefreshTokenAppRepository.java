@@ -7,8 +7,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface AuthRefreshTokenAppRepository {
-    Optional<AuthRefreshToken> findValidTokenByAuthIdAndDeviceId(String authId, String deviceId);
+    Optional<AuthRefreshToken> findTokenByAuthIdAndDeviceId(String authId, String deviceId);
     boolean createToken(AuthRefreshToken authRefreshToken);
-    boolean updateToken(UUID id, String hashedToken, LocalDateTime newExpiry);
+    boolean updateToken(UUID id, String hashedToken, LocalDateTime newExpiry, String ipAddress, String userAgent);
     Optional<AuthRefreshToken> findByRefreshTokenId(UUID refreshTokenID);
 }

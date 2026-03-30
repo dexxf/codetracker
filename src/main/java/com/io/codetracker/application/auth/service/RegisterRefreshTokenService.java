@@ -52,7 +52,7 @@ public class RegisterRefreshTokenService implements AddRefreshTokenUseCase {
 
         if (existingToken.isPresent()) {
             AuthRefreshToken tokenToUpdate = existingToken.get();
-            boolean isUpdateSuccess = rTokenRepository.updateToken(tokenToUpdate.getId(), hashedSecret, expiresAt);
+            boolean isUpdateSuccess = rTokenRepository.updateToken(tokenToUpdate.getId(), hashedSecret, expiresAt, ipAddress, userAgent);
 
             if (!isUpdateSuccess) {
                 return Result.fail(RegisterRefreshTokenError.SAVE_FAILED);

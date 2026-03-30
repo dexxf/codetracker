@@ -47,7 +47,7 @@ public class AuthRefreshTokenAppRepositoryImpl implements AuthRefreshTokenAppRep
     }
 
     @Override
-    public boolean updateToken(UUID id, String hashedToken, LocalDateTime newExpiry) {
+    public boolean updateToken(UUID id, String hashedToken, LocalDateTime newExpiry, String ipAddress, String userAgent) {
         try {
             Optional<AuthRefreshTokenEntity> authRefreshTokenEntityOpt = jpaRTRepository.findById(id);
             if(authRefreshTokenEntityOpt.isEmpty()) return false;
@@ -55,6 +55,10 @@ public class AuthRefreshTokenAppRepositoryImpl implements AuthRefreshTokenAppRep
 
             authRefreshTokenEntity.setExpiresAt(newExpiry);
             authRefreshTokenEntity.setTokenHash(hashedToken);
+            authRefreshTokenEntity.setRevoked(false);
+            authRefreshTokenEntity.setRevokedAt(null);
+            authRefreshTokenEntity.setIpAddress(ipAddress);
+            authRefreshTokenEntity.setUserAgent(userAgent);
             authRefreshTokenEntity.setUpdatedAt(LocalDateTime.now());
 
             jpaRTRepository.save(authRefreshTokenEntity);

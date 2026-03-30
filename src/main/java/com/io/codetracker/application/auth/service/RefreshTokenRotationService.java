@@ -87,7 +87,7 @@ public class RefreshTokenRotationService implements RotateRefreshTokenUseCase {
             String newHashedToken = hashService.encode(newRawSecret);
             LocalDateTime newExpiry = refreshTokenLifetimePolicy.issueExpirationFromNow();
 
-            if (!authRefreshTokenAppRepository.updateToken(existingToken.getId(), newHashedToken, newExpiry)) {
+            if (!authRefreshTokenAppRepository.updateToken(existingToken.getId(), newHashedToken, newExpiry, command.ipAddress(), command.userAgent())) {
                 return Result.fail(RefreshTokenRotationError.SAVE_FAILED);
             }
 
