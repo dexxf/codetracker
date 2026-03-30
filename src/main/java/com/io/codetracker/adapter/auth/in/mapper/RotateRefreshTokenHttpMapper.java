@@ -10,11 +10,11 @@ public final class RotateRefreshTokenHttpMapper {
 
     public static HttpStatus toStatus(RefreshTokenRotationError error) {
         return switch (error) {
-            case TOKEN_NOT_FOUND,
-                 INVALID_TOKEN,
-                 INVALID_DEVICE_ID -> HttpStatus.NOT_FOUND;
             case SAVE_FAILED -> HttpStatus.INTERNAL_SERVER_ERROR;
             case TOKEN_REVOKED,
+                 INVALID_DEVICE_ID,
+                 INVALID_TOKEN,
+                 TOKEN_NOT_FOUND,
                  TOKEN_EXPIRED -> HttpStatus.BAD_REQUEST;
         };
     }
