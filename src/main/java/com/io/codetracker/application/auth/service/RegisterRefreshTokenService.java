@@ -48,7 +48,7 @@ public class RegisterRefreshTokenService implements AddRefreshTokenUseCase {
         String rawSecret = UUID.randomUUID().toString();
         String hashedSecret = hashService.encode(rawSecret);
 
-        Optional<AuthRefreshToken> existingToken = rTokenRepository.findValidTokenByAuthIdAndDeviceId(authId, deviceId);
+        Optional<AuthRefreshToken> existingToken = rTokenRepository.findTokenByAuthIdAndDeviceId(authId, deviceId);
 
         if (existingToken.isPresent()) {
             AuthRefreshToken tokenToUpdate = existingToken.get();

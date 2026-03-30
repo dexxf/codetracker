@@ -21,11 +21,10 @@ public class AuthRefreshTokenAppRepositoryImpl implements AuthRefreshTokenAppRep
     private final JpaAuthRepository jpaAuthRepository;
 
     @Override
-    public Optional<AuthRefreshToken> findValidTokenByAuthIdAndDeviceId(String authId, String deviceId) {
-        return jpaRTRepository.findByAuthEntity_AuthIdAndDeviceIdAndRevokedFalseAndExpiresAtAfter(
+    public Optional<AuthRefreshToken> findTokenByAuthIdAndDeviceId(String authId, String deviceId) {
+        return jpaRTRepository.findByAuthEntity_AuthIdAndDeviceId(
                 authId,
-                deviceId,
-                LocalDateTime.now()
+                deviceId
         ).map(AuthRefreshTokenMapper::toDomain);
     }
 
@@ -50,7 +49,6 @@ public class AuthRefreshTokenAppRepositoryImpl implements AuthRefreshTokenAppRep
     @Override
     public boolean updateToken(UUID id, String hashedToken, LocalDateTime newExpiry) {
         try {
-            // TODO: will refactor to just use query instead of finding the id, updating and saving.
             Optional<AuthRefreshTokenEntity> authRefreshTokenEntityOpt = jpaRTRepository.findById(id);
             if(authRefreshTokenEntityOpt.isEmpty()) return false;
             AuthRefreshTokenEntity authRefreshTokenEntity = authRefreshTokenEntityOpt.get();
