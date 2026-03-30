@@ -69,7 +69,7 @@ public class RefreshController {
         this.refreshSameSite = refreshSameSite;
         this.refreshDomain = refreshDomain;
     }
-    @GetMapping("/{device_id}")
+    @PostMapping("/{device_id}")
     public ResponseEntity<RotateRefreshTokenResponse> refreshToken(
             HttpServletRequest request,
             HttpServletResponse response,
