@@ -133,8 +133,10 @@ public class GithubController {
 
     @GetMapping("/github/callback")
     public ResponseEntity<Void> githubCallback(
-            @RequestParam("code") String code,
+            @RequestParam(value = "code", required = false) String code,
             @RequestParam(value = "state", required = false) String state,
+            @RequestParam(value = "error", required = false) String error,
+            @RequestParam(value = "error_description", required = false) String errorDescription,
             HttpSession session,
             HttpServletRequest request,
             HttpServletResponse response
@@ -144,6 +146,15 @@ public class GithubController {
         }
 
         session.removeAttribute(OAUTH_STATE_KEY);
+
+        if (error != null && !error.isBlank()) {
+            String message = (errorDescription != null && !errorDescription.isBlank()) ? errorDescription : "GitHub authorization failed.";
+            return redirectToFrontend(false, null, message);
+        }
+
+        if (code == null || code.isBlank()) {
+            return redirectToFrontend(false, null, "Missing OAuth code.");
+        }
 
         GithubExchangeResult accessTokenResult = githubService.exchangeCode(code);
         if (!accessTokenResult.success()) {
