@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -29,33 +30,33 @@ import java.util.UUID;
 @RequestMapping("/api/oauth")
 public class GithubController {
 
-        private static final String OAUTH_STATE_KEY = "oauth_state";
-        private final JwtService jwtService;
-        private final GithubService githubService;
-        private final GithubOAuthLoginUseCase githubOAuthLoginUseCase;
-        private final int JWT_COOKIE_MAX_AGE_IN_MS;
-        private final long REFRESH_TOKEN_MAX_LIFE_TIME_IN_HOUR;
-        private final long DEVICE_COOKIE_MAX_AGE_IN_WEEK;
+    private static final String OAUTH_STATE_KEY = "oauth_state";
+    private final JwtService jwtService;
+    private final GithubService githubService;
+    private final GithubOAuthLoginUseCase githubOAuthLoginUseCase;
+    private final int JWT_COOKIE_MAX_AGE_IN_MS;
+    private final long REFRESH_TOKEN_MAX_LIFE_TIME_IN_HOUR;
+    private final long DEVICE_COOKIE_MAX_AGE_IN_WEEK;
 
-        private final boolean jwtSecure;
-        private final boolean jwtHttpOnly;
-        private final String jwtDomain;
-        private final String jwtPath;
-        private final String jwtSameSite;
-        private final boolean refreshSecure;
-        private final boolean refreshHttpOnly;
-        private final String refreshDomain;
-        private final String refreshPath;
-        private final String refreshSameSite;
-        private final boolean deviceSecure;
-        private final boolean deviceHttpOnly;
-        private final String deviceDomain;
-        private final String devicePath;
-        private final String deviceSameSite;
-        private final String scope;
-        private final boolean allowSignup;
-        private final boolean promptConsent;
-        private final String frontendOrigin;
+    private final boolean jwtSecure;
+    private final boolean jwtHttpOnly;
+    private final String jwtDomain;
+    private final String jwtPath;
+    private final String jwtSameSite;
+    private final boolean refreshSecure;
+    private final boolean refreshHttpOnly;
+    private final String refreshDomain;
+    private final String refreshPath;
+    private final String refreshSameSite;
+    private final boolean deviceSecure;
+    private final boolean deviceHttpOnly;
+    private final String deviceDomain;
+    private final String devicePath;
+    private final String deviceSameSite;
+    private final String scope;
+    private final boolean allowSignup;
+    private final boolean promptConsent;
+    private final String frontendOrigin;
 
     public GithubController(
             JwtService jwtService,
@@ -131,7 +132,7 @@ public class GithubController {
 
 
     @GetMapping("/github/callback")
-    public ResponseEntity<String> githubCallback(
+    public ResponseEntity<Void> githubCallback(
             @RequestParam("code") String code,
             @RequestParam(value = "state", required = false) String state,
             HttpSession session,
@@ -139,21 +140,21 @@ public class GithubController {
             HttpServletResponse response
     ) {
         if (!isValidState(session, state)) {
-            return ResponseEntity.badRequest().body("Invalid state parameter.");
+            return redirectToFrontend(false, null, "Invalid state parameter.");
         }
 
         session.removeAttribute(OAUTH_STATE_KEY);
 
         GithubExchangeResult accessTokenResult = githubService.exchangeCode(code);
         if (!accessTokenResult.success()) {
-            return ResponseEntity.badRequest().body(accessTokenResult.message());
+            return redirectToFrontend(false, null, accessTokenResult.message());
         }
 
         String accessToken = accessTokenResult.fetchResult().accessToken();
         ResponseEntity<GithubUserInfoResult> githubUserResponse = githubService.fetchGithubUser(accessToken);
 
         if (!githubUserResponse.getStatusCode().is2xxSuccessful() || githubUserResponse.getBody() == null) {
-            return ResponseEntity.badRequest().body("Failed to fetch GitHub user.");
+            return redirectToFrontend(false, null, "Failed to fetch GitHub user.");
         }
 
         GithubUserInfoResult githubUser = githubUserResponse.getBody();
@@ -180,9 +181,7 @@ public class GithubController {
                         )                );
 
         if (!loginResult.success()) {
-            return ResponseEntity
-                    .status(GithubOAuthHttpMapper.toStatus(loginResult.error()))
-                    .body(GithubOAuthHttpMapper.toMessage(loginResult.error()));
+            return redirectToFrontend(false, null, GithubOAuthHttpMapper.toMessage(loginResult.error()));
         }
 
         GithubOAuthLoginData loginData = loginResult.data();
@@ -200,8 +199,7 @@ public class GithubController {
                     refreshSecure, refreshPath, refreshSameSite, refreshDomain);
         }
 
-        return ResponseEntity.ok().contentType(MediaType.TEXT_HTML)
-                .body(buildSuccessHtml(loginData.alreadyRegistered()));
+        return redirectToFrontend(true, loginData.alreadyRegistered(), null);
     }
 
     private boolean isValidState(HttpSession session, String state) {
@@ -228,28 +226,22 @@ public class GithubController {
         response.addHeader("Set-Cookie", builder.build().toString());
     }
 
-    private String buildSuccessHtml(boolean alreadyRegistered) {
-        return """
-        <!DOCTYPE html>
-        <html>
-        <body>
-                <script>
-                (function () {
-                if (window.opener) {
-                window.opener.postMessage(
-                        {
-                        type: 'OAUTH_RESULT',
-                        registered: %b,
-                        },
-                        '%s'
-                );
-                }
-                window.close();
-                })();
-                </script>
-        </body>
-        </html>
-        """.formatted(alreadyRegistered, frontendOrigin);
+    private ResponseEntity<Void> redirectToFrontend(boolean success, Boolean alreadyRegistered, String errorMessage) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(frontendOrigin)
+                .queryParam("oauth", "github")
+                .queryParam("success", success);
+
+        if (alreadyRegistered != null) {
+            builder.queryParam("registered", alreadyRegistered);
+        }
+
+        if (errorMessage != null && !errorMessage.isBlank()) {
+            builder.queryParam("error", errorMessage);
+        }
+
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .location(builder.build().toUri())
+                .build();
     }
 
     private String getClientIp(HttpServletRequest request) {
