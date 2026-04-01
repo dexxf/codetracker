@@ -11,4 +11,5 @@ public interface AuthRefreshTokenAppRepository {
     boolean createToken(AuthRefreshToken authRefreshToken);
     boolean updateToken(UUID id, String hashedToken, LocalDateTime newExpiry, String ipAddress, String userAgent);
     Optional<AuthRefreshToken> findByRefreshTokenId(UUID refreshTokenID);
+    boolean revokeToken(UUID id, String deviceId);
 }

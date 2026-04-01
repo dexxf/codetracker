@@ -72,4 +72,10 @@ public class AuthRefreshTokenAppRepositoryImpl implements AuthRefreshTokenAppRep
     public Optional<AuthRefreshToken> findByRefreshTokenId(UUID refreshTokenId) {
         return jpaRTRepository.findById(refreshTokenId).map(AuthRefreshTokenMapper::toDomain);
     }
+
+    @Override
+    public boolean revokeToken(UUID id, String deviceId) {
+        final int rowsAffected = jpaRTRepository.revokeByIdAndDeviceId(id, deviceId, LocalDateTime.now());
+        return rowsAffected == 1;
+    }
 }
