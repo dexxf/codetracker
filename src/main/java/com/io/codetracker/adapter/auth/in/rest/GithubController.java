@@ -11,7 +11,6 @@ import com.io.codetracker.application.auth.port.in.GithubOAuthLoginUseCase;
 import com.io.codetracker.application.auth.result.GithubOAuthLoginData;
 import com.io.codetracker.common.result.Result;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -20,10 +19,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -112,10 +111,10 @@ public class GithubController {
         this.deviceSameSite = deviceSameSite;
     }
 
-        @GetMapping("/github/authorize")
-        public ResponseEntity<?> initiateOAuth(HttpSession session) {
+    @GetMapping("/github/authorize")
+    public ResponseEntity<Void> initiateOAuth(HttpSession session) {
         String state = UUID.randomUUID().toString();
-                session.setAttribute(OAUTH_STATE_KEY, state);
+        session.setAttribute(OAUTH_STATE_KEY, state);
 
         String authUrl = "https://github.com/login/oauth/authorize" +
                         "?client_id=" + URLEncoder.encode(githubService.getClientId(), StandardCharsets.UTF_8) +
@@ -125,7 +124,9 @@ public class GithubController {
                         "&allow_signup=" + allowSignup +
                         "&prompt=" + (promptConsent ? "consent" : "none");
 
-        return ResponseEntity.ok(Map.of("state", state, "authUrl", authUrl));
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .location(URI.create(authUrl))
+                .build();
     }
 
 
