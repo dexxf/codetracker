@@ -25,7 +25,6 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final String[] PUBLIC_URLS = {
             "/api/oauth/github/authorize",
             "/api/oauth/github/callback",
-            "/api/auth/check",
             "/api/auth/refresh/"
     };
 
