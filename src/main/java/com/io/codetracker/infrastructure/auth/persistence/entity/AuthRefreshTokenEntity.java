@@ -39,7 +39,7 @@ public class AuthRefreshTokenEntity {
     private LocalDateTime expiresAt;
 
     @Column(nullable = false)
-    private Boolean revoked = false;
+    private boolean revoked;
 
     private LocalDateTime revokedAt;
     private LocalDateTime lastUsedAt;

@@ -11,7 +11,7 @@ public class AuthRefreshTokenMapper {
                 entity.getAuthEntity().getAuthId(),
                 entity.getTokenHash(),
                 entity.getExpiresAt(),
-                entity.getRevoked(),
+                entity.isRevoked(),
                 entity.getRevokedAt(),
                 entity.getLastUsedAt(),
                 entity.getDeviceId(),
