@@ -157,7 +157,7 @@ public class GithubController {
 
         GithubUserInfoResult githubUser = githubUserResponse.getBody();
         String userAgent = request.getHeader("User-Agent");
-        String deviceId = getCookieValue(request, "device_id");
+        String deviceId = AuthController.getCookieValue(request, "device_id");
 
         if(deviceId == null || deviceId.isBlank()) {
             deviceId = UUID.randomUUID().toString();
@@ -225,15 +225,6 @@ public class GithubController {
         }
 
         response.addHeader("Set-Cookie", builder.build().toString());
-    }
-
-    private String getCookieValue(HttpServletRequest request, String name) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) return null;
-        for (Cookie c : cookies) {
-            if (name.equals(c.getName())) return c.getValue();
-        }
-        return null;
     }
 
     private String buildSuccessHtml(boolean alreadyRegistered) {
