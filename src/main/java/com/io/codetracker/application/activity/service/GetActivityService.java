@@ -29,7 +29,7 @@ public class GetActivityService implements GetClassroomOwnerActivityUseCase {
                 return Result.fail(GetClassroomOwnerActivityError.USER_NOT_CLASSROOM_INSTRUCTOR);
             }
 
-            var activities =  activityAppRepository.findByClassroomId(command.classroomId(), command.userId())
+            var activities =  activityAppRepository.findActivitiesByClassroomIdAndInstructorUserId(command.classroomId(), command.userId())
                     .stream().map(ActivityData::from).toList();
 
             return Result.ok(activities);
