@@ -8,5 +8,5 @@ import com.io.codetracker.common.result.Result;
 import java.util.List;
 
 public interface GetClassroomOwnerActivityUseCase {
-    Result<List<ActivityData>, GetClassroomOwnerActivityError> execute(GetActivityCommand command);
+    Result<List<ActivityData>, GetClassroomOwnerActivityError> getOwnerClassroomActivity(GetActivityCommand command);
 }

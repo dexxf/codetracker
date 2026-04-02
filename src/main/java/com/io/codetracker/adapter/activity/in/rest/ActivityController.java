@@ -55,7 +55,7 @@ public class ActivityController {
 
     @GetMapping
     public ResponseEntity<GetActivityResponse> getActivities(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
-            Result<List<ActivityData>, GetClassroomOwnerActivityError> response =  getClassroomOwnerActivityUseCase.execute(new GetActivityCommand(classroomId,principal.getUserId()));
+            Result<List<ActivityData>, GetClassroomOwnerActivityError> response =  getClassroomOwnerActivityUseCase.getOwnerClassroomActivity(new GetActivityCommand(classroomId,principal.getUserId()));
             return response.success() ? ResponseEntity.ok(GetActivityResponse.success(response.data()))
                                       : ResponseEntity.status(GetActivityHttpMapper.toStatus(response.error()))
                     .body(GetActivityResponse.fail(GetActivityHttpMapper.toMessage(response.error())));

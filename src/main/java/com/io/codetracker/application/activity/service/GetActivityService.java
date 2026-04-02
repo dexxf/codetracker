@@ -20,7 +20,7 @@ public class GetActivityService implements GetClassroomOwnerActivityUseCase {
     private final ActivityAppRepository activityAppRepository;
     private final ActivityClassroomAppPort activityClassroomAppPort;
 
-    public Result<List<ActivityData>, GetClassroomOwnerActivityError> execute(GetActivityCommand command) {
+    public Result<List<ActivityData>, GetClassroomOwnerActivityError> getOwnerClassroomActivity(GetActivityCommand command) {
             if (!activityClassroomAppPort.existsByClassroomId(command.classroomId())) {
                 return Result.fail(GetClassroomOwnerActivityError.CLASSROOM_NOT_FOUND);
             }
