@@ -7,7 +7,7 @@ public final class GetActivityHttpMapper {
 
     private GetActivityHttpMapper () {}
 
-    public static HttpStatus toStatus(GetClassroomOwnerActivityError error){
+    public static HttpStatus ownerToStatus(GetClassroomOwnerActivityError error){
         return switch (error) {
             case CLASSROOM_NOT_FOUND -> HttpStatus.NOT_FOUND;
             case USER_NOT_CLASSROOM_INSTRUCTOR -> HttpStatus.UNAUTHORIZED;
@@ -15,7 +15,7 @@ public final class GetActivityHttpMapper {
         };
     }
 
-    public static String toMessage(GetClassroomOwnerActivityError error){
+    public static String ownerToMessage(GetClassroomOwnerActivityError error){
         return switch (error) {
             case CLASSROOM_NOT_FOUND -> "Classroom does not exists";
             case USER_NOT_CLASSROOM_INSTRUCTOR -> "User is not the owner of this classroom";

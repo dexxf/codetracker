@@ -16,10 +16,7 @@ import com.io.codetracker.application.activity.error.AddActivityError;
 import com.io.codetracker.application.activity.error.EditActivityError;
 import com.io.codetracker.application.activity.error.GetClassroomOwnerActivityError;
 import com.io.codetracker.application.activity.error.RemoveActivityError;
-import com.io.codetracker.application.activity.port.in.AddActivityUseCase;
-import com.io.codetracker.application.activity.port.in.EditActivityUseCase;
-import com.io.codetracker.application.activity.port.in.GetClassroomOwnerActivityUseCase;
-import com.io.codetracker.application.activity.port.in.RemoveActivityUseCase;
+import com.io.codetracker.application.activity.port.in.*;
 import com.io.codetracker.application.activity.result.ActivityData;
 
 import com.io.codetracker.common.result.Result;
@@ -57,8 +54,8 @@ public class ActivityController {
     public ResponseEntity<GetActivityResponse> getClassroomOwnerActivities(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
             Result<List<ActivityData>, GetClassroomOwnerActivityError> response =  getClassroomOwnerActivityUseCase.getOwnerClassroomActivity(new GetActivityCommand(classroomId,principal.getUserId()));
             return response.success() ? ResponseEntity.ok(GetActivityResponse.success(response.data()))
-                                      : ResponseEntity.status(GetActivityHttpMapper.toStatus(response.error()))
-                    .body(GetActivityResponse.fail(GetActivityHttpMapper.toMessage(response.error())));
+                                      : ResponseEntity.status(GetActivityHttpMapper.ownerToStatus(response.error()))
+                    .body(GetActivityResponse.fail(GetActivityHttpMapper.ownerToMessage(response.error())));
     }
 
     @DeleteMapping("/{activityId}")
