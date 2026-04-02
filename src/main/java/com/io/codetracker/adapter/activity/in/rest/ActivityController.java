@@ -12,10 +12,7 @@ import com.io.codetracker.application.activity.command.GetActivityCommand;
 import com.io.codetracker.adapter.activity.in.dto.request.AddActivityRequest;
 import com.io.codetracker.adapter.activity.in.dto.request.EditActivityRequest;
 import com.io.codetracker.adapter.activity.in.dto.response.ActivityResponse;
-import com.io.codetracker.application.activity.error.AddActivityError;
-import com.io.codetracker.application.activity.error.EditActivityError;
-import com.io.codetracker.application.activity.error.GetClassroomOwnerActivityError;
-import com.io.codetracker.application.activity.error.RemoveActivityError;
+import com.io.codetracker.application.activity.error.*;
 import com.io.codetracker.application.activity.port.in.*;
 import com.io.codetracker.application.activity.result.ActivityData;
 
@@ -37,6 +34,7 @@ public class ActivityController {
 
     private final AddActivityUseCase addActivityUseCase;
     private final GetClassroomOwnerActivityUseCase getClassroomOwnerActivityUseCase;
+    private final GetClassroomStudentActivityUseCase getClassroomStudentActivityUseCase;
     private final RemoveActivityUseCase removeActivityUseCase;
     private final EditActivityUseCase editActivityUseCase;
 
@@ -56,6 +54,14 @@ public class ActivityController {
             return response.success() ? ResponseEntity.ok(GetActivityResponse.success(response.data()))
                                       : ResponseEntity.status(GetActivityHttpMapper.ownerToStatus(response.error()))
                     .body(GetActivityResponse.fail(GetActivityHttpMapper.ownerToMessage(response.error())));
+    }
+
+    @GetMapping("/student")
+    public ResponseEntity<GetActivityResponse> getClassroomStudentActivities(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
+        Result<List<ActivityData>, GetClassroomStudentActivityError> response =  getClassroomStudentActivityUseCase.getStudentClassroomActivity(new GetActivityCommand(classroomId,principal.getUserId()));
+        return response.success() ? ResponseEntity.ok(GetActivityResponse.success(response.data()))
+                : ResponseEntity.status(GetActivityHttpMapper.studentToStatus(response.error()))
+                  .body(GetActivityResponse.fail(GetActivityHttpMapper.studentToMessage(response.error())));
     }
 
     @DeleteMapping("/{activityId}")
