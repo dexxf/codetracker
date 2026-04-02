@@ -21,4 +21,9 @@ public class ActivityClassroomAppAdapter implements ActivityClassroomAppPort {
         return jpa.existsByClassroomIdAndInstructorUserId(classroomId, userId);
     }
 
+    @Override
+    public String findClassroomOwnerByClassroomId(String classroomId) {
+        return jpa.findInstructorUserIdByClassroomId(classroomId);
+    }
+
 }
