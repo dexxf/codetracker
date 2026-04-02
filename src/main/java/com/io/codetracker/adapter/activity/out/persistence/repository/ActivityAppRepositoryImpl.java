@@ -32,7 +32,7 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
     }
 
     @Override
-    public List<Activity> findByClassroomId(String classroomId, String instructorId) {
+    public List<Activity> findActivitiesByClassroomIdAndInstructorUserId(String classroomId, String instructorId) {
         return jpa.findByClassroomEntity_ClassroomIdAndClassroomEntity_InstructorUserId(classroomId, instructorId).stream().map(
                 ActivityMapper::toDomain
         ).toList();

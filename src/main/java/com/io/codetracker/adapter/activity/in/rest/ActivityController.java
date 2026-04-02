@@ -12,14 +12,8 @@ import com.io.codetracker.application.activity.command.GetActivityCommand;
 import com.io.codetracker.adapter.activity.in.dto.request.AddActivityRequest;
 import com.io.codetracker.adapter.activity.in.dto.request.EditActivityRequest;
 import com.io.codetracker.adapter.activity.in.dto.response.ActivityResponse;
-import com.io.codetracker.application.activity.error.AddActivityError;
-import com.io.codetracker.application.activity.error.EditActivityError;
-import com.io.codetracker.application.activity.error.GetActivityError;
-import com.io.codetracker.application.activity.error.RemoveActivityError;
-import com.io.codetracker.application.activity.port.in.AddActivityUseCase;
-import com.io.codetracker.application.activity.port.in.EditActivityUseCase;
-import com.io.codetracker.application.activity.port.in.GetActivityUseCase;
-import com.io.codetracker.application.activity.port.in.RemoveActivityUseCase;
+import com.io.codetracker.application.activity.error.*;
+import com.io.codetracker.application.activity.port.in.*;
 import com.io.codetracker.application.activity.result.ActivityData;
 
 import com.io.codetracker.common.result.Result;
@@ -39,7 +33,8 @@ import java.util.List;
 public class ActivityController {
 
     private final AddActivityUseCase addActivityUseCase;
-    private final GetActivityUseCase getActivityUseCase;
+    private final GetClassroomOwnerActivityUseCase getClassroomOwnerActivityUseCase;
+    private final GetClassroomStudentActivityUseCase getClassroomStudentActivityUseCase;
     private final RemoveActivityUseCase removeActivityUseCase;
     private final EditActivityUseCase editActivityUseCase;
 
@@ -53,12 +48,20 @@ public class ActivityController {
                 .body(ActivityResponse.fail(AddActivityHttpMapper.toMessage(response.error())));
     }
 
-    @GetMapping
-    public ResponseEntity<GetActivityResponse> getActivities(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
-            Result<List<ActivityData>, GetActivityError> response =  getActivityUseCase.execute(new GetActivityCommand(classroomId,principal.getUserId()));
+    @GetMapping("/owner")
+    public ResponseEntity<GetActivityResponse> getClassroomOwnerActivities(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
+            Result<List<ActivityData>, GetClassroomOwnerActivityError> response =  getClassroomOwnerActivityUseCase.getOwnerClassroomActivity(new GetActivityCommand(classroomId,principal.getUserId()));
             return response.success() ? ResponseEntity.ok(GetActivityResponse.success(response.data()))
-                                      : ResponseEntity.status(GetActivityHttpMapper.toStatus(response.error()))
-                    .body(GetActivityResponse.fail(GetActivityHttpMapper.toMessage(response.error())));
+                                      : ResponseEntity.status(GetActivityHttpMapper.ownerToStatus(response.error()))
+                    .body(GetActivityResponse.fail(GetActivityHttpMapper.ownerToMessage(response.error())));
+    }
+
+    @GetMapping("/student")
+    public ResponseEntity<GetActivityResponse> getClassroomStudentActivities(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
+        Result<List<ActivityData>, GetClassroomStudentActivityError> response =  getClassroomStudentActivityUseCase.getStudentClassroomActivity(new GetActivityCommand(classroomId,principal.getUserId()));
+        return response.success() ? ResponseEntity.ok(GetActivityResponse.success(response.data()))
+                : ResponseEntity.status(GetActivityHttpMapper.studentToStatus(response.error()))
+                  .body(GetActivityResponse.fail(GetActivityHttpMapper.studentToMessage(response.error())));
     }
 
     @DeleteMapping("/{activityId}")

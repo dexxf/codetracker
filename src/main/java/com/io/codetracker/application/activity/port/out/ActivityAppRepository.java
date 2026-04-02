@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ActivityAppRepository {
     Activity save(Activity data);
-    List<Activity> findByClassroomId(String classroomId, String instructorId);
+    List<Activity> findActivitiesByClassroomIdAndInstructorUserId(String classroomId, String instructorId);
     Optional<Activity> findById(String activityId);
     void deleteByActivityId(String activityId);
     void update(Activity updatedActivity);
