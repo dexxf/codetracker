@@ -13,6 +13,7 @@ import java.util.List;
 @Repository
 public interface JpaClassroomStudentRepository extends JpaRepository<ClassroomStudentEntity, Long> {
     boolean existsByClassroom_ClassroomIdAndStudentUserId(String classroomId, String studentUserId);
+    boolean existsByClassroom_ClassroomIdAndStudentUserIdAndStatus(String classroomId, String studentUserId, StudentStatus status);
 
     @Query("SELECT cs FROM ClassroomStudentEntity cs JOIN cs.classroom c WHERE cs.studentUserId = :studentUserId AND (:studentStatus IS NULL OR cs.status = :studentStatus) AND (:classroomStatus IS NULL OR c.status = :classroomStatus)")
     List<ClassroomStudentEntity> findEnrollmentsByStatus(@Param("studentUserId") String studentUserId, @Param("studentStatus") StudentStatus studentStatus, @Param("classroomStatus") ClassroomStatus classroomStatus);
