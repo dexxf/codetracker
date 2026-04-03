@@ -1,10 +1,10 @@
 package com.io.codetracker.adapter.activity.in.rest;
 
+import com.io.codetracker.adapter.activity.in.dto.request.SubmitExistingRepositoryRequest;
+import com.io.codetracker.adapter.activity.in.dto.request.SubmitNewRepositoryRequest;
 import com.io.codetracker.adapter.activity.in.dto.response.GetActivityResponse;
-import com.io.codetracker.adapter.activity.in.mapper.AddActivityHttpMapper;
-import com.io.codetracker.adapter.activity.in.mapper.EditActivityHttpMapper;
-import com.io.codetracker.adapter.activity.in.mapper.GetActivityHttpMapper;
-import com.io.codetracker.adapter.activity.in.mapper.RemoveActivityHttpMapper;
+import com.io.codetracker.adapter.activity.in.dto.response.StudentActivityResponse;
+import com.io.codetracker.adapter.activity.in.mapper.*;
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.application.activity.command.AddActivityCommand;
 import com.io.codetracker.application.activity.command.EditActivityCommand;
@@ -16,6 +16,7 @@ import com.io.codetracker.application.activity.error.*;
 import com.io.codetracker.application.activity.port.in.*;
 import com.io.codetracker.application.activity.result.ActivityData;
 
+import com.io.codetracker.application.activity.result.StudentActivityData;
 import com.io.codetracker.common.result.Result;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,8 @@ public class ActivityController {
     private final GetClassroomStudentActivityUseCase getClassroomStudentActivityUseCase;
     private final RemoveActivityUseCase removeActivityUseCase;
     private final EditActivityUseCase editActivityUseCase;
+    private final SubmitExistingRepositoryUseCase submitExistingRepositoryUseCase;
+    private final SubmitNewRepositoryUseCase submitNewRepositoryUseCase;
 
     @PostMapping
         public ResponseEntity<ActivityResponse> addActivity(@PathVariable String classroomId, @Valid @RequestBody AddActivityRequest request, @AuthenticationPrincipal AuthPrincipal principal) {
@@ -81,4 +84,49 @@ public class ActivityController {
                 .body(ActivityResponse.fail(EditActivityHttpMapper.toMessage(response.error())))
                 : ResponseEntity.ok(ActivityResponse.success(response.data(), "Successfully Updated Activity"));
         }
+
+    @PostMapping("/{activityId}/submit/existing")
+    public ResponseEntity<StudentActivityResponse> submitExistingRepository(
+            @PathVariable String classroomId,
+            @PathVariable String activityId,
+            @Valid @RequestBody SubmitExistingRepositoryRequest request,
+            @AuthenticationPrincipal AuthPrincipal authPrincipal
+    ) {
+        Result<StudentActivityData, SubmitExistingRepositoryError> response =
+                submitExistingRepositoryUseCase.submitExisting(
+                        authPrincipal.getUsername(),
+                        authPrincipal.getUserId(),
+                        classroomId,
+                        activityId,
+                        request.repositoryUrl()
+                );
+
+        return response.success()
+                ? ResponseEntity.ok(StudentActivityResponse.success(response.data(), "Successfully submitted existing repository"))
+                : ResponseEntity.status(SubmitExistingRepositoryHttpMapper.toStatus(response.error()))
+                  .body(StudentActivityResponse.fail(SubmitExistingRepositoryHttpMapper.toMessage(response.error())));
+    }
+
+    @PostMapping("/{activityId}/submit/new")
+    public ResponseEntity<StudentActivityResponse> submitNewRepository(
+            @PathVariable String classroomId,
+            @PathVariable String activityId,
+            @Valid @RequestBody SubmitNewRepositoryRequest request,
+            @AuthenticationPrincipal AuthPrincipal authPrincipal
+    ) {
+        Result<StudentActivityData, SubmitNewRepositoryError> response =
+                submitNewRepositoryUseCase.submitNew(
+                        authPrincipal.getUsername(),
+                        authPrincipal.getUserId(),
+                        classroomId,
+                        activityId,
+                        request.repositoryName()
+                );
+
+        return response.success()
+                ? ResponseEntity.status(HttpStatus.CREATED)
+                  .body(StudentActivityResponse.success(response.data(), "Successfully created and submitted repository"))
+                : ResponseEntity.status(SubmitNewRepositoryHttpMapper.toStatus(response.error()))
+                  .body(StudentActivityResponse.fail(SubmitNewRepositoryHttpMapper.toMessage(response.error())));
+    }
 }
