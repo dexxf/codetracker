@@ -1,6 +1,7 @@
 package com.io.codetracker.adapter.auth.out.security;
 
 import com.io.codetracker.domain.auth.entity.Auth;
+import com.io.codetracker.domain.auth.valueobject.Status;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,6 +44,10 @@ public final class AuthPrincipal implements UserDetails {
         return auth.getUsername();
     }
 
+    public boolean isFullyInitialized() {
+        return auth.getStatus() == Status.ACTIVE;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return UserDetails.super.isAccountNonExpired();
@@ -60,6 +65,6 @@ public final class AuthPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return isFullyInitialized();
     }
 }

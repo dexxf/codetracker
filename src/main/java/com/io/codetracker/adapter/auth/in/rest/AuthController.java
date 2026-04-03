@@ -88,7 +88,8 @@ public class AuthController {
                 "authId", principal.getUsername(),
                 "roles", principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList(),
                 "email", principal.getEmail(),
-                "username", principal.getAuthUsername()
+                "username", principal.getAuthUsername(),
+                "fullyInitialized", principal.isFullyInitialized()
         ));
     }
 

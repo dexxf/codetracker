@@ -16,16 +16,19 @@ import com.io.codetracker.application.auth.error.GithubOAuthLoginError;
 import com.io.codetracker.application.auth.port.in.AuthOAuthRegistrationUseCase;
 import com.io.codetracker.application.auth.port.in.GithubAccountRegistrationUseCase;
 import com.io.codetracker.application.auth.port.in.GithubOAuthLoginUseCase;
+import com.io.codetracker.application.auth.port.out.AuthAppRepository;
 import com.io.codetracker.application.auth.port.out.GithubAppRepository;
 import com.io.codetracker.application.auth.result.AuthData;
 import com.io.codetracker.application.auth.result.GithubOAuthLoginData;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.auth.entity.GithubAccount;
+import com.io.codetracker.domain.auth.valueobject.Status;
 
 @Service
 @AllArgsConstructor
 public class GithubOAuthLoginService implements GithubOAuthLoginUseCase {
     private final GithubAppRepository githubAppRepository;
+        private final AuthAppRepository authAppRepository;
     private final AuthOAuthRegistrationUseCase authOAuthRegistrationUseCase;
     private final GithubAccountRegistrationUseCase githubAccountRegistrationUseCase;
     private final AddRefreshTokenUseCase addRefreshTokenUseCase;
@@ -61,9 +64,13 @@ public class GithubOAuthLoginService implements GithubOAuthLoginUseCase {
 
             String plainRefreshToken = refreshTokenResult.data().rawToken();
 
+            boolean alreadyInitialized = authAppRepository.findByAuthId(existing.getAuthId())
+                    .map(auth -> auth.getStatus() == Status.ACTIVE)
+                    .orElse(false);
+
             return Result.ok(new GithubOAuthLoginData(
                     existing.getAuthId(),
-                    true,
+                    alreadyInitialized,
                     plainRefreshToken
             ));
         }

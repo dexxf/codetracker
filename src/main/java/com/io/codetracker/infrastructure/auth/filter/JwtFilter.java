@@ -1,6 +1,7 @@
 package com.io.codetracker.infrastructure.auth.filter;
 
 import com.io.codetracker.adapter.auth.out.security.CustomUserDetailsService;
+import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.adapter.auth.out.service.JwtService;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -27,6 +28,12 @@ public class JwtFilter extends OncePerRequestFilter {
             "/api/oauth/github/callback",
             "/api/auth/refresh/"
     };
+
+    private static final String[] INITIALIZATION_EXEMPT_URLS = {
+            "/api/users/register",
+            "/api/auth/check",
+            "/api/auth/logout/"
+        };
 
     public JwtFilter(JwtService jwtService, CustomUserDetailsService userDetailsService) {
         this.jwtService = jwtService;
@@ -70,6 +77,11 @@ public class JwtFilter extends OncePerRequestFilter {
                                 new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                        if (userDetails instanceof AuthPrincipal principal && !principal.isFullyInitialized() && !isInitializationExemptUrl(request.getRequestURI())) {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            return;
+                        }
                     }
                 }
             } catch (JwtException e) {
@@ -96,5 +108,19 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         return false;
+    }
+
+    private boolean isInitializationExemptUrl(String requestUri) {
+        if (requestUri == null) return false;
+
+        String path = requestUri.split("\\?")[0];
+
+        for (String exemptUrl : INITIALIZATION_EXEMPT_URLS) {
+            if (path.startsWith(exemptUrl)) {
+                return true;
+            }
+        }
+
+        return isPublicUrl(requestUri);
     }
 }
