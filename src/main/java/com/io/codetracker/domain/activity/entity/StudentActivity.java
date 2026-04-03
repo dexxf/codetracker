@@ -4,21 +4,31 @@ import com.io.codetracker.domain.activity.valueObject.SubmissionStatus;
 
 public final class StudentActivity {
 
+    private final String studentActivityId;
     private final String activityId;
     private final String userId;
     private SubmissionStatus submissionStatus;
     private String feedback;
 
-    public StudentActivity(String activityId, String userId, SubmissionStatus submissionStatus, String feedback) {
+    public StudentActivity(String studentActivityId, String activityId, String userId, SubmissionStatus submissionStatus, String feedback) {
+        this.studentActivityId = studentActivityId;
         this.activityId = activityId;
         this.userId = userId;
         this.submissionStatus = submissionStatus;
         this.feedback = normalizeFeedback(feedback);
     }
 
+    public StudentActivity(String activityId, String userId, SubmissionStatus submissionStatus, String feedback) {
+        this(null, activityId, userId, submissionStatus, feedback);
+    }
+
     // created createNew bc making factory or service is too much.. it only has 4 attributes
     public static StudentActivity createNew(String activityId, String userId) {
-        return new StudentActivity(activityId,userId,SubmissionStatus.PENDING,null);
+        return new StudentActivity(null, activityId, userId, SubmissionStatus.PENDING, null);
+    }
+
+    public String getStudentActivityId() {
+        return studentActivityId;
     }
 
     public String getActivityId() {

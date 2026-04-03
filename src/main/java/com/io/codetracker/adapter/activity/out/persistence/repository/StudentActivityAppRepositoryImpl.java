@@ -43,6 +43,7 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
 
         StudentActivityEntity savedEntity = jpaStudentActivityRepository.save(entity);
         return new StudentActivity(
+                savedEntity.getStudentActivityId().toString(),
                 savedEntity.getActivityEntity().getActivityId(),
                 savedEntity.getUserEntity().getUserId(),
                 savedEntity.getSubmissionStatus(),
