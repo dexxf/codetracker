@@ -2,12 +2,14 @@ package com.io.codetracker.adapter.activity.in.rest;
 
 import com.io.codetracker.adapter.activity.in.dto.request.SubmitExistingRepositoryRequest;
 import com.io.codetracker.adapter.activity.in.dto.request.SubmitNewRepositoryRequest;
+import com.io.codetracker.adapter.activity.in.dto.response.FindUnsubmittedRepositoryResponse;
 import com.io.codetracker.adapter.activity.in.dto.response.GetActivityResponse;
 import com.io.codetracker.adapter.activity.in.dto.response.StudentActivityResponse;
 import com.io.codetracker.adapter.activity.in.mapper.*;
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.application.activity.command.AddActivityCommand;
 import com.io.codetracker.application.activity.command.EditActivityCommand;
+import com.io.codetracker.application.activity.command.FindUnsubmittedRepositoryCommand;
 import com.io.codetracker.application.activity.command.GetActivityCommand;
 import com.io.codetracker.adapter.activity.in.dto.request.AddActivityRequest;
 import com.io.codetracker.adapter.activity.in.dto.request.EditActivityRequest;
@@ -40,6 +42,7 @@ public class ActivityController {
     private final EditActivityUseCase editActivityUseCase;
     private final SubmitExistingRepositoryUseCase submitExistingRepositoryUseCase;
     private final SubmitNewRepositoryUseCase submitNewRepositoryUseCase;
+    private final FindStudentUnsubmittedRepositoryUseCase findStudentUnsubmittedRepositoryUseCase;
 
     @PostMapping
         public ResponseEntity<ActivityResponse> addActivity(@PathVariable String classroomId, @Valid @RequestBody AddActivityRequest request, @AuthenticationPrincipal AuthPrincipal principal) {
@@ -84,6 +87,14 @@ public class ActivityController {
                 .body(ActivityResponse.fail(EditActivityHttpMapper.toMessage(response.error())))
                 : ResponseEntity.ok(ActivityResponse.success(response.data(), "Successfully Updated Activity"));
         }
+
+
+    @GetMapping("/unsubmitted")
+    public ResponseEntity<FindUnsubmittedRepositoryResponse> getStudentUnsubmittedRepository(@AuthenticationPrincipal AuthPrincipal authPrincipal, @PathVariable String classroomId) {
+        Result<List<ActivityData>, FindStudentUnsubmittedRepositoryError> result = findStudentUnsubmittedRepositoryUseCase.execute(new FindUnsubmittedRepositoryCommand(authPrincipal.getUserId(), classroomId));
+        return result.success() ? ResponseEntity.ok(FindUnsubmittedRepositoryResponse.ok(result.data()))
+                : ResponseEntity.status(FindUnsubmittedRepositoryHttpMapper.toStatus(result.error())).body(FindUnsubmittedRepositoryResponse.fail(FindUnsubmittedRepositoryHttpMapper.toMessage(result.error())));
+    }
 
     @PostMapping("/{activityId}/submit/existing")
     public ResponseEntity<StudentActivityResponse> submitExistingRepository(
