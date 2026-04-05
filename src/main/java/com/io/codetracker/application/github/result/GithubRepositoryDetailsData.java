@@ -1,0 +1,56 @@
+package com.io.codetracker.application.github.result;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+
+public record GithubRepositoryDetailsData(
+        long repositoryId,
+        String nodeId,
+        String name,
+        String fullName,
+        String description,
+        String homepage,
+        String defaultBranch,
+        String language,
+        String visibility,
+        String htmlUrl,
+        String apiUrl,
+        String gitUrl,
+        String sshUrl,
+        String cloneUrl,
+        String svnUrl,
+        String mirrorUrl,
+        GithubRepositoryOwnerData owner,
+        GithubRepositoryLicenseData license,
+        List<String> topics,
+        Map<String, Long> languages,
+        boolean privateRepository,
+        boolean fork,
+        boolean archived,
+        boolean disabled,
+        boolean template,
+        boolean allowForking,
+        boolean allowMergeCommit,
+        boolean allowRebaseMerge,
+        boolean allowSquashMerge,
+        boolean deleteBranchOnMerge,
+        boolean hasIssues,
+        boolean hasProjects,
+        boolean hasWiki,
+        boolean hasPages,
+        boolean hasDownloads,
+        boolean adminAccess,
+        boolean pushAccess,
+        boolean pullAccess,
+        int forksCount,
+        int stargazersCount,
+        int watchersCount,
+        int subscribersCount,
+        int openIssueCount,
+        int size,
+        Instant createdAt,
+        Instant updatedAt,
+        Instant pushedAt
+) {
+}
