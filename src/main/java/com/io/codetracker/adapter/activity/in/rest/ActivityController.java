@@ -46,6 +46,7 @@ public class ActivityController {
     private final EditActivityUseCase editActivityUseCase;
     private final SubmitExistingRepositoryUseCase submitExistingRepositoryUseCase;
     private final SubmitNewRepositoryUseCase submitNewRepositoryUseCase;
+        private final SubmitActivityUseCase submitActivityUseCase;
     private final FindStudentUnsubmittedRepositoryUseCase findStudentUnsubmittedRepositoryUseCase;
 
     @PostMapping
@@ -152,5 +153,24 @@ public class ActivityController {
                   .body(StudentActivityResponse.success(response.data(), "Successfully created and submitted repository"))
                 : ResponseEntity.status(SubmitNewRepositoryHttpMapper.toStatus(response.error()))
                   .body(StudentActivityResponse.fail(SubmitNewRepositoryHttpMapper.toMessage(response.error())));
+    }
+
+    @PostMapping("/{activityId}/submit")
+    public ResponseEntity<StudentActivityResponse> submitActivity(
+            @PathVariable String classroomId,
+            @PathVariable String activityId,
+            @AuthenticationPrincipal AuthPrincipal authPrincipal
+    ) {
+        Result<StudentActivityData, SubmitActivityError> response =
+                submitActivityUseCase.submit(
+                        authPrincipal.getUserId(),
+                        classroomId,
+                        activityId
+                );
+
+        return response.success()
+                ? ResponseEntity.ok(StudentActivityResponse.success(response.data(), "Successfully submitted activity"))
+                : ResponseEntity.status(SubmitActivityHttpMapper.toStatus(response.error()))
+                .body(StudentActivityResponse.fail(SubmitActivityHttpMapper.toMessage(response.error())));
     }
 }
