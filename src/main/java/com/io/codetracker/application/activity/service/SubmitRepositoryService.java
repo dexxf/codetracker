@@ -1,7 +1,9 @@
 package com.io.codetracker.application.activity.service;
 
+import com.io.codetracker.application.activity.error.SubmitActivityError;
 import com.io.codetracker.application.activity.error.SubmitExistingRepositoryError;
 import com.io.codetracker.application.activity.error.SubmitNewRepositoryError;
+import com.io.codetracker.application.activity.port.in.SubmitActivityUseCase;
 import com.io.codetracker.application.activity.port.in.SubmitExistingRepositoryUseCase;
 import com.io.codetracker.application.activity.port.in.SubmitNewRepositoryUseCase;
 import com.io.codetracker.application.activity.port.out.ActivityClassroomAppPort;
@@ -24,13 +26,47 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class SubmitRepositoryService implements SubmitNewRepositoryUseCase, SubmitExistingRepositoryUseCase {
+public class SubmitRepositoryService implements SubmitNewRepositoryUseCase, SubmitExistingRepositoryUseCase, SubmitActivityUseCase {
 
     private final StudentActivityAppRepository studentActivityAppRepository;
     private final ActivityClassroomAppPort activityClassroomAppPort;
     private final GithubActivityIntegrationPort githubActivityIntegrationPort;
     private final ActivityGithubAccountAppPort activityGithubAccountAppPort;
     private final CreateGithubSubmissionUseCase createGithubSubmissionUseCase;
+
+    @Override
+    public Result<StudentActivityData, SubmitActivityError> submit(String userId, String classroomId, String activityId) {
+        if (!activityClassroomAppPort.existsByClassroomId(classroomId))
+            return Result.fail(SubmitActivityError.CLASSROOM_NOT_FOUND);
+
+        if (!studentActivityAppRepository.existsByUserId(userId))
+            return Result.fail(SubmitActivityError.USER_NOT_FOUND);
+
+        if (!activityClassroomAppPort.existsByClassroomIdAndActivityId(classroomId, activityId))
+            return Result.fail(SubmitActivityError.ACTIVITY_NOT_FOUND);
+
+        if (!activityClassroomAppPort.existsByClassroomIdAndStudentUserId(classroomId, userId))
+            return Result.fail(SubmitActivityError.USER_NOT_CLASSROOM_STUDENT);
+
+        Optional<StudentActivity> studentActivityOptional = studentActivityAppRepository.findByUserIdAndActivityId(userId, activityId);
+        if (studentActivityOptional.isEmpty())
+            return Result.fail(SubmitActivityError.REPOSITORY_SUBMISSION_NOT_FOUND);
+
+        StudentActivity studentActivity = studentActivityOptional.get();
+
+        try {
+            studentActivity.submit();
+        } catch (IllegalStateException e) {
+            return Result.fail(SubmitActivityError.ALREADY_SUBMITTED);
+        }
+
+        try {
+            StudentActivity savedStudentActivity = studentActivityAppRepository.save(studentActivity);
+            return Result.ok(StudentActivityData.from(savedStudentActivity));
+        } catch (RuntimeException e) {
+            return Result.fail(SubmitActivityError.SAVE_FAILED);
+        }
+    }
 
     @Override
     public Result<StudentActivityData, SubmitExistingRepositoryError> submitExisting(String authId, String userId, String classroomId, String activityId, String repositoryUrl) {
