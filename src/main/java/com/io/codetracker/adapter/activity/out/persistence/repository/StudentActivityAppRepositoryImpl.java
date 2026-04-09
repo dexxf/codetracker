@@ -11,6 +11,9 @@ import com.io.codetracker.infrastructure.user.persistence.repository.JpaUserRepo
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Repository
 @AllArgsConstructor
 public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepository {
@@ -29,13 +32,33 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
     }
 
     @Override
+    public Optional<StudentActivity> findByUserIdAndActivityId(String userId, String activityId) {
+        return jpaStudentActivityRepository.findByUserEntity_UserIdAndActivityEntity_ActivityId(userId, activityId)
+                .map(savedEntity -> new StudentActivity(
+                        savedEntity.getStudentActivityId().toString(),
+                        savedEntity.getActivityEntity().getActivityId(),
+                        savedEntity.getUserEntity().getUserId(),
+                        savedEntity.getSubmissionStatus(),
+                        savedEntity.getFeedback()
+                ));
+    }
+
+    @Override
     public StudentActivity save(StudentActivity studentActivity) {
         ActivityEntity activityEntity = jpaActivityRepository.findById(studentActivity.getActivityId())
                 .orElseThrow(() -> new IllegalArgumentException("Activity not found: " + studentActivity.getActivityId()));
         UserEntity userEntity = jpaUserRepository.findById(studentActivity.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + studentActivity.getUserId()));
 
-        StudentActivityEntity entity = new StudentActivityEntity();
+        StudentActivityEntity entity;
+        if (studentActivity.getStudentActivityId() != null && !studentActivity.getStudentActivityId().isBlank()) {
+            UUID studentActivityId = UUID.fromString(studentActivity.getStudentActivityId());
+            entity = jpaStudentActivityRepository.findById(studentActivityId)
+                    .orElseThrow(() -> new IllegalArgumentException("Student activity not found: " + studentActivity.getStudentActivityId()));
+        } else {
+            entity = new StudentActivityEntity();
+        }
+
         entity.setActivityEntity(activityEntity);
         entity.setUserEntity(userEntity);
         entity.setSubmissionStatus(studentActivity.getSubmissionStatus());
