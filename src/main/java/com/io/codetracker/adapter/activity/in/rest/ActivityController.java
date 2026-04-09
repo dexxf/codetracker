@@ -4,6 +4,7 @@ import com.io.codetracker.adapter.activity.in.dto.request.SubmitExistingReposito
 import com.io.codetracker.adapter.activity.in.dto.request.SubmitNewRepositoryRequest;
 import com.io.codetracker.adapter.activity.in.dto.response.FindUnsubmittedRepositoryResponse;
 import com.io.codetracker.adapter.activity.in.dto.response.GetActivityResponse;
+import com.io.codetracker.adapter.activity.in.dto.response.GetSubmittedActivityResponse;
 import com.io.codetracker.adapter.activity.in.dto.response.StudentActivityResponse;
 import com.io.codetracker.adapter.activity.in.mapper.*;
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
@@ -19,6 +20,7 @@ import com.io.codetracker.application.activity.port.in.*;
 import com.io.codetracker.application.activity.result.ActivityData;
 
 import com.io.codetracker.application.activity.result.StudentActivityData;
+import com.io.codetracker.application.activity.result.SubmittedActivityUserData;
 import com.io.codetracker.common.result.Result;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -28,6 +30,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -38,6 +41,7 @@ public class ActivityController {
     private final AddActivityUseCase addActivityUseCase;
     private final GetClassroomOwnerActivityUseCase getClassroomOwnerActivityUseCase;
     private final GetClassroomStudentActivityUseCase getClassroomStudentActivityUseCase;
+    private final GetSubmittedActivityUseCase getSubmittedActivityUseCase;
     private final RemoveActivityUseCase removeActivityUseCase;
     private final EditActivityUseCase editActivityUseCase;
     private final SubmitExistingRepositoryUseCase submitExistingRepositoryUseCase;
@@ -68,6 +72,15 @@ public class ActivityController {
         return response.success() ? ResponseEntity.ok(GetActivityResponse.success(response.data()))
                 : ResponseEntity.status(GetActivityHttpMapper.studentToStatus(response.error()))
                   .body(GetActivityResponse.fail(GetActivityHttpMapper.studentToMessage(response.error())));
+    }
+
+    @GetMapping("/submitted")
+    public ResponseEntity<GetSubmittedActivityResponse> getSubmittedActivities(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
+        Result<Map<String, SubmittedActivityUserData>, GetClassroomOwnerActivityError> response =
+                getSubmittedActivityUseCase.execute(new GetActivityCommand(classroomId, principal.getUserId()));
+        return response.success() ? ResponseEntity.ok(GetSubmittedActivityResponse.success(response.data()))
+                : ResponseEntity.status(GetActivityHttpMapper.ownerToStatus(response.error()))
+                .body(GetSubmittedActivityResponse.fail(GetActivityHttpMapper.ownerToMessage(response.error())));
     }
 
     @DeleteMapping("/{activityId}")
