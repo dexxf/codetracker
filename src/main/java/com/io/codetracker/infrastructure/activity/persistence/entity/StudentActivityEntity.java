@@ -1,6 +1,7 @@
 package com.io.codetracker.infrastructure.activity.persistence.entity;
 
 import com.io.codetracker.domain.activity.valueObject.SubmissionStatus;
+import com.io.codetracker.infrastructure.github.persistence.entity.GithubSubmissionEntity;
 import com.io.codetracker.infrastructure.user.persistence.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -32,6 +33,9 @@ public class StudentActivityEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
+
+    @OneToOne(mappedBy = "studentActivity")
+    private GithubSubmissionEntity githubSubmission;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "submission_status", nullable = false)
