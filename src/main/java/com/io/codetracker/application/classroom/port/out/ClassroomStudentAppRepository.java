@@ -8,6 +8,7 @@ import java.util.Map;
 
 public interface ClassroomStudentAppRepository {
     boolean save(ClassroomStudent classroomStudent);
+    boolean existsByClassroomIdAndStudentUserId(String classroomId, String studentUserId);
     List<ClassroomStudent> findActiveEnrollmentsWithActiveClassroom(String studentUserId);
     Map<String, Integer> countByClassroomIds(List<String> classroomIds);
     List<ClassroomStudent> findClassroomStudents(String classroomId, StudentStatus status, boolean ascending);

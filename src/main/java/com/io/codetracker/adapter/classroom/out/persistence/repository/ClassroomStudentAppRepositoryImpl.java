@@ -37,6 +37,15 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
+    public boolean existsByClassroomIdAndStudentUserId(String classroomId, String studentUserId) {
+        return jpaClassroomStudentRepository.existsByClassroom_ClassroomIdAndStudentUserIdAndStatus(
+                classroomId,
+                studentUserId,
+                StudentStatus.ACTIVE
+        );
+    }
+
+    @Override
     public List<ClassroomStudent> findActiveEnrollmentsWithActiveClassroom(String studentUserId) {
         List<ClassroomStudentEntity> entities = jpaClassroomStudentRepository
                 .findEnrollmentsByStatus(studentUserId, StudentStatus.ACTIVE, ClassroomStatus.ACTIVE);
