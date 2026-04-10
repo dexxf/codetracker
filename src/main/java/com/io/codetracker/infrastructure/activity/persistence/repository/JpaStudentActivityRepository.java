@@ -21,7 +21,9 @@ public interface JpaStudentActivityRepository extends JpaRepository<StudentActiv
             SELECT new com.io.codetracker.application.activity.result.SubmittedActivityData(
                 sa.userEntity.userId,sa.studentActivityId,sa.activityEntity.activityId,sa.activityEntity.title,sa.activityEntity.description,sa.createdAt,sa.updatedAt,
                 gs.repositoryOwnerUsername,gs.repositoryId, gs.repositoryName,gs.mode,gs.repositoryUrl, gs.submittedAt)
-            FROM StudentActivityEntity sa LEFT JOIN sa.githubSubmission gs WHERE sa.activityEntity.classroomEntity.classroomId = :classroomId
+            FROM StudentActivityEntity sa LEFT JOIN sa.githubSubmission gs
+            WHERE sa.activityEntity.classroomEntity.classroomId = :classroomId
+              AND sa.submissionStatus = com.io.codetracker.domain.activity.valueObject.SubmissionStatus.SUBMITTED
             ORDER BY sa.createdAt DESC
             """)
     List<SubmittedActivityData> findSubmittedActivitiesByClassroomId(@Param("classroomId") String classroomId);
