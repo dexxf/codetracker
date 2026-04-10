@@ -6,7 +6,7 @@ import com.io.codetracker.domain.github.valueobject.GithubSubmissionMode;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record SubmittedActivityData(
+public record StudentActivityInfoData(
         String userId,
         String studentActivityId,
         String activityId,
@@ -23,7 +23,7 @@ public record SubmittedActivityData(
         SubmissionStatus submissionStatus,
         String feedback
 ) {
-    public SubmittedActivityData(
+        public StudentActivityInfoData(
             String userId,
             UUID studentActivityId,
             String activityId,

@@ -2,11 +2,11 @@ package com.io.codetracker.application.activity.result;
 
 import java.util.List;
 
-public record SubmittedActivityUserData(
+public record StudentActivityInfoUserData(
         String userId,
         String firstName,
         String lastName,
         String profileUrl,
-        List<SubmittedActivityData> submittedActivities
+        List<StudentActivityInfoData> studentActivities
 ) {
 }

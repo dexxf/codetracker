@@ -3,17 +3,17 @@ package com.io.codetracker.application.activity.service;
 import com.io.codetracker.application.activity.error.GetClassroomOwnerActivityError;
 import com.io.codetracker.application.activity.error.GetClassroomStudentActivityError;
 import com.io.codetracker.application.activity.port.in.GetClassroomOwnerActivityUseCase;
-import com.io.codetracker.application.activity.port.in.GetSubmittedActivityUseCase;
+import com.io.codetracker.application.activity.port.in.GetStudentActivityInfoUseCase;
 import com.io.codetracker.application.activity.port.in.GetClassroomStudentActivityUseCase;
 import com.io.codetracker.application.activity.port.out.ActivityClassroomAppPort;
 import com.io.codetracker.application.activity.command.GetActivityCommand;
 import com.io.codetracker.application.activity.port.out.ActivityAppRepository;
 import com.io.codetracker.application.activity.port.out.ActivityClassroomStudentAppPort;
-import com.io.codetracker.application.activity.port.out.SubmittedActivityAppRepository;
+import com.io.codetracker.application.activity.port.out.StudentActivityInfoAppRepository;
 import com.io.codetracker.application.activity.result.ActivityData;
-import com.io.codetracker.application.activity.result.SubmittedActivityData;
-import com.io.codetracker.application.activity.result.SubmittedActivityStudentData;
-import com.io.codetracker.application.activity.result.SubmittedActivityUserData;
+import com.io.codetracker.application.activity.result.StudentActivityInfoData;
+import com.io.codetracker.application.activity.result.StudentActivityInfoStudentData;
+import com.io.codetracker.application.activity.result.StudentActivityInfoUserData;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
 import lombok.AllArgsConstructor;
@@ -27,12 +27,12 @@ import java.util.Map;
 
 @Service
 @AllArgsConstructor
-public class GetActivityService implements GetClassroomOwnerActivityUseCase, GetClassroomStudentActivityUseCase, GetSubmittedActivityUseCase {
+public class GetActivityService implements GetClassroomOwnerActivityUseCase, GetClassroomStudentActivityUseCase, GetStudentActivityInfoUseCase {
 
     private final ActivityAppRepository activityAppRepository;
     private final ActivityClassroomAppPort activityClassroomAppPort;
     private final ActivityClassroomStudentAppPort activityClassroomStudentAppPort;
-    private final SubmittedActivityAppRepository submittedActivityAppRepository;
+    private final StudentActivityInfoAppRepository studentActivityInfoAppRepository;
 
     public Result<List<ActivityData>, GetClassroomOwnerActivityError> getOwnerClassroomActivity(GetActivityCommand command) {
             if (!activityClassroomAppPort.existsByClassroomId(command.classroomId())) {
@@ -67,7 +67,7 @@ public class GetActivityService implements GetClassroomOwnerActivityUseCase, Get
     }
 
     @Override
-    public Result<Map<String, SubmittedActivityUserData>, GetClassroomOwnerActivityError> execute(GetActivityCommand command) {
+    public Result<Map<String, StudentActivityInfoUserData>, GetClassroomOwnerActivityError> execute(GetActivityCommand command) {
         if (!activityClassroomAppPort.existsByClassroomId(command.classroomId())) {
             return Result.fail(GetClassroomOwnerActivityError.CLASSROOM_NOT_FOUND);
         }
@@ -76,12 +76,12 @@ public class GetActivityService implements GetClassroomOwnerActivityUseCase, Get
             return Result.fail(GetClassroomOwnerActivityError.USER_NOT_CLASSROOM_INSTRUCTOR);
         }
 
-        List<SubmittedActivityStudentData> students = submittedActivityAppRepository.findClassroomStudents(command.classroomId());
-        List<SubmittedActivityData> submittedActivities = submittedActivityAppRepository.findSubmittedActivities(command.classroomId());
+        List<StudentActivityInfoStudentData> students = studentActivityInfoAppRepository.findClassroomStudents(command.classroomId());
+        List<StudentActivityInfoData> studentActivities = studentActivityInfoAppRepository.findStudentActivityInfos(command.classroomId());
 
-        Map<String, SubmittedActivityUserData> submittedActivityMap = new LinkedHashMap<>();
-        for (SubmittedActivityStudentData student : students) {
-            submittedActivityMap.put(student.userId(), new SubmittedActivityUserData(
+        Map<String, StudentActivityInfoUserData> studentActivityInfoMap = new LinkedHashMap<>();
+        for (StudentActivityInfoStudentData student : students) {
+            studentActivityInfoMap.put(student.userId(), new StudentActivityInfoUserData(
                     student.userId(),
                     student.firstName(),
                     student.lastName(),
@@ -90,15 +90,15 @@ public class GetActivityService implements GetClassroomOwnerActivityUseCase, Get
             ));
         }
 
-        for (SubmittedActivityData submittedActivity : submittedActivities) {
-            SubmittedActivityUserData studentData = submittedActivityMap.get(submittedActivity.userId());
+        for (StudentActivityInfoData studentActivity : studentActivities) {
+            StudentActivityInfoUserData studentData = studentActivityInfoMap.get(studentActivity.userId());
             if (studentData == null) {
                 continue;
             }
 
-            studentData.submittedActivities().add(submittedActivity);
+            studentData.studentActivities().add(studentActivity);
         }
 
-        return Result.ok(submittedActivityMap);
+        return Result.ok(studentActivityInfoMap);
     }
 }
