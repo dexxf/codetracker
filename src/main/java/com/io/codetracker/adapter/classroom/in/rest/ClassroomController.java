@@ -6,6 +6,7 @@ import com.io.codetracker.adapter.classroom.in.dto.response.ClassroomJoinRespons
 import com.io.codetracker.adapter.classroom.in.dto.response.EditClassroomResponse;
 import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomsResponse;
 import com.io.codetracker.adapter.classroom.in.mapper.ClassroomJoinHttpMapper;
+import com.io.codetracker.adapter.classroom.in.dto.response.GetClassroomRecentActivitiesResponse;
 import com.io.codetracker.adapter.classroom.in.mapper.CloseClassroomHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.CreateClassroomHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.DeleteClassroomHttpMapper;
@@ -13,14 +14,17 @@ import com.io.codetracker.adapter.classroom.in.mapper.EditClassroomHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.SimpleClassroomHttpMapper;
 import com.io.codetracker.application.classroom.command.DeleteClassroomCommand;
 import com.io.codetracker.application.classroom.command.EditClassroomCommand;
+import com.io.codetracker.adapter.classroom.in.mapper.GetClassroomRecentActivitiesHttpMapper;
 import com.io.codetracker.application.classroom.command.JoinClassroomCommand;
 import com.io.codetracker.application.classroom.command.CloseClassroomCommand;
 import com.io.codetracker.application.classroom.error.ClassroomJoinError;
+import com.io.codetracker.application.classroom.command.GetClassroomRecentActivitiesCommand;
 import com.io.codetracker.application.classroom.error.CreateClassroomError;
 import com.io.codetracker.application.classroom.error.EditClassroomError;
 import com.io.codetracker.application.classroom.error.SimpleClassroomError;
 import com.io.codetracker.application.classroom.error.CloseClassroomError;
 import com.io.codetracker.application.classroom.port.in.*;
+import com.io.codetracker.application.classroom.error.GetClassroomRecentActivitiesError;
 import com.io.codetracker.application.classroom.result.*;
 import com.io.codetracker.common.result.Result;
 import lombok.AllArgsConstructor;
@@ -50,6 +54,7 @@ public class ClassroomController {
     private final JoinClassroomUseCase joinClassroomUseCase;
     private final GetJoinClassroomUseCase getJoinClassroomUseCase;
     private final GetClassroomStatsUseCase getClassroomStatsUseCase;
+    private final GetClassroomRecentActivitiesUseCase getClassroomRecentActivitiesUseCase;
     private final EditClassroomUseCase editClassroomUseCase;
     private final CloseClassroomUseCase closeClassroomUseCase;
     private final DeleteClassroomUseCase deleteClassroomUseCase;
@@ -116,6 +121,24 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
         }
         return ResponseEntity.ok(GetClassroomStatsResponse.success(result.data()));
     }
+
+        @GetMapping("/{classroomId}/recent-activities")
+        public ResponseEntity<GetClassroomRecentActivitiesResponse> getClassroomRecentActivities(
+            @AuthenticationPrincipal AuthPrincipal authPrincipal,
+            @PathVariable String classroomId,
+            @RequestParam(defaultValue = "20") int limit) {
+        Result<List<ClassroomRecentActivityData>, GetClassroomRecentActivitiesError> result =
+            getClassroomRecentActivitiesUseCase.execute(
+                new GetClassroomRecentActivitiesCommand(authPrincipal.getUserId(), classroomId, limit)
+            );
+
+        if (!result.success()) {
+            return ResponseEntity.status(GetClassroomRecentActivitiesHttpMapper.toStatus(result.error()))
+                .body(GetClassroomRecentActivitiesResponse.fail(GetClassroomRecentActivitiesHttpMapper.toMessage(result.error())));
+        }
+
+        return ResponseEntity.ok(GetClassroomRecentActivitiesResponse.success(result.data()));
+        }
 
     @PutMapping("/{classroomId}")
     public ResponseEntity<EditClassroomResponse> updateClassroom(
