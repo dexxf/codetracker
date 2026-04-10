@@ -1,5 +1,6 @@
 package com.io.codetracker.application.activity.result;
 
+import com.io.codetracker.domain.activity.valueObject.SubmissionStatus;
 import com.io.codetracker.domain.github.valueobject.GithubSubmissionMode;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,9 @@ public record SubmittedActivityData(
         String repositoryName,
         GithubSubmissionMode repositoryMode,
         String repositoryUrl,
-        LocalDateTime submittedAt
+        LocalDateTime submittedAt,
+        SubmissionStatus submissionStatus,
+        String feedback
 ) {
     public SubmittedActivityData(
             String userId,
@@ -33,7 +36,9 @@ public record SubmittedActivityData(
             String repositoryName,
             GithubSubmissionMode repositoryMode,
             String repositoryUrl,
-            LocalDateTime submittedAt
+            LocalDateTime submittedAt,
+            SubmissionStatus submissionStatus,
+            String feedback
     ) {
         this(
                 userId,
@@ -48,7 +53,9 @@ public record SubmittedActivityData(
                 repositoryName,
                 repositoryMode,
                 repositoryUrl,
-                submittedAt
+                                submittedAt,
+                                submissionStatus,
+                                feedback
         );
     }
 }
