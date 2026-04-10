@@ -2,8 +2,10 @@ package com.io.codetracker.infrastructure.classroom.persistence.repository;
 
 import com.io.codetracker.domain.classroom.valueObject.ClassroomStatus;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
+import com.io.codetracker.application.classroom.result.ClassroomStudentJoinedData;
 import com.io.codetracker.infrastructure.classroom.persistence.entity.ClassroomStudentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -40,4 +42,20 @@ public interface JpaClassroomStudentRepository extends JpaRepository<ClassroomSt
             ORDER BY cs.joinedAt ASC
             """)
     List<SubmittedActivityStudentData> findSubmittedActivityStudentsByClassroomId(@Param("classroomId") String classroomId);
+
+    @Query("""
+            SELECT new com.io.codetracker.application.classroom.result.ClassroomStudentJoinedData(
+                cs.studentUserId,
+                u.firstName,
+                u.lastName,
+                u.profileUrl,
+                cs.joinedAt
+            )
+            FROM ClassroomStudentEntity cs
+            JOIN UserEntity u ON u.userId = cs.studentUserId
+            WHERE cs.classroom.classroomId = :classroomId
+              AND cs.status = com.io.codetracker.domain.classroom.valueObject.StudentStatus.ACTIVE
+            ORDER BY cs.joinedAt DESC
+            """)
+    List<ClassroomStudentJoinedData> findRecentStudentJoinedByClassroomId(@Param("classroomId") String classroomId, Pageable pageable);
 }
