@@ -8,6 +8,8 @@ import com.io.codetracker.infrastructure.classroom.persistence.repository.JpaCla
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 @AllArgsConstructor
 public class ActivityClassroomAppAdapter implements ActivityClassroomAppPort {
@@ -44,6 +46,11 @@ public class ActivityClassroomAppAdapter implements ActivityClassroomAppPort {
     @Override
     public boolean existsByClassroomIdAndActivityId(String classroomId, String activityId) {
         return jpaActivityRepository.existsByClassroomEntity_ClassroomIdAndActivityId(classroomId, activityId);
+    }
+
+    @Override
+    public Optional<Integer> findMaxScoreByClassroomIdAndActivityId(String classroomId, String activityId) {
+        return jpaActivityRepository.findMaxScoreByClassroomIdAndActivityId(classroomId, activityId);
     }
 
 }

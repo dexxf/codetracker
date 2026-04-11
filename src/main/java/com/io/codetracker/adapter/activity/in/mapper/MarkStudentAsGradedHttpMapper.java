@@ -17,7 +17,8 @@ public final class MarkStudentAsGradedHttpMapper {
                  STUDENT_NOT_CLASSROOM_STUDENT -> HttpStatus.UNAUTHORIZED;
             case ACTIVITY_NOT_SUBMITTED,
                  ALREADY_GRADED -> HttpStatus.CONFLICT;
-              case INVALID_SCORE -> HttpStatus.BAD_REQUEST;
+              case INVALID_SCORE,
+                  SCORE_EXCEEDS_MAX_SCORE -> HttpStatus.BAD_REQUEST;
             case SAVE_FAILED -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
     }
@@ -31,6 +32,7 @@ public final class MarkStudentAsGradedHttpMapper {
             case REPOSITORY_SUBMISSION_NOT_FOUND -> "Repository submission not found. Submit a repository first";
             case ACTIVITY_NOT_SUBMITTED -> "Only submitted activity can be graded";
             case INVALID_SCORE -> "Score must be a non-negative number";
+            case SCORE_EXCEEDS_MAX_SCORE -> "Score cannot be greater than the activity max score";
             case ALREADY_GRADED -> "Activity already graded";
             case SAVE_FAILED -> "Failed to grade activity";
             case CLASSROOM_NOT_FOUND -> "Classroom not found";

@@ -48,6 +48,12 @@ public class SubmitRepositoryService implements SubmitNewRepositoryUseCase, Subm
         if (!activityClassroomAppPort.existsByClassroomIdAndActivityId(classroomId, activityId))
             return Result.fail(MarkStudentAsGradedError.ACTIVITY_NOT_FOUND);
 
+        Integer activityMaxScore = activityClassroomAppPort
+            .findMaxScoreByClassroomIdAndActivityId(classroomId, activityId)
+                .orElse(null);
+        if (activityMaxScore != null && score != null && score > activityMaxScore)
+            return Result.fail(MarkStudentAsGradedError.SCORE_EXCEEDS_MAX_SCORE);
+
         if (!studentActivityAppRepository.existsByUserId(studentUserId))
             return Result.fail(MarkStudentAsGradedError.STUDENT_NOT_FOUND);
 
