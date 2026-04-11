@@ -9,22 +9,24 @@ public final class StudentActivity {
     private final String userId;
     private SubmissionStatus submissionStatus;
     private String feedback;
+    private Integer score;
 
-    public StudentActivity(String studentActivityId, String activityId, String userId, SubmissionStatus submissionStatus, String feedback) {
+    public StudentActivity(String studentActivityId, String activityId, String userId, SubmissionStatus submissionStatus, String feedback, Integer score) {
         this.studentActivityId = studentActivityId;
         this.activityId = activityId;
         this.userId = userId;
         this.submissionStatus = submissionStatus;
         this.feedback = normalizeFeedback(feedback);
+        this.score = score;
     }
 
-    public StudentActivity(String activityId, String userId, SubmissionStatus submissionStatus, String feedback) {
-        this(null, activityId, userId, submissionStatus, feedback);
+    public StudentActivity(String activityId, String userId, SubmissionStatus submissionStatus, String feedback, Integer score) {
+        this(null, activityId, userId, submissionStatus, feedback, score);
     }
 
     // created createNew bc making factory or service is too much.. it only has 4 attributes
     public static StudentActivity createNew(String activityId, String userId) {
-        return new StudentActivity(null, activityId, userId, SubmissionStatus.PENDING, null);
+        return new StudentActivity(null, activityId, userId, SubmissionStatus.PENDING, null, null);
     }
 
     public String getStudentActivityId() {
@@ -47,6 +49,10 @@ public final class StudentActivity {
         return feedback;
     }
 
+    public Integer getScore() {
+        return score;
+    }
+
     public void markPending() {
         if (submissionStatus == SubmissionStatus.PENDING) {
             throw new IllegalStateException("Submission is already pending.");
@@ -57,6 +63,7 @@ public final class StudentActivity {
 
         this.submissionStatus = SubmissionStatus.PENDING;
         this.feedback = null;
+        this.score = null;
     }
 
     public void submit() {
@@ -70,13 +77,18 @@ public final class StudentActivity {
         this.submissionStatus = SubmissionStatus.SUBMITTED;
     }
 
-    public void grade(String feedback) {
+    public void grade(String feedback, Integer score) {
         if (submissionStatus != SubmissionStatus.SUBMITTED) {
             throw new IllegalStateException("Only submitted work can be graded.");
         }
 
+        if (score == null || score < 0) {
+            throw new IllegalArgumentException("Score must be a non-negative number.");
+        }
+
         this.submissionStatus = SubmissionStatus.GRADED;
         this.feedback = normalizeFeedback(feedback);
+        this.score = score;
     }
 
     public void clearFeedback() {
