@@ -41,7 +41,7 @@ public class GetJoinClassroomService implements GetJoinClassroomUseCase {
                 .map(classroom -> new GetJoinClassroomDataResult(
                         ClassroomData.from(classroom),
                         counts.getOrDefault(classroom.getClassroomId(), 0),
-                        classroomRepository.findMaxStudentByClassroomId(classroom.getClassroomId()) // ill fix this later if i see any performance issue
+                        classroomRepository.findMaxStudentByClassroomId(classroom.getClassroomId())
                 ))
                 .toList();
     }
