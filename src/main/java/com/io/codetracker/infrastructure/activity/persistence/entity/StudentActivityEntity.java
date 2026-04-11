@@ -44,6 +44,9 @@ public class StudentActivityEntity {
     @Column(name = "feedback")
     private String feedback;
 
+    @Column(name = "score")
+    private Integer score;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

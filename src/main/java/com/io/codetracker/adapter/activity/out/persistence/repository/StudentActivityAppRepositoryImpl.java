@@ -39,7 +39,8 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
                         savedEntity.getActivityEntity().getActivityId(),
                         savedEntity.getUserEntity().getUserId(),
                         savedEntity.getSubmissionStatus(),
-                        savedEntity.getFeedback()
+                        savedEntity.getFeedback(),
+                        savedEntity.getScore()
                 ));
     }
 
@@ -63,6 +64,7 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
         entity.setUserEntity(userEntity);
         entity.setSubmissionStatus(studentActivity.getSubmissionStatus());
         entity.setFeedback(studentActivity.getFeedback());
+        entity.setScore(studentActivity.getScore());
 
         StudentActivityEntity savedEntity = jpaStudentActivityRepository.save(entity);
         return new StudentActivity(
@@ -70,7 +72,8 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
                 savedEntity.getActivityEntity().getActivityId(),
                 savedEntity.getUserEntity().getUserId(),
                 savedEntity.getSubmissionStatus(),
-                savedEntity.getFeedback()
+            savedEntity.getFeedback(),
+            savedEntity.getScore()
         );
     }
 }

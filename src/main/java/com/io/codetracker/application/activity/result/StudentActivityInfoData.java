@@ -12,6 +12,7 @@ public record StudentActivityInfoData(
         String activityId,
         String title,
         String description,
+        Integer maxScore,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         String repositoryOwnerUsername,
@@ -21,7 +22,8 @@ public record StudentActivityInfoData(
         String repositoryUrl,
         LocalDateTime submittedAt,
         SubmissionStatus submissionStatus,
-        String feedback
+        String feedback,
+        Integer score
 ) {
         public StudentActivityInfoData(
             String userId,
@@ -29,6 +31,7 @@ public record StudentActivityInfoData(
             String activityId,
             String title,
             String description,
+            Integer maxScore,
             LocalDateTime createdAt,
             LocalDateTime updatedAt,
             String repositoryOwnerUsername,
@@ -38,7 +41,8 @@ public record StudentActivityInfoData(
             String repositoryUrl,
             LocalDateTime submittedAt,
             SubmissionStatus submissionStatus,
-            String feedback
+            String feedback,
+            Integer score
     ) {
         this(
                 userId,
@@ -46,6 +50,7 @@ public record StudentActivityInfoData(
                 activityId,
                 title,
                 description,
+                maxScore,
                 createdAt,
                 updatedAt,
                 repositoryOwnerUsername,
@@ -53,9 +58,10 @@ public record StudentActivityInfoData(
                 repositoryName,
                 repositoryMode,
                 repositoryUrl,
-                                submittedAt,
-                                submissionStatus,
-                                feedback
+                submittedAt,
+                submissionStatus,
+                feedback,
+                score
         );
     }
 }
