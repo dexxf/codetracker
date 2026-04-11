@@ -21,7 +21,8 @@ public record StudentActivityInfoData(
         String repositoryUrl,
         LocalDateTime submittedAt,
         SubmissionStatus submissionStatus,
-        String feedback
+        String feedback,
+        Integer score
 ) {
         public StudentActivityInfoData(
             String userId,
@@ -38,7 +39,8 @@ public record StudentActivityInfoData(
             String repositoryUrl,
             LocalDateTime submittedAt,
             SubmissionStatus submissionStatus,
-            String feedback
+            String feedback,
+            Integer score
     ) {
         this(
                 userId,
@@ -55,7 +57,8 @@ public record StudentActivityInfoData(
                 repositoryUrl,
                                 submittedAt,
                                 submissionStatus,
-                                feedback
+                                                                feedback,
+                                                                score
         );
     }
 }

@@ -17,7 +17,8 @@ public class StudentActivityMapper {
                 entity.getActivityEntity().getActivityId(),
                 entity.getUserEntity().getUserId(),
                 entity.getSubmissionStatus(),
-                entity.getFeedback()
+            entity.getFeedback(),
+            entity.getScore()
         );
     }
 }
