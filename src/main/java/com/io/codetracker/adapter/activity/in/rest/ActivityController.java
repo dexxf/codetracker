@@ -1,6 +1,7 @@
 package com.io.codetracker.adapter.activity.in.rest;
 
 import com.io.codetracker.adapter.activity.in.dto.request.SubmitExistingRepositoryRequest;
+import com.io.codetracker.adapter.activity.in.dto.request.MarkStudentAsGradedRequest;
 import com.io.codetracker.adapter.activity.in.dto.request.SubmitNewRepositoryRequest;
 import com.io.codetracker.adapter.activity.in.dto.response.FindUnsubmittedRepositoryResponse;
 import com.io.codetracker.adapter.activity.in.dto.response.GetActivityResponse;
@@ -41,12 +42,13 @@ public class ActivityController {
     private final AddActivityUseCase addActivityUseCase;
     private final GetClassroomOwnerActivityUseCase getClassroomOwnerActivityUseCase;
     private final GetClassroomStudentActivityUseCase getClassroomStudentActivityUseCase;
-        private final GetStudentActivityInfoUseCase getStudentActivityInfoUseCase;
+    private final GetStudentActivityInfoUseCase getStudentActivityInfoUseCase;
     private final RemoveActivityUseCase removeActivityUseCase;
     private final EditActivityUseCase editActivityUseCase;
     private final SubmitExistingRepositoryUseCase submitExistingRepositoryUseCase;
     private final SubmitNewRepositoryUseCase submitNewRepositoryUseCase;
-        private final SubmitActivityUseCase submitActivityUseCase;
+    private final SubmitActivityUseCase submitActivityUseCase;
+    private final MarkStudentAsGradedUseCase markStudentAsGradedUseCase;
     private final FindStudentUnsubmittedRepositoryUseCase findStudentUnsubmittedRepositoryUseCase;
 
     @PostMapping
@@ -76,7 +78,7 @@ public class ActivityController {
     }
 
     @GetMapping("/submitted")
-        public ResponseEntity<GetStudentActivityInfoResponse> getStudentActivityInfo(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
+    public ResponseEntity<GetStudentActivityInfoResponse> getSubmittedActivities(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
         Result<Map<String, StudentActivityInfoUserData>, GetClassroomOwnerActivityError> response =
                 getStudentActivityInfoUseCase.execute(new GetActivityCommand(classroomId, principal.getUserId()));
         return response.success() ? ResponseEntity.ok(GetStudentActivityInfoResponse.success(response.data()))
@@ -172,5 +174,29 @@ public class ActivityController {
                 ? ResponseEntity.ok(StudentActivityResponse.success(response.data(), "Successfully submitted activity"))
                 : ResponseEntity.status(SubmitActivityHttpMapper.toStatus(response.error()))
                 .body(StudentActivityResponse.fail(SubmitActivityHttpMapper.toMessage(response.error())));
+    }
+
+    @PostMapping("/{activityId}/students/{studentUserId}/grade")
+    public ResponseEntity<StudentActivityResponse> markStudentAsGraded(
+            @PathVariable String classroomId,
+            @PathVariable String activityId,
+            @PathVariable String studentUserId,
+            @Valid @RequestBody(required = false) MarkStudentAsGradedRequest request,
+            @AuthenticationPrincipal AuthPrincipal authPrincipal
+    ) {
+        Result<StudentActivityData, MarkStudentAsGradedError> response =
+                markStudentAsGradedUseCase.grade(
+                        authPrincipal.getUserId(),
+                        classroomId,
+                        activityId,
+                        studentUserId,
+                        request != null ? request.feedback() : null,
+                        request != null ? request.score() : null
+                );
+
+        return response.success()
+                ? ResponseEntity.ok(StudentActivityResponse.success(response.data(), "Successfully marked student activity as graded"))
+                : ResponseEntity.status(MarkStudentAsGradedHttpMapper.toStatus(response.error()))
+                .body(StudentActivityResponse.fail(MarkStudentAsGradedHttpMapper.toMessage(response.error())));
     }
 }
