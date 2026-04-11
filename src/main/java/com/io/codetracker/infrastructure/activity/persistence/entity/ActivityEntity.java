@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "activity")
@@ -45,4 +47,7 @@ public class ActivityEntity {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "activityEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<StudentActivityEntity> studentActivities = new HashSet<>();
 }

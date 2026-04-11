@@ -34,7 +34,7 @@ public class StudentActivityEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
 
-    @OneToOne(mappedBy = "studentActivity")
+    @OneToOne(mappedBy = "studentActivity", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private GithubSubmissionEntity githubSubmission;
 
     @Enumerated(EnumType.STRING)
