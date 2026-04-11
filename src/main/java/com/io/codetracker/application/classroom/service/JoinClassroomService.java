@@ -51,6 +51,8 @@ public final class JoinClassroomService implements JoinClassroomUseCase {
 
         studentRepository.save(student);
 
-        return Result.ok(ClassroomJoinResult.from(student));
+        boolean hasPassword = joinResult.classroomSettings().getPasscode() != null
+            && !joinResult.classroomSettings().getPasscode().isBlank();
+        return Result.ok(ClassroomJoinResult.from(student, hasPassword));
     }
 }

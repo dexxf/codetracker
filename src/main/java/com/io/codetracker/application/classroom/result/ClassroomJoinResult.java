@@ -10,16 +10,18 @@ public record ClassroomJoinResult (String classroomId,
                                    StudentStatus status,
                                    LocalDateTime joinedAt,
                                    LocalDateTime lastActiveAt,
-                                   LocalDateTime leftAt){
+                                   LocalDateTime leftAt,
+                                   boolean hasPassword){
 
-    public static ClassroomJoinResult from(ClassroomStudent student) {
+    public static ClassroomJoinResult from(ClassroomStudent student, boolean hasPassword) {
         return new ClassroomJoinResult(
                 student.getClassroomId(),
                 student.getStudentUserId(),
                 student.getStatus(),
                 student.getJoinedAt(),
                 student.getLastActiveAt(),
-                student.getLeftAt()
+                student.getLeftAt(),
+                hasPassword
         );
     }
 }
