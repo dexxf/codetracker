@@ -1,0 +1,14 @@
+package com.io.codetracker.application.activity.error;
+
+public enum MarkStudentAsGradedError {
+    USER_NOT_CLASSROOM_INSTRUCTOR,
+    ACTIVITY_NOT_FOUND,
+    STUDENT_NOT_FOUND,
+    STUDENT_NOT_CLASSROOM_STUDENT,
+    REPOSITORY_SUBMISSION_NOT_FOUND,
+    ACTIVITY_NOT_SUBMITTED,
+    INVALID_SCORE,
+    ALREADY_GRADED,
+    SAVE_FAILED,
+    CLASSROOM_NOT_FOUND
+}
