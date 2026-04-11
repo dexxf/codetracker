@@ -19,7 +19,7 @@ public interface JpaStudentActivityRepository extends JpaRepository<StudentActiv
 
     @Query("""
             SELECT new com.io.codetracker.application.activity.result.StudentActivityInfoData(
-                sa.userEntity.userId,sa.studentActivityId,sa.activityEntity.activityId,sa.activityEntity.title,sa.activityEntity.description,sa.createdAt,sa.updatedAt,
+                sa.userEntity.userId,sa.studentActivityId,sa.activityEntity.activityId,sa.activityEntity.title,sa.activityEntity.description,sa.activityEntity.maxScore,sa.createdAt,sa.updatedAt,
                 gs.repositoryOwnerUsername,gs.repositoryId, gs.repositoryName,gs.mode,gs.repositoryUrl, gs.submittedAt,
                 sa.submissionStatus, sa.feedback, sa.score)
             FROM StudentActivityEntity sa LEFT JOIN sa.githubSubmission gs WHERE sa.activityEntity.classroomEntity.classroomId = :classroomId
