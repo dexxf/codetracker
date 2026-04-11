@@ -1,8 +1,10 @@
 package com.io.codetracker.application.activity.service;
 
+import com.io.codetracker.application.activity.error.MarkStudentAsGradedError;
 import com.io.codetracker.application.activity.error.SubmitActivityError;
 import com.io.codetracker.application.activity.error.SubmitExistingRepositoryError;
 import com.io.codetracker.application.activity.error.SubmitNewRepositoryError;
+import com.io.codetracker.application.activity.port.in.MarkStudentAsGradedUseCase;
 import com.io.codetracker.application.activity.port.in.SubmitActivityUseCase;
 import com.io.codetracker.application.activity.port.in.SubmitExistingRepositoryUseCase;
 import com.io.codetracker.application.activity.port.in.SubmitNewRepositoryUseCase;
@@ -16,6 +18,7 @@ import com.io.codetracker.application.github.error.CreateGithubSubmissionError;
 import com.io.codetracker.application.github.port.in.CreateGithubSubmissionUseCase;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.activity.entity.StudentActivity;
+import com.io.codetracker.domain.activity.valueObject.SubmissionStatus;
 import com.io.codetracker.domain.auth.entity.GithubAccount;
 import com.io.codetracker.domain.github.valueobject.GithubSubmissionMode;
 import lombok.AllArgsConstructor;
@@ -26,13 +29,56 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class SubmitRepositoryService implements SubmitNewRepositoryUseCase, SubmitExistingRepositoryUseCase, SubmitActivityUseCase {
+public class SubmitRepositoryService implements SubmitNewRepositoryUseCase, SubmitExistingRepositoryUseCase, SubmitActivityUseCase, MarkStudentAsGradedUseCase {
 
     private final StudentActivityAppRepository studentActivityAppRepository;
     private final ActivityClassroomAppPort activityClassroomAppPort;
     private final GithubActivityIntegrationPort githubActivityIntegrationPort;
     private final ActivityGithubAccountAppPort activityGithubAccountAppPort;
     private final CreateGithubSubmissionUseCase createGithubSubmissionUseCase;
+
+    @Override
+    public Result<StudentActivityData, MarkStudentAsGradedError> grade(String instructorUserId, String classroomId, String activityId, String studentUserId, String feedback, Integer score) {
+        if (!activityClassroomAppPort.existsByClassroomId(classroomId))
+            return Result.fail(MarkStudentAsGradedError.CLASSROOM_NOT_FOUND);
+
+        if (!activityClassroomAppPort.existsByClassroomIdAndInstructorUserId(classroomId, instructorUserId))
+            return Result.fail(MarkStudentAsGradedError.USER_NOT_CLASSROOM_INSTRUCTOR);
+
+        if (!activityClassroomAppPort.existsByClassroomIdAndActivityId(classroomId, activityId))
+            return Result.fail(MarkStudentAsGradedError.ACTIVITY_NOT_FOUND);
+
+        if (!studentActivityAppRepository.existsByUserId(studentUserId))
+            return Result.fail(MarkStudentAsGradedError.STUDENT_NOT_FOUND);
+
+        if (!activityClassroomAppPort.existsByClassroomIdAndStudentUserId(classroomId, studentUserId))
+            return Result.fail(MarkStudentAsGradedError.STUDENT_NOT_CLASSROOM_STUDENT);
+
+        Optional<StudentActivity> studentActivityOptional = studentActivityAppRepository.findByUserIdAndActivityId(studentUserId, activityId);
+        if (studentActivityOptional.isEmpty())
+            return Result.fail(MarkStudentAsGradedError.REPOSITORY_SUBMISSION_NOT_FOUND);
+
+        StudentActivity studentActivity = studentActivityOptional.get();
+
+        if (studentActivity.getSubmissionStatus() == SubmissionStatus.GRADED)
+            return Result.fail(MarkStudentAsGradedError.ALREADY_GRADED);
+
+        if (studentActivity.getSubmissionStatus() != SubmissionStatus.SUBMITTED)
+            return Result.fail(MarkStudentAsGradedError.ACTIVITY_NOT_SUBMITTED);
+
+        try {
+            studentActivity.grade(feedback, score);
+        } catch (IllegalArgumentException e) {
+            return Result.fail(MarkStudentAsGradedError.INVALID_SCORE);
+        }
+
+        try {
+            StudentActivity savedStudentActivity = studentActivityAppRepository.save(studentActivity);
+            return Result.ok(StudentActivityData.from(savedStudentActivity));
+        } catch (RuntimeException e) {
+            return Result.fail(MarkStudentAsGradedError.SAVE_FAILED);
+        }
+    }
 
     @Override
     public Result<StudentActivityData, SubmitActivityError> submit(String userId, String classroomId, String activityId) {
