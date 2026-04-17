@@ -69,19 +69,20 @@ public class RefreshController {
         this.refreshSameSite = refreshSameSite;
         this.refreshDomain = refreshDomain;
     }
-    @PostMapping("/{device_id}")
+    @PostMapping
     public ResponseEntity<RotateRefreshTokenResponse> refreshToken(
             HttpServletRequest request,
-            HttpServletResponse response,
-            @PathVariable("device_id") String deviceId
+            HttpServletResponse response
     ) {
 
-        if (deviceId == null || deviceId.isBlank() || deviceId.equals("null")) {
+        String deviceId = extractCookieFromRequest(request, "device_id");
+
+        if (deviceId == null || deviceId.isBlank()) {
             return ResponseEntity.badRequest()
                     .body(RotateRefreshTokenResponse.fail("Device ID is required and must be valid"));
         }
 
-        String plainRefreshToken = extractRefreshTokenFromRequest(request);
+        String plainRefreshToken = extractCookieFromRequest(request, "refresh_token");
         if (plainRefreshToken == null || plainRefreshToken.isBlank()) {
             return ResponseEntity.badRequest()
                     .body(RotateRefreshTokenResponse.fail("Refresh token is missing"));
@@ -120,10 +121,10 @@ public class RefreshController {
         }
     }
 
-    private String extractRefreshTokenFromRequest(HttpServletRequest request) {
+    private String extractCookieFromRequest(HttpServletRequest request, String cookieName) {
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
-                if ("refresh_token".equals(cookie.getName())) {
+                if (cookieName.equals(cookie.getName())) {
                     return cookie.getValue();
                 }
             }
