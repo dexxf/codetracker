@@ -4,7 +4,7 @@ import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "student_classroom")
@@ -30,11 +30,11 @@ public class ClassroomStudentEntity {
     private StudentStatus status;
 
     @Column(name = "last_active_at")
-    private LocalDateTime lastActiveAt;
+    private Instant lastActiveAt;
 
     @Column(name = "joined_at", nullable = false)
-    private LocalDateTime joinedAt;
+    private Instant joinedAt;
 
     @Column(name = "left_at", nullable = true)
-    private LocalDateTime leftAt;
+    private Instant leftAt;
 }

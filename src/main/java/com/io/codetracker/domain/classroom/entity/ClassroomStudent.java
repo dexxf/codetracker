@@ -2,18 +2,20 @@ package com.io.codetracker.domain.classroom.entity;
 
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 public final class ClassroomStudent {
 
     private final String classroomId;
     private final String studentUserId;
     private StudentStatus status;
-    private LocalDateTime lastActiveAt;
-    private final LocalDateTime joinedAt;
-    private LocalDateTime leftAt;
+    private Instant lastActiveAt;
+    private final Instant joinedAt;
+    private Instant leftAt;
 
-    public ClassroomStudent(String classroomId, String studentUserId, StudentStatus status, LocalDateTime lastActiveAt, LocalDateTime joinedAt, LocalDateTime leftAt) {
+    public ClassroomStudent(String classroomId, String studentUserId, StudentStatus status, Instant lastActiveAt, Instant joinedAt, Instant leftAt) {
         this.classroomId = classroomId;
         this.studentUserId = studentUserId;
         this.status = status;
@@ -34,15 +36,15 @@ public final class ClassroomStudent {
         return status;
     }
 
-    public LocalDateTime getLastActiveAt() {
+    public Instant getLastActiveAt() {
         return lastActiveAt;
     }
 
-    public LocalDateTime getJoinedAt() {
+    public Instant getJoinedAt() {
         return joinedAt;
     }
 
-    public LocalDateTime getLeftAt() {
+    public Instant getLeftAt() {
         return leftAt;
     }
 
@@ -51,7 +53,7 @@ public final class ClassroomStudent {
             throw new IllegalStateException("Cannot kick a student who has already left or been kicked.");
         }
         this.status = StudentStatus.KICKED;
-        this.leftAt = LocalDateTime.now();
+        this.leftAt = Instant.now();
     }
 
     public void drop() {
@@ -59,14 +61,14 @@ public final class ClassroomStudent {
             throw new IllegalStateException("Student has already left or been kicked.");
         }
         this.status = StudentStatus.DROPPED;
-        this.leftAt = LocalDateTime.now();
+        this.leftAt = Instant.now();
     }
 
     public void markActive() {
         if (status != StudentStatus.ACTIVE) {
             throw new IllegalStateException("Only active students can be marked active.");
         }
-        this.lastActiveAt = LocalDateTime.now();
+        this.lastActiveAt = Instant.now();
     }
 
     public void activate() {
@@ -74,6 +76,6 @@ public final class ClassroomStudent {
             throw new IllegalStateException("Only pending students can be activated.");
         }
         this.status = StudentStatus.ACTIVE;
-        this.lastActiveAt = LocalDateTime.now();
+        this.lastActiveAt = Instant.now();
     }
 }

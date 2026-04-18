@@ -1,10 +1,11 @@
 package com.io.codetracker.application.classroom.result;
 
-import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 public record ClassroomRecentActivityData(
         String eventType,
-        LocalDateTime occurredAt,
+        ZonedDateTime occurredAt,
         String studentUserId,
         String firstName,
         String lastName,
@@ -18,7 +19,7 @@ public record ClassroomRecentActivityData(
     public static ClassroomRecentActivityData fromStudentJoined(ClassroomStudentJoinedData data) {
         return new ClassroomRecentActivityData(
                 "STUDENT_JOINED",
-                data.joinedAt(),
+                data.joinedAt().atZone(ZoneOffset.UTC),
                 data.studentUserId(),
                 data.firstName(),
                 data.lastName(),
@@ -33,7 +34,7 @@ public record ClassroomRecentActivityData(
     public static ClassroomRecentActivityData fromRepositorySubmitted(ClassroomRepositorySubmissionData data) {
         return new ClassroomRecentActivityData(
                 "REPOSITORY_SUBMITTED",
-                data.submittedAt(),
+                data.submittedAt().atZone(ZoneOffset.UTC),
                 data.studentUserId(),
                 data.firstName(),
                 data.lastName(),
@@ -48,7 +49,7 @@ public record ClassroomRecentActivityData(
     public static ClassroomRecentActivityData fromActivityCreated(ClassroomActivityCreatedData data) {
         return new ClassroomRecentActivityData(
                 "ACTIVITY_CREATED",
-                data.createdAt(),
+                data.createdAt().atZone(ZoneOffset.UTC),
                 null,
                 null,
                 null,

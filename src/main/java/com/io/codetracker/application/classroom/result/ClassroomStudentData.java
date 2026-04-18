@@ -4,9 +4,12 @@ import com.io.codetracker.domain.classroom.entity.ClassroomStudent;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
-public record ClassroomStudentData(String classroomId, String firstName,String lastName,String profileUrl,String studentUserId, StudentStatus status, LocalDateTime lastActiveAt,
-                                   LocalDateTime joinedAt, LocalDateTime leftAt) {
+public record ClassroomStudentData(String classroomId, String firstName, String lastName, String profileUrl, String studentUserId, StudentStatus status, ZonedDateTime lastActiveAt,
+                                   ZonedDateTime joinedAt, ZonedDateTime leftAt) {
 
     public static ClassroomStudentData from(ClassroomStudent classroomStudent,String firstName,String lastName, String profileUrl) {
         if (classroomStudent == null) return null;
@@ -18,9 +21,9 @@ public record ClassroomStudentData(String classroomId, String firstName,String l
                 profileUrl,
                 classroomStudent.getStudentUserId(),
                 classroomStudent.getStatus(),
-                classroomStudent.getLastActiveAt(),
-                classroomStudent.getJoinedAt(),
-                classroomStudent.getLeftAt()
+                ZonedDateTime.ofInstant(classroomStudent.getLastActiveAt(), ZoneOffset.UTC),
+                ZonedDateTime.ofInstant(classroomStudent.getJoinedAt(), ZoneOffset.UTC),
+                ZonedDateTime.ofInstant(classroomStudent.getLeftAt(), ZoneOffset.UTC)
         );
     }
 }

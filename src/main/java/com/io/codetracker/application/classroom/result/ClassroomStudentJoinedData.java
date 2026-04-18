@@ -1,12 +1,14 @@
 package com.io.codetracker.application.classroom.result;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record ClassroomStudentJoinedData(
         String studentUserId,
         String firstName,
         String lastName,
         String profileUrl,
-        LocalDateTime joinedAt
+        Instant joinedAt
 ) {
+
+
 }
