@@ -5,14 +5,14 @@ import com.io.codetracker.domain.classroom.factory.ClassroomStudentFactory;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Component
 public class DefaultClassroomStudentFactory implements ClassroomStudentFactory {
 
     @Override
     public ClassroomStudent create(String classroomId, String studentUserId, StudentStatus status) {
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
 
         return new ClassroomStudent(classroomId,studentUserId, status,now, now, null
         );
