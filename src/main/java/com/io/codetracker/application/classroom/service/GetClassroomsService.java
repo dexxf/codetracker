@@ -30,13 +30,13 @@ public class GetClassroomsService implements GetClassroomUseCase {
             return Result.fail(SimpleClassroomError.NO_CLASSROOM_FOUND);
         }
 
-        Map<String, Integer> classroomWithCount = classroomStudentAppRepository
-                .countByClassroomIds(classroomList.stream().map(Classroom::getClassroomId).toList());
+        Map<String, Long> classroomWithCount = classroomStudentAppRepository
+                .countActiveClassroomStudentByClassroomIds(classroomList.stream().map(Classroom::getClassroomId).toList());
 
         List<GetClassroomsProfessorData> dataList = classroomList.stream()
                 .map(classroom -> GetClassroomsProfessorData.from(
                         classroom,
-                        classroomWithCount.getOrDefault(classroom.getClassroomId(), 0),
+                        classroomWithCount.getOrDefault(classroom.getClassroomId(), 0L),
                         classroomAppRepository.findMaxStudentByClassroomId(classroom.getClassroomId()) //TODO: fix this if i see any performance issue
                 ))
                 .toList();
