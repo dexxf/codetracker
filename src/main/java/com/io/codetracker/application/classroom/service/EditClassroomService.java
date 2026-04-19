@@ -43,7 +43,7 @@ public class EditClassroomService implements EditClassroomUseCase {
             return Result.fail(EditClassroomError.CLASSROOM_SETTINGS_NOT_FOUND);
         }
 
-        long enrolledStudents = classroomStudentAppRepository.countByClassroomId(command.classroomId());
+        long enrolledStudents = classroomStudentAppRepository.countActiveClassroomStudentByClassroomId(command.classroomId());
         if (command.maxStudents() < enrolledStudents) {
             return Result.fail(EditClassroomError.MAX_STUDENTS_LESS_THAN_ENROLLED);
         }

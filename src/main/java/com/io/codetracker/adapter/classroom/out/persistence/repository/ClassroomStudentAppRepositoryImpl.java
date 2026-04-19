@@ -55,10 +55,10 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    public Map<String, Integer> countByClassroomIds(List<String> classroomIds) {
-        Map<String, Integer> countMap = new HashMap<>();
+    public Map<String, Long> countActiveClassroomStudentByClassroomIds(List<String> classroomIds) {
+        Map<String, Long> countMap = new HashMap<>();
         for (String classroomId : classroomIds) {
-            int count = jpaClassroomStudentRepository.countByClassroom_ClassroomId(classroomId);
+            Long count = jpaClassroomStudentRepository.countByStatus_ActiveAndClassroom_ClassroomId(classroomId);
             countMap.put(classroomId, count);
         }
         return countMap;
@@ -76,8 +76,8 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    public long countByClassroomId(String classroomId) {
-        return jpaClassroomStudentRepository.countByClassroom_ClassroomId(classroomId);
+    public long countActiveClassroomStudentByClassroomId(String classroomId) {
+        return jpaClassroomStudentRepository.countByStatus_ActiveAndClassroom_ClassroomId(classroomId);
     }
 
 }

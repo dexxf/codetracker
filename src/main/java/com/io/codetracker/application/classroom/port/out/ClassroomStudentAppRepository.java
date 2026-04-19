@@ -10,7 +10,7 @@ public interface ClassroomStudentAppRepository {
     boolean save(ClassroomStudent classroomStudent);
     boolean existsByClassroomIdAndStudentUserId(String classroomId, String studentUserId);
     List<ClassroomStudent> findActiveEnrollmentsWithActiveClassroom(String studentUserId);
-    Map<String, Integer> countByClassroomIds(List<String> classroomIds);
+    Map<String, Long> countActiveClassroomStudentByClassroomIds(List<String> classroomIds);
     List<ClassroomStudent> findClassroomStudents(String classroomId, StudentStatus status, boolean ascending);
-    long countByClassroomId(String classroomId);
+    long countActiveClassroomStudentByClassroomId(String classroomId);
 }

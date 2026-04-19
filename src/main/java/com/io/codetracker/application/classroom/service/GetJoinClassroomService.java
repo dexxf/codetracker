@@ -35,12 +35,12 @@ public class GetJoinClassroomService implements GetJoinClassroomUseCase {
                 .toList();
 
         List<Classroom> classrooms = classroomRepository.findAllById(classroomIds);        
-        Map<String, Integer> counts = classroomStudentRepository.countByClassroomIds(classroomIds);
+        Map<String, Long> counts = classroomStudentRepository.countActiveClassroomStudentByClassroomIds(classroomIds);
 
         return classrooms.stream()
                 .map(classroom -> new GetJoinClassroomDataResult(
                         ClassroomData.from(classroom),
-                        counts.getOrDefault(classroom.getClassroomId(), 0),
+                        counts.getOrDefault(classroom.getClassroomId(), 0L),
                         classroomRepository.findMaxStudentByClassroomId(classroom.getClassroomId())
                 ))
                 .toList();
