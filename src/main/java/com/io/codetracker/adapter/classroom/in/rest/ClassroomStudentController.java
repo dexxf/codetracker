@@ -27,9 +27,8 @@ public class ClassroomStudentController {
                                          @RequestParam(defaultValue = "ACTIVE") StudentStatus status,
                                          @RequestParam(defaultValue = "true") boolean ascending,
                                          @AuthenticationPrincipal AuthPrincipal principal) {
-        Result<List<ClassroomStudentData>, SimpleClassroomError> response = getClassroomStudentUseCase.execute(
-            new GetClassroomStudentCommand(principal.getUserId(), classroomId, status, ascending));
-        return response.success() ? ResponseEntity.ok(response) : ResponseEntity.status(SimpleClassroomHttpMapper.toStatus(response.error()))
+        Result<List<ClassroomStudentData>, SimpleClassroomError> response = getClassroomStudentUseCase.execute(new GetClassroomStudentCommand(principal.getUserId(), classroomId, status, ascending));
+        return response.success() ? ResponseEntity.ok(response.data()) : ResponseEntity.status(SimpleClassroomHttpMapper.toStatus(response.error()))
         .body(SimpleClassroomHttpMapper.toMessage(response.error()));
     }
 

@@ -23,7 +23,7 @@ public record ClassroomStudentData(String classroomId, String firstName, String 
                 classroomStudent.getStatus(),
                 ZonedDateTime.ofInstant(classroomStudent.getLastActiveAt(), ZoneOffset.UTC),
                 ZonedDateTime.ofInstant(classroomStudent.getJoinedAt(), ZoneOffset.UTC),
-                ZonedDateTime.ofInstant(classroomStudent.getLeftAt(), ZoneOffset.UTC)
+                classroomStudent.getLeftAt() != null ? ZonedDateTime.ofInstant(classroomStudent.getLeftAt(), ZoneOffset.UTC) : null
         );
     }
 }
