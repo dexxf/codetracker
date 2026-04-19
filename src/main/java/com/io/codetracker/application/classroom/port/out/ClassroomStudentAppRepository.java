@@ -12,5 +12,5 @@ public interface ClassroomStudentAppRepository {
     List<ClassroomStudent> findActiveEnrollmentsWithActiveClassroom(String studentUserId);
     Map<String, Integer> countByClassroomIds(List<String> classroomIds);
     List<ClassroomStudent> findClassroomStudents(String classroomId, StudentStatus status, boolean ascending);
-    long countByClassroomId(String classroomId);
+    long countActiveClassroomStudentByClassroomId(String classroomId);
 }

@@ -58,4 +58,12 @@ public interface JpaClassroomStudentRepository extends JpaRepository<ClassroomSt
             ORDER BY cs.joinedAt DESC
             """)
     List<ClassroomStudentJoinedData> findRecentStudentJoinedByClassroomId(@Param("classroomId") String classroomId, Pageable pageable);
+
+    @Query("""
+    SELECT COUNT(cs)
+    FROM ClassroomStudentEntity cs
+    WHERE cs.status = com.io.codetracker.domain.classroom.valueObject.StudentStatus.ACTIVE
+      AND cs.classroom.classroomId = :classroomId
+    """)
+    long countByStatus_ActiveAndClassroom_ClassroomId(@Param("classroomId") String classroomId);
 }

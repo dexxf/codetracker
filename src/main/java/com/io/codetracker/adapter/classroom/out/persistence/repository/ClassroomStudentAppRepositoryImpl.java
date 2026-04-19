@@ -76,8 +76,8 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    public long countByClassroomId(String classroomId) {
-        return jpaClassroomStudentRepository.countByClassroom_ClassroomId(classroomId);
+    public long countActiveClassroomStudentByClassroomId(String classroomId) {
+        return jpaClassroomStudentRepository.countByStatus_ActiveAndClassroom_ClassroomId(classroomId);
     }
 
 }
