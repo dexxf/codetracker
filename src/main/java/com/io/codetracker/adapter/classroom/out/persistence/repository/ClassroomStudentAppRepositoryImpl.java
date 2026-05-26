@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Repository
@@ -30,7 +31,18 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
                 .orElse(null);
         if (classroomEntity == null) return false;
 
-        ClassroomStudentEntity entity = ClassroomStudentMapper.toEntity(classroomStudent);
+        ClassroomStudentEntity entity = jpaClassroomStudentRepository.findByClassroom_ClassroomIdAndStudentUserId(
+                classroomStudent.getClassroomId(),
+                classroomStudent.getStudentUserId()
+        ).orElseGet(ClassroomStudentEntity::new);
+
+        entity.setStudentUserId(classroomStudent.getStudentUserId());
+        entity.setStatus(classroomStudent.getStatus());
+        entity.setJoinedAt(classroomStudent.getJoinedAt());
+        entity.setLastActiveAt(classroomStudent.getLastActiveAt());
+        entity.setLeftAt(classroomStudent.getLeftAt());
+        entity.setClassroom(classroomEntity);
+
         classroomEntity.addStudent(entity);
         jpaClassroomStudentRepository.save(entity);
         return true;
@@ -76,8 +88,14 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    public long countActiveClassroomStudentByClassroomId(String classroomId) {
+    public long countByClassroomId(String classroomId) {
         return jpaClassroomStudentRepository.countByStatus_ActiveAndClassroom_ClassroomId(classroomId);
+    }
+
+    @Override
+    public Optional<ClassroomStudent> findByClassroomIdAndStudentUserId(String classroomId, String studentUserId) {
+        return jpaClassroomStudentRepository.findByClassroom_ClassroomIdAndStudentUserId(classroomId, studentUserId)
+                .map(ClassroomStudentMapper::toDomain);
     }
 
 }

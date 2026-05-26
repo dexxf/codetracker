@@ -37,8 +37,21 @@ public final class JoinClassroomService implements JoinClassroomUseCase {
         }
 
         ClassroomJoinValidationResult joinResult = validation.data();
+        String classroomId = joinResult.classroom().getClassroomId();
+
+        ClassroomStudent existingStudent = studentRepository.findByClassroomIdAndStudentUserId(classroomId, command.userId())
+                .orElse(null);
+        if (existingStudent != null) {
+            existingStudent.rejoin();
+            studentRepository.save(existingStudent);
+
+            boolean hasPassword = joinResult.classroomSettings().getPasscode() != null
+                    && !joinResult.classroomSettings().getPasscode().isBlank();
+            return Result.ok(ClassroomJoinResult.from(existingStudent, hasPassword));
+        }
+
         Result<ClassroomStudent, ClassroomStudentCreationResult> creation = creationService.createClassroomStudent(
-                joinResult.classroom().getClassroomId(),
+                classroomId,
                 command.userId(),
                 StudentStatus.ACTIVE
         );

@@ -78,4 +78,21 @@ public final class ClassroomStudent {
         this.status = StudentStatus.ACTIVE;
         this.lastActiveAt = Instant.now();
     }
+
+    public void leave() {
+        if (status != StudentStatus.ACTIVE) {
+            throw new IllegalStateException("Only active students can leave classroom.");
+        }
+        this.status = StudentStatus.DROPPED;
+        this.leftAt = Instant.now();
+    }
+
+    public void rejoin() {
+        if (status != StudentStatus.DROPPED) {
+            throw new IllegalStateException("Only dropped students can rejoin classroom.");
+        }
+        this.status = StudentStatus.ACTIVE;
+        this.lastActiveAt = Instant.now();
+        this.leftAt = null;
+    }
 }

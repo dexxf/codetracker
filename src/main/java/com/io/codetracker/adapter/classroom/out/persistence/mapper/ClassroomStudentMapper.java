@@ -29,8 +29,8 @@ public final class ClassroomStudentMapper {
                 entity.getClassroom() != null ? entity.getClassroom().getClassroomId() : null,
                 entity.getStudentUserId(),
                 entity.getStatus(),
-                entity.getJoinedAt(),
                 entity.getLastActiveAt(),
+                entity.getJoinedAt(),
                 entity.getLeftAt()
         );
     }

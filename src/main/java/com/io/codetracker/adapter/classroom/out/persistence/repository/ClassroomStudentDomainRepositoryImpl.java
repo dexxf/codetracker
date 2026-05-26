@@ -1,6 +1,7 @@
 package com.io.codetracker.adapter.classroom.out.persistence.repository;
 
 import com.io.codetracker.domain.classroom.repository.ClassroomStudentDomainRepository;
+import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 import com.io.codetracker.infrastructure.classroom.persistence.repository.JpaClassroomStudentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -13,11 +14,11 @@ public class ClassroomStudentDomainRepositoryImpl implements ClassroomStudentDom
 
     @Override
     public boolean existsByClassroomIdAndStudentUserId(String classroomId, String studentUserId) {
-        return classroomStudentRepository.existsByClassroom_ClassroomIdAndStudentUserId(classroomId, studentUserId);
+        return classroomStudentRepository.existsByClassroom_ClassroomIdAndStudentUserIdAndStatus(classroomId, studentUserId, StudentStatus.ACTIVE);
     }
 
     @Override
     public int countByClassroomId(String classroomId) {
-        return classroomStudentRepository.countByClassroom_ClassroomId(classroomId);
+        return classroomStudentRepository.countByClassroom_ClassroomIdAndStatus(classroomId, StudentStatus.ACTIVE);
     }
 }
