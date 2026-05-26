@@ -3,8 +3,6 @@ package com.io.codetracker.domain.classroom.entity;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 public final class ClassroomStudent {
 

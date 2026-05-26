@@ -27,7 +27,7 @@ public class GetClassroomStatsService implements GetClassroomStatsUseCase {
             return Result.fail(SimpleClassroomError.USER_NOT_CLASSROOM_INSTRUCTOR);
         }
 
-        long totalStudents = classroomStudentAppRepository.countByClassroomId(command.classroomId());
+        long totalStudents = classroomStudentAppRepository.countActiveClassroomStudentByClassroomId(command.classroomId());
         long totalActivities = classroomActivityAppPort.countByClassroomId(command.classroomId());
         long totalActiveActivities = classroomActivityAppPort.countActiveActivitiesByClassroomId(command.classroomId());
 

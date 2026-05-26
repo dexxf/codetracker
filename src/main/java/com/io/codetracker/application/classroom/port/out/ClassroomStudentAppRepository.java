@@ -13,6 +13,6 @@ public interface ClassroomStudentAppRepository {
     List<ClassroomStudent> findActiveEnrollmentsWithActiveClassroom(String studentUserId);
     Map<String, Long> countActiveClassroomStudentByClassroomIds(List<String> classroomIds);
     List<ClassroomStudent> findClassroomStudents(String classroomId, StudentStatus status, boolean ascending);
-    long countByClassroomId(String classroomId);
+    long countActiveClassroomStudentByClassroomId(String classroomId);
     Optional<ClassroomStudent> findByClassroomIdAndStudentUserId(String classroomId, String studentUserId);
 }
