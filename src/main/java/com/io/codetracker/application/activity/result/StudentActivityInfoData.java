@@ -3,7 +3,7 @@ package com.io.codetracker.application.activity.result;
 import com.io.codetracker.domain.activity.valueObject.SubmissionStatus;
 import com.io.codetracker.domain.github.valueobject.GithubSubmissionMode;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 public record StudentActivityInfoData(
@@ -13,14 +13,14 @@ public record StudentActivityInfoData(
         String title,
         String description,
         Integer maxScore,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt,
+        Instant createdAt,
+        Instant updatedAt,
         String repositoryOwnerUsername,
         String repositoryId,
         String repositoryName,
         GithubSubmissionMode repositoryMode,
         String repositoryUrl,
-        LocalDateTime submittedAt,
+        Instant submittedAt,
         SubmissionStatus submissionStatus,
         String feedback,
         Integer score
@@ -32,14 +32,14 @@ public record StudentActivityInfoData(
             String title,
             String description,
             Integer maxScore,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt,
+            Instant createdAt,
+            Instant updatedAt,
             String repositoryOwnerUsername,
             String repositoryId,
             String repositoryName,
             GithubSubmissionMode repositoryMode,
             String repositoryUrl,
-            LocalDateTime submittedAt,
+            Instant submittedAt,
             SubmissionStatus submissionStatus,
             String feedback,
             Integer score

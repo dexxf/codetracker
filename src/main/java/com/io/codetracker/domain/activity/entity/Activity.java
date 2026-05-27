@@ -2,7 +2,7 @@ package com.io.codetracker.domain.activity.entity;
 
 import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public class Activity {
 
@@ -11,13 +11,13 @@ public class Activity {
     private final String instructorUserId;
     private String title;
     private String description;
-    private LocalDateTime dueDate;
+    private Instant dueDate;
     private ActivityStatus status;
     private Integer maxScore;
-    private final LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private final Instant createdAt;
+    private Instant updatedAt;
 
-    public Activity(String activityId ,String classroomId, String instructorUserId, String title, String description, LocalDateTime dueDate, ActivityStatus status, Integer maxScore, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Activity(String activityId ,String classroomId, String instructorUserId, String title, String description, Instant dueDate, ActivityStatus status, Integer maxScore, Instant createdAt, Instant updatedAt) {
         this.activityId = activityId;
         this.classroomId = classroomId;
         this.instructorUserId = instructorUserId;
@@ -38,15 +38,15 @@ public class Activity {
         return classroomId;
     }
 
-    public LocalDateTime getUpdatedAt() {
+    public Instant getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
@@ -66,11 +66,11 @@ public class Activity {
         this.status = status;
     }
 
-    public LocalDateTime getDueDate() {
+    public Instant getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDateTime dueDate) {
+    public void setDueDate(Instant dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -96,16 +96,16 @@ public class Activity {
 
     public void publishActivity() {
         this.status = ActivityStatus.PUBLISHED;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = Instant.now();
     }
 
     public void closeActivity() {
         this.status = ActivityStatus.CLOSED;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = Instant.now();
     }
 
     public void archiveActivity() {
         this.status = ActivityStatus.ARCHIVED;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = Instant.now();
     }
 }

@@ -2,7 +2,7 @@ package com.io.codetracker.infrastructure.auth.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity(name = "refresh_token")
@@ -36,13 +36,13 @@ public class AuthRefreshTokenEntity {
     private String tokenHash;
 
     @Column(nullable = false)
-    private LocalDateTime expiresAt;
+    private Instant expiresAt;
 
     @Column(nullable = false)
     private boolean revoked;
 
-    private LocalDateTime revokedAt;
-    private LocalDateTime lastUsedAt;
+    private Instant revokedAt;
+    private Instant lastUsedAt;
 
     @Column(name = "device_id", nullable = false, length = 36)
     private String deviceId;
@@ -54,19 +54,19 @@ public class AuthRefreshTokenEntity {
     private String userAgent;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @PreUpdate
     public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = Instant.now();
     }
 
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
     }
 }

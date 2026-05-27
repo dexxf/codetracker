@@ -1,7 +1,7 @@
 package com.io.codetracker.domain.auth.service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public interface RefreshTokenLifetimePolicy {
-    LocalDateTime issueExpirationFromNow();
+    Instant issueExpirationFromNow();
 }

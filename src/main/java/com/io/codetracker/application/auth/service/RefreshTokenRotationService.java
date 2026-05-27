@@ -11,7 +11,7 @@ import com.io.codetracker.domain.auth.service.PasswordHasher;
 import com.io.codetracker.domain.auth.service.RefreshTokenLifetimePolicy;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -71,7 +71,7 @@ public class RefreshTokenRotationService implements RotateRefreshTokenUseCase {
                 return Result.fail(RefreshTokenRotationError.TOKEN_REVOKED);
             }
 
-            if (existingToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+            if (existingToken.getExpiresAt().isBefore(Instant.now())) {
                 return Result.fail(RefreshTokenRotationError.TOKEN_EXPIRED);
             }
 
@@ -85,7 +85,7 @@ public class RefreshTokenRotationService implements RotateRefreshTokenUseCase {
 
             String newRawSecret = UUID.randomUUID().toString();
             String newHashedToken = hashService.encode(newRawSecret);
-            LocalDateTime newExpiry = refreshTokenLifetimePolicy.issueExpirationFromNow();
+            Instant newExpiry = refreshTokenLifetimePolicy.issueExpirationFromNow();
 
             if (!authRefreshTokenAppRepository.updateToken(existingToken.getId(), newHashedToken, newExpiry, command.ipAddress(), command.userAgent())) {
                 return Result.fail(RefreshTokenRotationError.SAVE_FAILED);

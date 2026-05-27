@@ -4,7 +4,7 @@ import com.io.codetracker.domain.user.valueobject.Birthday;
 import com.io.codetracker.domain.user.valueobject.Gender;
 import com.io.codetracker.domain.user.valueobject.PhoneNumber;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public final class User {
 
@@ -18,16 +18,16 @@ public final class User {
     private Birthday birthday;
 
     private boolean hasFullyInitialized;
-    private final LocalDateTime createdAt;
+    private final Instant createdAt;
 
-    public User(String userId, LocalDateTime createdAt, boolean hasFullyInitialized) {
+    public User(String userId, Instant createdAt, boolean hasFullyInitialized) {
         this.userId = userId;
         this.createdAt = createdAt;
         this.hasFullyInitialized = hasFullyInitialized;
     }
 
     public User(String userId, String firstName, String lastName, Gender gender, PhoneNumber phoneNumber,
-                String profileUrl, String bio, Birthday birthday, boolean hasFullyInitialized, LocalDateTime createdAt) {
+                String profileUrl, String bio, Birthday birthday, boolean hasFullyInitialized, Instant createdAt) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -108,7 +108,7 @@ public final class User {
         this.hasFullyInitialized = hasFullyInitialized;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 }

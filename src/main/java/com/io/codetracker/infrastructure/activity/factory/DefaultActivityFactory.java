@@ -7,7 +7,7 @@ import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Component
 public class DefaultActivityFactory implements ActivityFactory {
@@ -19,8 +19,8 @@ public class DefaultActivityFactory implements ActivityFactory {
     }
 
     @Override
-    public Activity create(String classroomId, String instructorUserId, String title, String description, LocalDateTime dueDate, Integer maxScore, ActivityStatus status) {
-        LocalDateTime now = LocalDateTime.now();
+    public Activity create(String classroomId, String instructorUserId, String title, String description, Instant dueDate, Integer maxScore, ActivityStatus status) {
+        Instant now = Instant.now();
         return new Activity(idGenerator.generate(),classroomId, instructorUserId, title, description, dueDate, status, maxScore, now, now);
     }
 

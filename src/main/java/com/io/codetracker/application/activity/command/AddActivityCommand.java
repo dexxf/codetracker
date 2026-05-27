@@ -2,8 +2,8 @@ package com.io.codetracker.application.activity.command;
 
 import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record AddActivityCommand(String classroomId, String instructorUserId, String title, String description,
-                                 LocalDateTime dueDate, Integer maxScore, ActivityStatus status) {
+                                 Instant dueDate, Integer maxScore, ActivityStatus status) {
 }

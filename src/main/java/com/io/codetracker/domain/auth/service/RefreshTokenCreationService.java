@@ -4,7 +4,7 @@ import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.auth.entity.AuthRefreshToken;
 import com.io.codetracker.domain.auth.result.AuthRefreshTokenCreationResult;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 public class RefreshTokenCreationService {
@@ -32,7 +32,7 @@ public class RefreshTokenCreationService {
             return Result.fail(AuthRefreshTokenCreationResult.INVALID_DEVICE_ID);
         }
 
-        LocalDateTime expiresAt = refreshTokenLifetimePolicy.issueExpirationFromNow();
+        Instant expiresAt = refreshTokenLifetimePolicy.issueExpirationFromNow();
 
         AuthRefreshToken token = new AuthRefreshToken(
                 refreshTokenId,
@@ -41,7 +41,7 @@ public class RefreshTokenCreationService {
                 expiresAt,
                 false,
                 null,
-                LocalDateTime.now(),
+                Instant.now(),
                 deviceId,
                 ipAddress,
                 userAgent

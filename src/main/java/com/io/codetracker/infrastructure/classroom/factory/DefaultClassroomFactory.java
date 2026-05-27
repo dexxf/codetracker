@@ -1,6 +1,6 @@
 package com.io.codetracker.infrastructure.classroom.factory;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ public class DefaultClassroomFactory implements ClassroomFactory {
     @Override
     public Classroom createClassroom(String instructorUserId, String name,String description) {
         return new Classroom(classroomIdGenerator.generate(), instructorUserId, name, description,
-             codeGenerator.generateCode(),ClassroomStatus.ACTIVE,LocalDateTime.now(), LocalDateTime.now());
+             codeGenerator.generateCode(),ClassroomStatus.ACTIVE,Instant.now(), Instant.now());
     }
 
     @Override

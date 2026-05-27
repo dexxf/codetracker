@@ -8,7 +8,7 @@ import com.io.codetracker.domain.activity.repository.ActivityUserDomainPort;
 import com.io.codetracker.domain.activity.result.ActivityCreationResult;
 import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public final class ActivityCreationService {
 
@@ -29,7 +29,7 @@ public final class ActivityCreationService {
     }
 
     public Result<Activity, ActivityCreationResult> create(String classroomId, String instructorUserId, String title,
-                                                           String description, LocalDateTime dueDate, Integer maxScore, ActivityStatus status) {
+                                                           String description, Instant dueDate, Integer maxScore, ActivityStatus status) {
 
         if (classroomId == null || classroomId.isBlank()) {
             return Result.fail(ActivityCreationResult.INVALID_CLASSROOM_ID);
@@ -47,7 +47,7 @@ public final class ActivityCreationService {
             return Result.fail(ActivityCreationResult.INVALID_DESCRIPTION);
         }
 
-        if (dueDate != null && dueDate.isBefore(LocalDateTime.now())) {
+        if (dueDate != null && dueDate.isBefore(Instant.now())) {
             return Result.fail(ActivityCreationResult.INVALID_DUE_DATE);
         }
 

@@ -9,7 +9,7 @@ import com.io.codetracker.domain.user.valueobject.PhoneNumber;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Component
 public final class DefaultUserFactory implements UserFactory {
@@ -22,7 +22,7 @@ public final class DefaultUserFactory implements UserFactory {
 
     @Override
     public User createPartial() {
-        return new User(idGenerator.generate(), LocalDateTime.now(), false);
+        return new User(idGenerator.generate(), Instant.now(), false);
     }
 
     @Override

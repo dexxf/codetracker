@@ -10,7 +10,7 @@ import com.io.codetracker.domain.auth.valueobject.Status;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Component
 public class DefaultAuthFactory implements AuthFactory {
@@ -23,6 +23,6 @@ public class DefaultAuthFactory implements AuthFactory {
 
     @Override
     public Auth create(String userId, Email email, String username, HashedPassword password, Roles role) {
-        return new Auth(idGenerator.generate(),userId, email,username,password, role,Status.INACTIVE,LocalDateTime.now());
+        return new Auth(idGenerator.generate(),userId, email,username,password, role,Status.INACTIVE,Instant.now());
     }
 }

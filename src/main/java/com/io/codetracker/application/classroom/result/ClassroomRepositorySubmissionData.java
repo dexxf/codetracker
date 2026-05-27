@@ -1,6 +1,6 @@
 package com.io.codetracker.application.classroom.result;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record ClassroomRepositorySubmissionData(
         String studentUserId,
@@ -11,6 +11,6 @@ public record ClassroomRepositorySubmissionData(
         String activityTitle,
         String repositoryName,
         String repositoryUrl,
-        LocalDateTime submittedAt
+        Instant submittedAt
 ) {
 }

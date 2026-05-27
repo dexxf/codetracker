@@ -3,7 +3,7 @@ package com.io.codetracker.application.user.result;
 import com.io.codetracker.domain.user.entity.User;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record UserData(
         String userId,
@@ -15,7 +15,7 @@ public record UserData(
         String bio,
         String profileUrl,
         boolean hasFullyInitialized,
-        LocalDateTime createdAt
+        Instant createdAt
 ) {
 
     public static UserData from(User user) {

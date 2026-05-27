@@ -1,12 +1,12 @@
 package com.io.codetracker.application.auth.result;
 
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record RegisterRefreshTokenResult(
         String id,
         String authId,
-        LocalDateTime expiresAt,
+        Instant expiresAt,
         String rawToken
 ) {
 }

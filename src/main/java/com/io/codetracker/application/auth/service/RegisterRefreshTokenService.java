@@ -13,7 +13,7 @@ import com.io.codetracker.domain.auth.service.RefreshTokenCreationService;
 import com.io.codetracker.domain.auth.service.RefreshTokenLifetimePolicy;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,7 +44,7 @@ public class RegisterRefreshTokenService implements AddRefreshTokenUseCase {
         if (deviceId == null || deviceId.isBlank())
             return Result.fail(RegisterRefreshTokenError.INVALID_DEVICE_ID);
 
-        LocalDateTime expiresAt = refreshTokenLifetimePolicy.issueExpirationFromNow();
+        Instant expiresAt = refreshTokenLifetimePolicy.issueExpirationFromNow();
         String rawSecret = UUID.randomUUID().toString();
         String hashedSecret = hashService.encode(rawSecret);
 

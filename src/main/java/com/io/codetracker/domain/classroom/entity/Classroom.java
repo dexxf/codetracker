@@ -1,6 +1,6 @@
 package com.io.codetracker.domain.classroom.entity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import com.io.codetracker.domain.classroom.valueObject.ClassroomStatus;
 
@@ -12,10 +12,10 @@ public final class Classroom {
     private String description;
     private final String classCode;
     private ClassroomStatus status;
-    private final LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private final Instant createdAt;
+    private Instant updatedAt;
 
-    public Classroom(String classroomId, String instructorUserId, String name, String description, String classCode, ClassroomStatus status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Classroom(String classroomId, String instructorUserId, String name, String description, String classCode, ClassroomStatus status, Instant createdAt, Instant updatedAt) {
         this.classroomId = classroomId;
         this.instructorUserId = instructorUserId;
         this.name = name;
@@ -50,16 +50,16 @@ public final class Classroom {
         return status;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
+    public Instant getUpdatedAt() {
         return updatedAt;
     }
 
     private void refreshUpdatedAt() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = Instant.now();
     }
 
     public void activate() {

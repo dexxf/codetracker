@@ -5,7 +5,7 @@ import com.io.codetracker.domain.auth.valueobject.HashedPassword;
 import com.io.codetracker.domain.auth.valueobject.Roles;
 import com.io.codetracker.domain.auth.valueobject.Status;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public final class Auth {
 
@@ -14,11 +14,11 @@ public final class Auth {
     private Email email;
     private final String username;
     private HashedPassword password;
-    private final LocalDateTime createdAt;
+    private final Instant createdAt;
     private Status status;
     private Roles role;
 
-    public Auth(String authId, String userId, Email email, String username, HashedPassword password, Roles role, Status status, LocalDateTime createdAt) {
+    public Auth(String authId, String userId, Email email, String username, HashedPassword password, Roles role, Status status, Instant createdAt) {
         this.authId = authId;
         this.userId = userId;
         this.email = email;
@@ -49,7 +49,7 @@ public final class Auth {
         this.status = status;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 

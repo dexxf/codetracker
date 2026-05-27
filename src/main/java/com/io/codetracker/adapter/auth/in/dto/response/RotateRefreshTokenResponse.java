@@ -1,13 +1,13 @@
 package com.io.codetracker.adapter.auth.in.dto.response;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record RotateRefreshTokenResponse(
-        LocalDateTime expiresAt,
+        Instant expiresAt,
         String message
 ) {
 
-    public static RotateRefreshTokenResponse ok(LocalDateTime expiresAt) {
+    public static RotateRefreshTokenResponse ok(Instant expiresAt) {
         return new RotateRefreshTokenResponse(expiresAt, "Token refreshed successfully");
     }
 

@@ -6,7 +6,7 @@ import com.io.codetracker.domain.activity.repository.ActivityDomainRepository;
 import com.io.codetracker.domain.activity.result.EditActivityResult;
 import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public final class UpdateActivityService {
 
@@ -22,7 +22,7 @@ public final class UpdateActivityService {
         this.activityDomainRepository = activityDomainRepository;
     }
 
-    public Result<Activity, EditActivityResult> updateAndValidate(String activityId, String title, String description, LocalDateTime dueDate,
+    public Result<Activity, EditActivityResult> updateAndValidate(String activityId, String title, String description, Instant dueDate,
                                                                   ActivityStatus newStatus, Integer maxScore) {
 
         Activity activity = activityDomainRepository.findByActivityId(activityId)
@@ -44,7 +44,7 @@ public final class UpdateActivityService {
             return Result.fail(EditActivityResult.MAX_SCORE_INVALID);
         }
 
-        if (dueDate != null && dueDate.isBefore(LocalDateTime.now())) {
+        if (dueDate != null && dueDate.isBefore(Instant.now())) {
             return Result.fail(EditActivityResult.DUE_DATE_INVALID);
         }
 
@@ -83,7 +83,7 @@ public final class UpdateActivityService {
                 default -> activity.setStatus(newStatus);
             }
         } else {
-            activity.setUpdatedAt(LocalDateTime.now());
+            activity.setUpdatedAt(Instant.now());
         }
 
         return Result.ok(activity);

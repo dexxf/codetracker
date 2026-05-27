@@ -1,6 +1,6 @@
 package com.io.codetracker.domain.auth.entity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 public class AuthRefreshToken {
@@ -8,16 +8,16 @@ public class AuthRefreshToken {
     private UUID id;
     private String authId;
     private String tokenHash;
-    private LocalDateTime expiresAt;
+    private Instant expiresAt;
     private boolean revoked;
-    private LocalDateTime revokedAt;
-    private LocalDateTime lastUsedAt;
+    private Instant revokedAt;
+    private Instant lastUsedAt;
     private String deviceId;
     private String ipAddress;
     private String userAgent;
 
-    public AuthRefreshToken(UUID id, String authId, String tokenHash, LocalDateTime expiresAt, boolean revoked,
-                            LocalDateTime revokedAt, LocalDateTime lastUsedAt, String deviceId,
+    public AuthRefreshToken(UUID id, String authId, String tokenHash, Instant expiresAt, boolean revoked,
+                            Instant revokedAt, Instant lastUsedAt, String deviceId,
                             String ipAddress, String userAgent) {
         this.id = id;
         this.authId = authId;
@@ -32,7 +32,7 @@ public class AuthRefreshToken {
     }
 
     public boolean isExpired() {
-        return LocalDateTime.now().isAfter(expiresAt);
+        return Instant.now().isAfter(expiresAt);
     }
 
     public boolean isValid() {
@@ -41,11 +41,11 @@ public class AuthRefreshToken {
 
     public void markAsRevoked() {
         this.revoked = true;
-        this.revokedAt = LocalDateTime.now();
+        this.revokedAt = Instant.now();
     }
 
     public void updateLastUsedAt() {
-        this.lastUsedAt = LocalDateTime.now();
+        this.lastUsedAt = Instant.now();
     }
 
     public UUID getId() {
@@ -60,7 +60,7 @@ public class AuthRefreshToken {
         return tokenHash;
     }
 
-    public LocalDateTime getExpiresAt() {
+    public Instant getExpiresAt() {
         return expiresAt;
     }
 
@@ -68,11 +68,11 @@ public class AuthRefreshToken {
         return revoked;
     }
 
-    public LocalDateTime getRevokedAt() {
+    public Instant getRevokedAt() {
         return revokedAt;
     }
 
-    public LocalDateTime getLastUsedAt() {
+    public Instant getLastUsedAt() {
         return lastUsedAt;
     }
 
@@ -100,7 +100,7 @@ public class AuthRefreshToken {
         this.tokenHash = tokenHash;
     }
 
-    public void setExpiresAt(LocalDateTime expiresAt) {
+    public void setExpiresAt(Instant expiresAt) {
         this.expiresAt = expiresAt;
     }
 
@@ -108,11 +108,11 @@ public class AuthRefreshToken {
         this.revoked = revoked;
     }
 
-    public void setRevokedAt(LocalDateTime revokedAt) {
+    public void setRevokedAt(Instant revokedAt) {
         this.revokedAt = revokedAt;
     }
 
-    public void setLastUsedAt(LocalDateTime lastUsedAt) {
+    public void setLastUsedAt(Instant lastUsedAt) {
         this.lastUsedAt = lastUsedAt;
     }
 

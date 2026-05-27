@@ -3,7 +3,7 @@ package com.io.codetracker.application.classroom.result;
 import com.io.codetracker.domain.classroom.entity.Classroom;
 import com.io.codetracker.domain.classroom.valueObject.ClassroomStatus;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record ClassroomData(
         String classroomId,
@@ -12,8 +12,8 @@ public record ClassroomData(
         String description,
         String classCode,
         ClassroomStatus status,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        Instant createdAt,
+        Instant updatedAt
 ) {
 
     public static ClassroomData from(Classroom classroom) {

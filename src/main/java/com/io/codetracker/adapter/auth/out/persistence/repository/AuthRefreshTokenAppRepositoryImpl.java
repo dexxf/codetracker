@@ -10,7 +10,7 @@ import com.io.codetracker.infrastructure.auth.persistence.repository.JpaAuthRepo
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -47,7 +47,7 @@ public class AuthRefreshTokenAppRepositoryImpl implements AuthRefreshTokenAppRep
     }
 
     @Override
-    public boolean updateToken(UUID id, String hashedToken, LocalDateTime newExpiry, String ipAddress, String userAgent) {
+    public boolean updateToken(UUID id, String hashedToken, Instant newExpiry, String ipAddress, String userAgent) {
         try {
             Optional<AuthRefreshTokenEntity> authRefreshTokenEntityOpt = jpaRTRepository.findById(id);
             if(authRefreshTokenEntityOpt.isEmpty()) return false;
@@ -59,7 +59,7 @@ public class AuthRefreshTokenAppRepositoryImpl implements AuthRefreshTokenAppRep
             authRefreshTokenEntity.setRevokedAt(null);
             authRefreshTokenEntity.setIpAddress(ipAddress);
             authRefreshTokenEntity.setUserAgent(userAgent);
-            authRefreshTokenEntity.setUpdatedAt(LocalDateTime.now());
+            authRefreshTokenEntity.setUpdatedAt(Instant.now());
 
             jpaRTRepository.save(authRefreshTokenEntity);
             return true;
@@ -75,7 +75,7 @@ public class AuthRefreshTokenAppRepositoryImpl implements AuthRefreshTokenAppRep
 
     @Override
     public boolean revokeToken(UUID id, String deviceId) {
-        final int rowsAffected = jpaRTRepository.revokeByIdAndDeviceId(id, deviceId, LocalDateTime.now());
+        final int rowsAffected = jpaRTRepository.revokeByIdAndDeviceId(id, deviceId, Instant.now());
         return rowsAffected == 1;
     }
 }

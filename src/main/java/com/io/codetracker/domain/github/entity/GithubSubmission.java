@@ -2,7 +2,7 @@ package com.io.codetracker.domain.github.entity;
 
 import com.io.codetracker.domain.github.valueobject.GithubSubmissionMode;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public class GithubSubmission {
 
@@ -14,9 +14,9 @@ public class GithubSubmission {
         private String repositoryName;
         private GithubSubmissionMode mode;
         private String repositoryUrl;
-        private LocalDateTime submittedAt;
+        private Instant submittedAt;
 
-    public GithubSubmission(String classroomId, String studentActivityId, String activityId, String repositoryOwnerUsername, String repositoryId, String repositoryName, GithubSubmissionMode mode, String repositoryUrl, LocalDateTime submittedAt) {
+    public GithubSubmission(String classroomId, String studentActivityId, String activityId, String repositoryOwnerUsername, String repositoryId, String repositoryName, GithubSubmissionMode mode, String repositoryUrl, Instant submittedAt) {
         this.classroomId = classroomId;
         this.studentActivityId = studentActivityId;
         this.activityId = activityId;
@@ -31,7 +31,7 @@ public class GithubSubmission {
     public static GithubSubmission createNew(String classroomId, String studentActivityId, String activityId, String repositoryOwnerUsername, String repositoryId, String repositoryName, GithubSubmissionMode mode, String repositoryUrl) {
         return new GithubSubmission
                 (classroomId, studentActivityId, activityId,
-                repositoryOwnerUsername, repositoryId, repositoryName, mode, repositoryUrl, LocalDateTime.now());
+                repositoryOwnerUsername, repositoryId, repositoryName, mode, repositoryUrl, Instant.now());
     }
 
     public String getClassroomId() {
@@ -86,11 +86,11 @@ public class GithubSubmission {
         this.repositoryUrl = repositoryUrl;
     }
 
-    public LocalDateTime getSubmittedAt() {
+    public Instant getSubmittedAt() {
         return submittedAt;
     }
 
-    public void setSubmittedAt(LocalDateTime submittedAt) {
+    public void setSubmittedAt(Instant submittedAt) {
         this.submittedAt = submittedAt;
     }
 }

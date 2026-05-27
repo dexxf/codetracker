@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "github_submission")
@@ -32,30 +32,31 @@ public class GithubSubmissionEntity {
     private String repositoryName;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "mode", nullable = false)
     private GithubSubmissionMode mode;
 
     @Column(name = "repository_url", nullable = false)
     private String repositoryUrl;
 
     @Column(name = "submitted_at")
-    private LocalDateTime submittedAt;
+    private Instant submittedAt;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
 
     @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @PrePersist
     protected void onCreate() {
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
         createdAt = now;
         updatedAt = now;
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+        updatedAt = Instant.now();
     }
 
 }

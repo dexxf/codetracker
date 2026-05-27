@@ -1,10 +1,10 @@
 package com.io.codetracker.application.classroom.result;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record ClassroomActivityCreatedData(
         String activityId,
         String activityTitle,
-        LocalDateTime createdAt
+        Instant createdAt
 ) {
 }
