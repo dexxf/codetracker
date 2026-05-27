@@ -55,7 +55,7 @@ public record ClassroomRecentActivityData(
                 null,
                 null,
                 data.activityId(),
-                data.activityTitle(),
+                data.title(),
                 null,
                 null
         );

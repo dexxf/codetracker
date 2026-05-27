@@ -4,7 +4,7 @@ import java.time.Instant;
 
 public record ClassroomActivityCreatedData(
         String activityId,
-        String activityTitle,
+        String title,
         Instant createdAt
 ) {
 }
