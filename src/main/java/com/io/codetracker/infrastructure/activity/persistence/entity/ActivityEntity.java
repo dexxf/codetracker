@@ -6,7 +6,7 @@ import com.io.codetracker.infrastructure.classroom.persistence.entity.ClassroomE
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,7 +33,7 @@ public class ActivityEntity {
     private String description;
 
     @Column(name = "due_date", nullable = true)
-    private LocalDateTime dueDate;
+    private Instant dueDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 55)
@@ -43,11 +43,23 @@ public class ActivityEntity {
     private Integer maxScore;
 
     @Column(name = "created_at", nullable = false,updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
 
     @OneToMany(mappedBy = "activityEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<StudentActivityEntity> studentActivities = new HashSet<>();
+
+    @PrePersist
+    protected void onCreate() {
+        Instant now = Instant.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = Instant.now();
+    }
 }

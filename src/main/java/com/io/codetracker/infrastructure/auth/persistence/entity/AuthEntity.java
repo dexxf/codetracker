@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "auth")
@@ -34,8 +34,8 @@ public class AuthEntity {
     @Column(name = "password", nullable = true)
     private String password;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -44,4 +44,9 @@ public class AuthEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Roles role;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = Instant.now();
+    }
 }

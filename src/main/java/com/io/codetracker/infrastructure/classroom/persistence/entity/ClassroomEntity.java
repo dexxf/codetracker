@@ -6,7 +6,7 @@ import com.io.codetracker.infrastructure.activity.persistence.entity.ActivityEnt
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,11 +37,11 @@ public class ClassroomEntity {
     @Column(name = "status", nullable = false, length = 55)
     private ClassroomStatus status;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
 
     @OneToOne(
             mappedBy = "classroom",
@@ -82,5 +82,17 @@ public class ClassroomEntity {
             );
     activity.setClassroomEntity(this);
         }
+
+    @PrePersist
+    protected void onCreate() {
+        Instant now = Instant.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = Instant.now();
+    }
 
 }
