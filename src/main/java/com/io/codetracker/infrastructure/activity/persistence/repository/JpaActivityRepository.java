@@ -30,7 +30,8 @@ public interface JpaActivityRepository extends JpaRepository<ActivityEntity, Str
         gs.submittedAt,
         sa.submissionStatus,
         sa.score,
-        sa.feedback
+        sa.feedback,
+        a.status
     )
     FROM StudentActivityEntity sa
     JOIN sa.activityEntity a
