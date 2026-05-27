@@ -38,6 +38,11 @@ public interface JpaActivityRepository extends JpaRepository<ActivityEntity, Str
     WHERE a.classroomEntity.classroomId = :classroomId
       AND sa.userEntity.userId = :userId
     """)
+    List<StudentActivityViewData> findStudentActivityViewsByClassroomIdAndUserId(
+            @Param("classroomId") String classroomId,
+            @Param("userId") String userId
+    );
+
     long countByClassroomEntity_ClassroomIdAndStatus(String classroomId, ActivityStatus status);
     long countByClassroomEntity_ClassroomId(String classroomId);
 
