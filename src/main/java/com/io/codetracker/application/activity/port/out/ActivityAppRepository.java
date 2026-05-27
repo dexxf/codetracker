@@ -1,5 +1,6 @@
 package com.io.codetracker.application.activity.port.out;
 
+import com.io.codetracker.application.activity.result.StudentActivityViewData;
 import com.io.codetracker.domain.activity.entity.Activity;
 
 import java.util.List;
@@ -11,4 +12,5 @@ public interface ActivityAppRepository {
     Optional<Activity> findById(String activityId);
     void deleteByActivityId(String activityId);
     void update(Activity updatedActivity);
+    List<StudentActivityViewData> findStudentActivities(String classroomId, String userId);
 }

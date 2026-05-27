@@ -6,6 +6,7 @@ import com.io.codetracker.adapter.activity.in.dto.request.SubmitNewRepositoryReq
 import com.io.codetracker.adapter.activity.in.dto.response.FindUnsubmittedRepositoryResponse;
 import com.io.codetracker.adapter.activity.in.dto.response.GetActivityResponse;
 import com.io.codetracker.adapter.activity.in.dto.response.GetStudentActivityInfoResponse;
+import com.io.codetracker.adapter.activity.in.dto.response.GetStudentViewDataResponse;
 import com.io.codetracker.adapter.activity.in.dto.response.StudentActivityResponse;
 import com.io.codetracker.adapter.activity.in.mapper.*;
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
@@ -22,6 +23,7 @@ import com.io.codetracker.application.activity.result.ActivityData;
 
 import com.io.codetracker.application.activity.result.StudentActivityData;
 import com.io.codetracker.application.activity.result.StudentActivityInfoUserData;
+import com.io.codetracker.application.activity.result.StudentActivityViewData;
 import com.io.codetracker.common.result.Result;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -70,11 +72,11 @@ public class ActivityController {
     }
 
     @GetMapping("/student")
-    public ResponseEntity<GetActivityResponse> getClassroomStudentActivities(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
-        Result<List<ActivityData>, GetClassroomStudentActivityError> response =  getClassroomStudentActivityUseCase.getStudentClassroomActivity(new GetActivityCommand(classroomId,principal.getUserId()));
-        return response.success() ? ResponseEntity.ok(GetActivityResponse.success(response.data()))
+    public ResponseEntity<GetStudentViewDataResponse> getClassroomStudentActivities(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
+        Result<List<StudentActivityViewData>, GetClassroomStudentActivityError> response =  getClassroomStudentActivityUseCase.getStudentClassroomActivity(new GetActivityCommand(classroomId,principal.getUserId()));
+        return response.success() ? ResponseEntity.ok(GetStudentViewDataResponse.success(response.data()))
                 : ResponseEntity.status(GetActivityHttpMapper.studentToStatus(response.error()))
-                  .body(GetActivityResponse.fail(GetActivityHttpMapper.studentToMessage(response.error())));
+                  .body(GetStudentViewDataResponse.fail(GetActivityHttpMapper.studentToMessage(response.error())));
     }
 
     @GetMapping("/submitted")

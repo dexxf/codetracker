@@ -2,6 +2,7 @@ package com.io.codetracker.adapter.activity.out.persistence.repository;
 
 import com.io.codetracker.adapter.activity.out.persistence.mapper.ActivityMapper;
 import com.io.codetracker.application.activity.port.out.ActivityAppRepository;
+import com.io.codetracker.application.activity.result.StudentActivityViewData;
 import com.io.codetracker.domain.activity.entity.Activity;
 import com.io.codetracker.infrastructure.activity.persistence.entity.ActivityEntity;
 import com.io.codetracker.infrastructure.activity.persistence.repository.JpaActivityRepository;
@@ -55,5 +56,10 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
                 .orElseThrow(() -> new RuntimeException("Activity not found"));
         ActivityMapper.updateEntity(updatedActivity, entity);
         jpa.save(entity);
+    }
+
+    @Override
+    public List<StudentActivityViewData> findStudentActivities(String classroomId, String userId) {
+        return jpa.findStudentActivityViewsByClassroomIdAndUserId(classroomId, userId);
     }
 }

@@ -1,5 +1,6 @@
 package com.io.codetracker.infrastructure.activity.persistence.repository;
 
+import com.io.codetracker.application.activity.result.StudentActivityViewData;
 import com.io.codetracker.application.classroom.result.ClassroomActivityCreatedData;
 import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
 import com.io.codetracker.infrastructure.activity.persistence.entity.ActivityEntity;
@@ -14,6 +15,34 @@ import java.util.Optional;
 public interface JpaActivityRepository extends JpaRepository<ActivityEntity, String> {
     boolean existsByClassroomEntity_ClassroomIdAndActivityId(String classroomId, String activityId);
     List<ActivityEntity> findByClassroomEntity_ClassroomIdAndClassroomEntity_InstructorUserId(String classroomId, String instructorUserId);
+
+    @Query("""
+    SELECT new com.io.codetracker.application.activity.result.StudentActivityViewData(
+        a.activityId,
+        a.title,
+        a.description,
+        a.maxScore,
+        a.dueDate,
+        sa.studentActivityId,
+        gs.repositoryName,
+        gs.repositoryUrl,
+        gs.mode,
+        gs.submittedAt,
+        sa.submissionStatus,
+        sa.score,
+        sa.feedback
+    )
+    FROM StudentActivityEntity sa
+    JOIN sa.activityEntity a
+    LEFT JOIN sa.githubSubmission gs
+    WHERE a.classroomEntity.classroomId = :classroomId
+      AND sa.userEntity.userId = :userId
+    """)
+    List<StudentActivityViewData> findStudentActivityViewsByClassroomIdAndUserId(
+            @Param("classroomId") String classroomId,
+            @Param("userId") String userId
+    );
+
     long countByClassroomEntity_ClassroomIdAndStatus(String classroomId, ActivityStatus status);
     long countByClassroomEntity_ClassroomId(String classroomId);
 
