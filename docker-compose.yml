@@ -1,0 +1,29 @@
+services:
+  backend:
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    networks:
+      - code_tracker_network
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: cd_tracker_db
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - code_tracker_network
+
+networks:
+  code_tracker_network:
+
+
+volumes:
+  db_data:
