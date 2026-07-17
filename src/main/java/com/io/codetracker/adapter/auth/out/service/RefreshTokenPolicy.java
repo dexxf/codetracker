@@ -1,6 +1,6 @@
 package com.io.codetracker.adapter.auth.out.service;
 
-import com.io.codetracker.domain.auth.service.RefreshTokenLifetimePolicy;
+import com.io.codetracker.application.auth.port.out.RefreshTokenLifetimePolicy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

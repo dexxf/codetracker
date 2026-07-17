@@ -26,9 +26,4 @@ public class AuthBeanConfig {
         return new RestTemplate();
     }
 
-    @Bean
-    public RefreshTokenCreationService refreshTokenCreationService (RefreshTokenLifetimePolicy refreshTokenLifetimePolicy) {
-        return new RefreshTokenCreationService(refreshTokenLifetimePolicy);
-    }
-
 }

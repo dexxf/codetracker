@@ -8,7 +8,7 @@ import com.io.codetracker.application.auth.result.RefreshTokenRotationResult;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.auth.entity.AuthRefreshToken;
 import com.io.codetracker.domain.auth.service.PasswordHasher;
-import com.io.codetracker.domain.auth.service.RefreshTokenLifetimePolicy;
+import com.io.codetracker.application.auth.port.out.RefreshTokenLifetimePolicy;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

@@ -1,9 +1,10 @@
 package com.io.codetracker.domain.auth.entity;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
-public class AuthRefreshToken {
+public final class AuthRefreshToken {
 
     private UUID id;
     private String authId;
@@ -16,19 +17,52 @@ public class AuthRefreshToken {
     private String ipAddress;
     private String userAgent;
 
-    public AuthRefreshToken(UUID id, String authId, String tokenHash, Instant expiresAt, boolean revoked,
-                            Instant revokedAt, Instant lastUsedAt, String deviceId,
-                            String ipAddress, String userAgent) {
-        this.id = id;
-        this.authId = authId;
-        this.tokenHash = tokenHash;
-        this.expiresAt = expiresAt;
+    private AuthRefreshToken(UUID id, String authId, String tokenHash, Instant expiresAt, boolean revoked,
+                             Instant revokedAt, Instant lastUsedAt, String deviceId,
+                             String ipAddress, String userAgent) {
+        this.id = Objects.requireNonNull(id, "id must not be null");
+        this.authId = Objects.requireNonNull(authId, "authId must not be null");
+        this.tokenHash = Objects.requireNonNull(tokenHash, "tokenHash must not be null");
+        this.expiresAt = Objects.requireNonNull(expiresAt, "expiresAt must not be null");
         this.revoked = revoked;
         this.revokedAt = revokedAt;
         this.lastUsedAt = lastUsedAt;
         this.deviceId = deviceId;
         this.ipAddress = ipAddress;
         this.userAgent = userAgent;
+    }
+
+    public static AuthRefreshToken createNew(String authId, String tokenHash, Instant expiresAt,
+                                             String deviceId, String ipAddress, String userAgent) {
+        return new AuthRefreshToken(
+                UUID.randomUUID(),
+                authId,
+                tokenHash,
+                expiresAt,
+                false,
+                null,
+                null,
+                deviceId,
+                ipAddress,
+                userAgent
+        );
+    }
+
+    public static AuthRefreshToken reconstitute(UUID id, String authId, String tokenHash, Instant expiresAt,
+                                                boolean revoked, Instant revokedAt, Instant lastUsedAt,
+                                                String deviceId, String ipAddress, String userAgent) {
+        return new AuthRefreshToken(
+                id,
+                authId,
+                tokenHash,
+                expiresAt,
+                revoked,
+                revokedAt,
+                lastUsedAt,
+                deviceId,
+                ipAddress,
+                userAgent
+        );
     }
 
     public boolean isExpired() {

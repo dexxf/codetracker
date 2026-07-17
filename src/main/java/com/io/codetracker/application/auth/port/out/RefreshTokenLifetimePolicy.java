@@ -1,4 +1,4 @@
-package com.io.codetracker.domain.auth.service;
+package com.io.codetracker.application.auth.port.out;
 
 import java.time.Instant;
 

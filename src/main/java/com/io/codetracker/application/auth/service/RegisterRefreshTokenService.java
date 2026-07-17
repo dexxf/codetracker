@@ -7,10 +7,8 @@ import com.io.codetracker.application.auth.port.out.AuthRefreshTokenAppRepositor
 import com.io.codetracker.application.auth.result.RegisterRefreshTokenResult;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.auth.entity.AuthRefreshToken;
-import com.io.codetracker.domain.auth.result.AuthRefreshTokenCreationResult;
 import com.io.codetracker.domain.auth.service.PasswordHasher;
-import com.io.codetracker.domain.auth.service.RefreshTokenCreationService;
-import com.io.codetracker.domain.auth.service.RefreshTokenLifetimePolicy;
+import com.io.codetracker.application.auth.port.out.RefreshTokenLifetimePolicy;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -21,17 +19,14 @@ import java.util.UUID;
 public class RegisterRefreshTokenService implements AddRefreshTokenUseCase {
 
     private final AuthRefreshTokenAppRepository rTokenRepository;
-    private final RefreshTokenCreationService refreshTokenCreationService;
     private final AuthAppRepository authAppRepository;
     private final RefreshTokenLifetimePolicy refreshTokenLifetimePolicy;
     private final PasswordHasher hashService;
 
     public RegisterRefreshTokenService(AuthRefreshTokenAppRepository rTokenRepository, AuthAppRepository authAppRepository,
-                                       RefreshTokenCreationService refreshTokenCreationService,
                                        RefreshTokenLifetimePolicy refreshTokenLifetimePolicy, PasswordHasher hashService) {
         this.rTokenRepository = rTokenRepository;
         this.authAppRepository = authAppRepository;
-        this.refreshTokenCreationService = refreshTokenCreationService;
         this.refreshTokenLifetimePolicy = refreshTokenLifetimePolicy;
         this.hashService = hashService;
     }
@@ -66,21 +61,16 @@ public class RegisterRefreshTokenService implements AddRefreshTokenUseCase {
             ));
 
         } else {
-            UUID refreshTokenId = UUID.randomUUID();
-            Result<AuthRefreshToken, AuthRefreshTokenCreationResult> rtCreationResult =
-                    refreshTokenCreationService.createAndValidate(
-                            refreshTokenId,
+
+            AuthRefreshToken newToken =
+                    AuthRefreshToken.createNew(
                             authId,
                             hashedSecret,
+                            refreshTokenLifetimePolicy.issueExpirationFromNow(),
                             deviceId,
                             ipAddress,
                             userAgent
                     );
-
-            if (!rtCreationResult.success())
-                return Result.fail(RegisterRefreshTokenError.from(rtCreationResult.error()));
-
-            AuthRefreshToken newToken = rtCreationResult.data();
 
             if (!rTokenRepository.createToken(newToken))
                 return Result.fail(RegisterRefreshTokenError.SAVE_FAILED);
