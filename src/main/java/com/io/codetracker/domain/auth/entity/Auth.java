@@ -6,6 +6,8 @@ import com.io.codetracker.domain.auth.valueobject.Roles;
 import com.io.codetracker.domain.auth.valueobject.Status;
 
 import java.time.Instant;
+import java.util.Objects;
+import java.util.UUID;
 
 public final class Auth {
 
@@ -18,15 +20,41 @@ public final class Auth {
     private Status status;
     private Roles role;
 
-    public Auth(String authId, String userId, Email email, String username, HashedPassword password, Roles role, Status status, Instant createdAt) {
-        this.authId = authId;
-        this.userId = userId;
-        this.email = email;
-        this.username = username;
+    private Auth(String authId, String userId, Email email, String username, HashedPassword password, Roles role, Status status, Instant createdAt) {
+        this.authId = Objects.requireNonNull(authId, "authId must not be null");
+        this.userId = Objects.requireNonNull(userId, "userId must not be null");
+        this.email = Objects.requireNonNull(email, "email must not be null");
+        this.username = Objects.requireNonNull(username, "username must not be null");
         this.password = password;
-        this.role = role;
-        this.status = status;
-        this.createdAt = createdAt;
+        this.role = Objects.requireNonNull(role, "role must not be null");
+        this.status = Objects.requireNonNull(status, "status must not be null");
+        this.createdAt = Objects.requireNonNull(createdAt, "createdAt must not be null");
+    }
+
+    public static Auth createOAuth(UUID authId, String userId, Email email, String username, Roles role) {
+        return new Auth(
+                Objects.requireNonNull(authId, "authId must not be null").toString(),
+                userId,
+                email,
+                username,
+                null,
+                role,
+                Status.INACTIVE,
+                Instant.now()
+        );
+    }
+
+    public static Auth reconstitute(
+            String authId,
+            String userId,
+            Email email,
+            String username,
+            HashedPassword password,
+            Roles role,
+            Status status,
+            Instant createdAt
+    ) {
+        return new Auth(authId, userId, email, username, password, role, status, createdAt);
     }
 
     public String getAuthId() {
@@ -37,16 +65,16 @@ public final class Auth {
         return role;
     }
 
-    public void setRole(Roles role) {
-        this.role = role;
+    public void changeRole(Roles role) {
+        this.role = Objects.requireNonNull(role, "role must not be null");
     }
 
     public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void changeStatus(Status status) {
+        this.status = Objects.requireNonNull(status, "status must not be null");
     }
 
     public Instant getCreatedAt() {
@@ -57,7 +85,7 @@ public final class Auth {
         return password;
     }
 
-    public void setPassword(HashedPassword password) {
+    public void changePassword(HashedPassword password) {
         this.password = password;
     }
 
@@ -69,8 +97,8 @@ public final class Auth {
         return email;
     }
 
-    public void setEmail(Email email) {
-        this.email = email;
+    public void changeEmail(Email email) {
+        this.email = Objects.requireNonNull(email, "email must not be null");
     }
 
     public String getUserId() {

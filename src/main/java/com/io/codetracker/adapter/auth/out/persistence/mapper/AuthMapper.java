@@ -15,7 +15,7 @@ public class AuthMapper {
             password = HashedPassword.of(entity.getPassword()).data();
         }
         
-        return new Auth(
+        return Auth.reconstitute(
             entity.getAuthId(),
             entity.getUserId(),
             email,

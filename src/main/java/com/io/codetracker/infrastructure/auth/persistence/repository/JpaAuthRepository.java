@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface JpaAuthRepository extends JpaRepository<AuthEntity, String>{
     Optional<AuthEntity> findByUsername(String username);
+    boolean existsByUsername(String username);
     boolean existsByEmail(String email);
     Optional<AuthEntity> findByEmail(String email);
     Optional<AuthEntity> findByUserId(String userId);

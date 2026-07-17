@@ -11,7 +11,9 @@ import lombok.Setter;
 import java.time.Instant;
 
 @Entity
-@Table(name = "auth")
+@Table(name = "auth", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_auth_username", columnNames = "username")
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,7 +30,7 @@ public class AuthEntity {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Column(name = "username", nullable = false)
     private String username;
 
     @Column(name = "password", nullable = true)

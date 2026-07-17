@@ -1,8 +1,6 @@
 package com.io.codetracker.infrastructure.auth.config;
 
-import com.io.codetracker.domain.auth.factory.AuthFactory;
 import com.io.codetracker.domain.auth.factory.GithubAccountFactory;
-import com.io.codetracker.domain.auth.repository.AuthDomainRepository;
 import com.io.codetracker.domain.auth.repository.GithubAccountDomainRepository;
 import com.io.codetracker.domain.auth.service.*;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,11 +14,6 @@ public class AuthBeanConfig {
     @Bean
     public PasswordService passwordService(@Qualifier("passwordEncoder") PasswordHasher hasher) {
         return new PasswordService(hasher);
-    }
-
-    @Bean
-    public AuthCreationService authCreationService(@Qualifier("defaultAuthFactory") AuthFactory factory,@Qualifier("domainAuthRepositoryImpl") AuthDomainRepository repository) {
-        return new AuthCreationService(factory,repository);
     }
 
     @Bean

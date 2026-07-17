@@ -7,6 +7,7 @@ import java.util.Optional;
 public interface AuthAppRepository {
     void save(Auth auth);
     boolean emailExists(String email);
+    boolean existsByUsername(String username);
     Optional<Auth> findByEmail(String email);
     Optional<Auth> findByAuthId(String authId);
     boolean existsByAuthId(String authId);

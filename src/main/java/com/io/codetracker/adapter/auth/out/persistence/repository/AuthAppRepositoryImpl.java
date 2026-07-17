@@ -33,6 +33,11 @@ public class AuthAppRepositoryImpl implements AuthAppRepository,UserAuthPort {
     }
 
     @Override
+    public boolean existsByUsername(String username) {
+        return jpa.existsByUsername(username);
+    }
+
+    @Override
     public Optional<Auth> findByEmail(String email) {
         Optional<AuthEntity> authEntity = jpa.findByEmail(email);
         return authEntity.map(AuthMapper::toDomain);
@@ -53,7 +58,7 @@ public class AuthAppRepositoryImpl implements AuthAppRepository,UserAuthPort {
         Optional<AuthEntity> authEntityOpt = jpa.findByUserId(userId);
         if (authEntityOpt.isPresent()) {
             Auth auth = AuthMapper.toDomain(authEntityOpt.get());
-            auth.setStatus(Status.ACTIVE);
+            auth.changeStatus(Status.ACTIVE);
             jpa.save(AuthMapper.toEntity(auth));
         }
     }

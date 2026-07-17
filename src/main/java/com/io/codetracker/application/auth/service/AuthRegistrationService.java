@@ -8,19 +8,21 @@ import com.io.codetracker.application.auth.port.out.AuthAppRepository;
 import com.io.codetracker.application.auth.port.out.UserRegistrationPort;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.auth.entity.Auth;
-import com.io.codetracker.domain.auth.result.AuthCreationResult;
-import com.io.codetracker.domain.auth.service.AuthCreationService;
+import com.io.codetracker.domain.auth.result.EmailResult;
+import com.io.codetracker.domain.auth.valueobject.Email;
+import com.io.codetracker.domain.auth.valueobject.Roles;
 import org.springframework.stereotype.Service;
+
+import java.util.Locale;
+import java.util.UUID;
 
 @Service
 public final class AuthRegistrationService implements AuthOAuthRegistrationUseCase{
 
-    private final AuthCreationService authCreationService;
     private final AuthAppRepository authAppRepository;
     private final UserRegistrationPort userRegistration;
 
-    public AuthRegistrationService(AuthCreationService authCreationService, AuthAppRepository authAppRepository, UserRegistrationPort userRegistration) {
-        this.authCreationService = authCreationService;
+    public AuthRegistrationService(AuthAppRepository authAppRepository, UserRegistrationPort userRegistration) {
         this.authAppRepository = authAppRepository;
         this.userRegistration = userRegistration;
     }
@@ -30,17 +32,29 @@ public final class AuthRegistrationService implements AuthOAuthRegistrationUseCa
             return Result.fail(AuthRegistrationError.EMAIL_TAKEN);
         }
 
-        String userId = userRegistration.createShallowUser();
-        Result<Auth, AuthCreationResult> authCreationResult =
-        authCreationService.createAuthWithOAuth(userId, command.email(), command.username(), command.role().toUpperCase());
-
-        if(!authCreationResult.success()) {
-            return Result.fail(AuthRegistrationError.from(authCreationResult.error()));
+        if (authAppRepository.existsByUsername(command.username())) {
+            return Result.fail(AuthRegistrationError.USERNAME_TAKEN);
         }
 
-        Auth auth = authCreationResult.data();
+        Result<Email, EmailResult> emailResult = Email.of(command.email());
+        if (!emailResult.success()) {
+            return switch (emailResult.error()) {
+                case EMAIL_EMPTY -> Result.fail(AuthRegistrationError.EMPTY_EMAIL);
+                case INVALID_EMAIL_FORMAT -> Result.fail(AuthRegistrationError.INVALID_EMAIL_FORMAT);
+            };
+        }
 
-        authAppRepository.save(authCreationResult.data());
+        Roles selectedRole;
+        try {
+            selectedRole = Roles.valueOf(command.role().toUpperCase(Locale.ROOT));
+        } catch (RuntimeException e) {
+            return Result.fail(AuthRegistrationError.INVALID_ROLE);
+        }
+
+        String userId = userRegistration.createShallowUser();
+        Auth auth = Auth.createOAuth(UUID.randomUUID(), userId, emailResult.data(), command.username(), selectedRole);
+
+        authAppRepository.save(auth);
         return Result.ok(AuthData.from(auth));
     }
 
