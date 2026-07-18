@@ -8,6 +8,8 @@ import com.io.codetracker.application.auth.error.RefreshTokenRotationError;
 import com.io.codetracker.application.auth.port.in.RotateRefreshTokenUseCase;
 import com.io.codetracker.application.auth.result.RefreshTokenRotationResult;
 import com.io.codetracker.common.result.Result;
+import com.io.codetracker.infrastructure.auth.config.properties.JwtCookieProperties;
+import com.io.codetracker.infrastructure.auth.config.properties.RefreshCookieProperties;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,48 +28,24 @@ public class RefreshController {
     private final int jwtMaxAge;
     private final long refreshTokenMaxAge;
 
-    private final boolean jwtSecure;
-    private final boolean jwtHttpOnly;
-    private final String jwtPath;
-    private final String jwtSameSite;
-    private final String jwtDomain;
-    private final boolean refreshSecure;
-    private final boolean refreshHttpOnly;
-    private final String refreshPath;
-    private final String refreshSameSite;
-    private final String refreshDomain;
+    private final JwtCookieProperties jwtCookieProperties;
+    private final RefreshCookieProperties refreshCookieProperties;
 
     public RefreshController(
             JwtService jwtService,
             RotateRefreshTokenUseCase rotateRefreshTokenUseCase,
             @Value("${jwt.expiration.ms}") int jwtMaxAge,
             @Value("${refresh.token.lifetime.hour}") long refreshTokenMaxAge,
-            @Value("${app.cookie.jwt.secure}") boolean jwtSecure,
-            @Value("${app.cookie.jwt.http-only}") boolean jwtHttpOnly,
-            @Value("${app.cookie.jwt.path}") String jwtPath,
-            @Value("${app.cookie.jwt.same-site}") String jwtSameSite,
-            @Value("${app.cookie.jwt.domain}") String jwtDomain,
-            @Value("${app.cookie.refresh.secure}") boolean refreshSecure,
-            @Value("${app.cookie.refresh.http-only}") boolean refreshHttpOnly,
-            @Value("${app.cookie.refresh.path}") String refreshPath,
-            @Value("${app.cookie.refresh.same-site}") String refreshSameSite,
-            @Value("${app.cookie.refresh.domain}") String refreshDomain
+            JwtCookieProperties jwtCookieProperties,
+            RefreshCookieProperties refreshCookieProperties
     ) {
         this.jwtService = jwtService;
         this.rotateRefreshTokenUseCase = rotateRefreshTokenUseCase;
         this.jwtMaxAge = jwtMaxAge;
         this.refreshTokenMaxAge = refreshTokenMaxAge;
 
-        this.jwtSecure = jwtSecure;
-        this.jwtHttpOnly = jwtHttpOnly;
-        this.jwtPath = jwtPath;
-        this.jwtSameSite = jwtSameSite;
-        this.jwtDomain = jwtDomain;
-        this.refreshSecure = refreshSecure;
-        this.refreshHttpOnly = refreshHttpOnly;
-        this.refreshPath = refreshPath;
-        this.refreshSameSite = refreshSameSite;
-        this.refreshDomain = refreshDomain;
+        this.jwtCookieProperties = jwtCookieProperties;
+        this.refreshCookieProperties = refreshCookieProperties;
     }
     @PostMapping
     public ResponseEntity<RotateRefreshTokenResponse> refreshToken(
@@ -135,14 +113,14 @@ public class RefreshController {
 
     private void addJwtCookie(HttpServletResponse response, String value) {
         ResponseCookie.ResponseCookieBuilder builder = ResponseCookie.from("jwt", value)
-                .httpOnly(jwtHttpOnly)
-                .secure(jwtSecure)
-                .path(jwtPath)
-                .sameSite(jwtSameSite)
+                .httpOnly(jwtCookieProperties.httpOnly())
+                .secure(jwtCookieProperties.secure())
+                .path(jwtCookieProperties.path())
+                .sameSite(jwtCookieProperties.sameSite())
                 .maxAge(jwtMaxAge / 1000);
 
-        if (jwtDomain != null && !jwtDomain.isBlank()) {
-            builder.domain(jwtDomain);
+        if (jwtCookieProperties.domain() != null && !jwtCookieProperties.domain().isBlank()) {
+            builder.domain(jwtCookieProperties.domain());
         }
 
         ResponseCookie cookie = builder.build();
@@ -152,14 +130,14 @@ public class RefreshController {
 
     private void addRefreshCookie(HttpServletResponse response, String value) {
         ResponseCookie.ResponseCookieBuilder builder = ResponseCookie.from("refresh_token", value)
-                .httpOnly(refreshHttpOnly)
-                .secure(refreshSecure)
-                .path(refreshPath)
-                .sameSite(refreshSameSite)
+                .httpOnly(refreshCookieProperties.httpOnly())
+                .secure(refreshCookieProperties.secure())
+                .path(refreshCookieProperties.path())
+                .sameSite(refreshCookieProperties.sameSite())
                 .maxAge(refreshTokenMaxAge * 3600);
 
-        if (refreshDomain != null && !refreshDomain.isBlank()) {
-            builder.domain(refreshDomain);
+        if (refreshCookieProperties.domain() != null && !refreshCookieProperties.domain().isBlank()) {
+            builder.domain(refreshCookieProperties.domain());
         }
 
         ResponseCookie cookie = builder.build();
