@@ -7,7 +7,7 @@ import com.io.codetracker.adapter.auth.out.github.service.GithubService;
 import com.io.codetracker.adapter.auth.out.service.JwtService;
 import com.io.codetracker.application.auth.command.GithubOAuthLoginCommand;
 import com.io.codetracker.application.auth.error.GithubOAuthLoginError;
-import com.io.codetracker.application.auth.port.in.GithubOAuthLoginUseCase;
+import com.io.codetracker.application.auth.port.in.OAuthGithubSignInUseCase;
 import com.io.codetracker.application.auth.result.GithubOAuthLoginData;
 import com.io.codetracker.common.result.Result;
 
@@ -33,7 +33,7 @@ public class GithubController {
     private static final String OAUTH_STATE_KEY = "oauth_state";
     private final JwtService jwtService;
     private final GithubService githubService;
-    private final GithubOAuthLoginUseCase githubOAuthLoginUseCase;
+    private final OAuthGithubSignInUseCase OAuthGithubSignInUseCase;
     private final int JWT_COOKIE_MAX_AGE_IN_MS;
     private final long REFRESH_TOKEN_MAX_LIFE_TIME_IN_HOUR;
     private final long DEVICE_COOKIE_MAX_AGE_IN_WEEK;
@@ -61,7 +61,7 @@ public class GithubController {
     public GithubController(
             JwtService jwtService,
             GithubService githubService,
-            GithubOAuthLoginUseCase githubOAuthLoginUseCase,
+            OAuthGithubSignInUseCase OAuthGithubSignInUseCase,
             @Value("${github.scope}") String scope,
             @Value("${github.allow-signup}") boolean allowSignup,
             @Value("${github.prompt-consent}") boolean promptConsent,
@@ -87,7 +87,7 @@ public class GithubController {
     ) {
         this.jwtService = jwtService;
         this.githubService = githubService;
-        this.githubOAuthLoginUseCase = githubOAuthLoginUseCase;
+        this.OAuthGithubSignInUseCase = OAuthGithubSignInUseCase;
         this.scope = scope;
         this.allowSignup = allowSignup;
         this.promptConsent = promptConsent;
@@ -180,7 +180,7 @@ public class GithubController {
         String ipAddress = getClientIp(request);
 
         Result<GithubOAuthLoginData, GithubOAuthLoginError> loginResult =
-                githubOAuthLoginUseCase.loginOrRegister(
+                OAuthGithubSignInUseCase.loginOrRegister(
                         new GithubOAuthLoginCommand(
                                 githubUser.email(),
                                 githubUser.login(),

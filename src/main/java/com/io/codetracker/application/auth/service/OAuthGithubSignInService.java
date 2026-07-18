@@ -9,9 +9,8 @@ import com.io.codetracker.application.auth.error.GithubOAuthLoginError;
 import com.io.codetracker.application.auth.error.RegisterRefreshTokenError;
 import com.io.codetracker.application.auth.port.in.AddRefreshTokenUseCase;
 import com.io.codetracker.application.auth.port.in.AuthOAuthRegistrationUseCase;
-import com.io.codetracker.application.auth.port.in.GithubOAuthLoginUseCase;
+import com.io.codetracker.application.auth.port.in.OAuthGithubSignInUseCase;
 import com.io.codetracker.application.auth.port.out.AuthAppRepository;
-import com.io.codetracker.application.auth.port.out.UserRegistrationPort;
 import com.io.codetracker.application.auth.result.GithubOAuthLoginData;
 import com.io.codetracker.application.auth.result.RegisterRefreshTokenResult;
 import com.io.codetracker.common.result.Result;
@@ -24,11 +23,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class GithubOAuthLoginService implements GithubOAuthLoginUseCase {
-
+public class OAuthGithubSignInService implements OAuthGithubSignInUseCase {
 
     private final AuthAppRepository authAppRepository;
-    private final UserRegistrationPort userRegistration;
     private final AddRefreshTokenUseCase addRefreshTokenUseCase;
     private final AuthOAuthRegistrationUseCase authOAuthRegistrationUseCase;
 
