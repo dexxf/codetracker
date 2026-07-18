@@ -56,6 +56,7 @@ app:
       same-site: ${APP_COOKIE_SAME_SITE}
 
 github:
+  authorization-url: "https://github.com/login/oauth/authorize"
   client-id: ${GITHUB_CLIENT_ID}
   client-secret: ${GITHUB_CLIENT_SECRET}
   redirect-uri: ${GITHUB_REDIRECT_URI}
