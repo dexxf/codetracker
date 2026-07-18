@@ -8,6 +8,7 @@ import com.io.codetracker.adapter.auth.out.service.JwtService;
 import com.io.codetracker.application.auth.command.GithubOAuthLoginCommand;
 import com.io.codetracker.application.auth.error.GithubOAuthLoginError;
 import com.io.codetracker.application.auth.port.in.OAuthGithubSignInUseCase;
+import com.io.codetracker.application.auth.port.out.OAuthGithubUrlBuilderPort;
 import com.io.codetracker.application.auth.result.GithubOAuthLoginData;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.infrastructure.auth.config.properties.DeviceIdCookieProperties;
@@ -45,18 +46,14 @@ public class GithubController {
     private final RefreshCookieProperties refreshCookieProperties;
     private final DeviceIdCookieProperties deviceIdCookieProperties;
 
-    private final String scope;
-    private final boolean allowSignup;
-    private final boolean promptConsent;
+    private final OAuthGithubUrlBuilderPort oAuthGithubUrlBuilderPort;
     private final String frontendOrigin;
 
     public GithubController(
             JwtService jwtService,
             GithubService githubService,
             OAuthGithubSignInUseCase OAuthGithubSignInUseCase,
-            @Value("${github.scope}") String scope,
-            @Value("${github.allow-signup}") boolean allowSignup,
-            @Value("${github.prompt-consent}") boolean promptConsent,
+            OAuthGithubUrlBuilderPort oAuthGithubUrlBuilderPort,
             @Value("${app.cors.allowed-origins}") String frontendOrigin,
             @Value("${jwt.expiration.ms}") int JWT_COOKIE_MAX_AGE_IN_MS,
             @Value("${refresh.token.lifetime.hour}") long REFRESH_TOKEN_MAX_LIFE_TIME_IN_HOUR,
@@ -68,9 +65,7 @@ public class GithubController {
         this.jwtService = jwtService;
         this.githubService = githubService;
         this.OAuthGithubSignInUseCase = OAuthGithubSignInUseCase;
-        this.scope = scope;
-        this.allowSignup = allowSignup;
-        this.promptConsent = promptConsent;
+        this.oAuthGithubUrlBuilderPort = oAuthGithubUrlBuilderPort;
         this.frontendOrigin = frontendOrigin;
         this.JWT_COOKIE_MAX_AGE_IN_MS = JWT_COOKIE_MAX_AGE_IN_MS;
         this.REFRESH_TOKEN_MAX_LIFE_TIME_IN_HOUR = REFRESH_TOKEN_MAX_LIFE_TIME_IN_HOUR;
@@ -85,13 +80,7 @@ public class GithubController {
         String state = UUID.randomUUID().toString();
         session.setAttribute(OAUTH_STATE_KEY, state);
 
-        String authUrl = "https://github.com/login/oauth/authorize" +
-                "?client_id=" + URLEncoder.encode(githubService.getClientId(), StandardCharsets.UTF_8) +
-                "&redirect_uri=" + URLEncoder.encode(githubService.getRedirectUri(), StandardCharsets.UTF_8) +
-                "&scope=" + URLEncoder.encode(scope, StandardCharsets.UTF_8) +
-                "&state=" + URLEncoder.encode(state, StandardCharsets.UTF_8) +
-                "&allow_signup=" + allowSignup +
-                "&prompt=" + (promptConsent ? "consent" : "none");
+        String authUrl = oAuthGithubUrlBuilderPort.buildUrl(state);
 
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(URI.create(authUrl))
