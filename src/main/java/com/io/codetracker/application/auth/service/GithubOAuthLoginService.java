@@ -1,58 +1,52 @@
 package com.io.codetracker.application.auth.service;
 
 import java.util.Optional;
-import com.io.codetracker.application.auth.error.RegisterRefreshTokenError;
-import com.io.codetracker.application.auth.port.in.AddRefreshTokenUseCase;
-import com.io.codetracker.application.auth.result.GithubAccountAttributes;
-import com.io.codetracker.application.auth.result.RegisterRefreshTokenResult;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+
 import com.io.codetracker.application.auth.command.AuthRegisterOAuthCommand;
 import com.io.codetracker.application.auth.command.GithubOAuthLoginCommand;
-import com.io.codetracker.application.auth.command.GithubRegistrationCommand;
 import com.io.codetracker.application.auth.error.AuthRegistrationError;
-import com.io.codetracker.application.auth.error.GithubAccountRegistrationError;
 import com.io.codetracker.application.auth.error.GithubOAuthLoginError;
+import com.io.codetracker.application.auth.error.RegisterRefreshTokenError;
+import com.io.codetracker.application.auth.port.in.AddRefreshTokenUseCase;
 import com.io.codetracker.application.auth.port.in.AuthOAuthRegistrationUseCase;
-import com.io.codetracker.application.auth.port.in.GithubAccountRegistrationUseCase;
 import com.io.codetracker.application.auth.port.in.GithubOAuthLoginUseCase;
 import com.io.codetracker.application.auth.port.out.AuthAppRepository;
-import com.io.codetracker.application.auth.port.out.GithubAppRepository;
-import com.io.codetracker.application.auth.result.AuthData;
+import com.io.codetracker.application.auth.port.out.UserRegistrationPort;
 import com.io.codetracker.application.auth.result.GithubOAuthLoginData;
+import com.io.codetracker.application.auth.result.RegisterRefreshTokenResult;
 import com.io.codetracker.common.result.Result;
+import com.io.codetracker.domain.auth.aggregate.AuthAccountAggregate;
 import com.io.codetracker.domain.auth.entity.GithubAccount;
+import com.io.codetracker.domain.auth.valueobject.Roles;
 import com.io.codetracker.domain.auth.valueobject.Status;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
 public class GithubOAuthLoginService implements GithubOAuthLoginUseCase {
-    private final GithubAppRepository githubAppRepository;
-        private final AuthAppRepository authAppRepository;
-    private final AuthOAuthRegistrationUseCase authOAuthRegistrationUseCase;
-    private final GithubAccountRegistrationUseCase githubAccountRegistrationUseCase;
+
+
+    private final AuthAppRepository authAppRepository;
+    private final UserRegistrationPort userRegistration;
     private final AddRefreshTokenUseCase addRefreshTokenUseCase;
+    private final AuthOAuthRegistrationUseCase authOAuthRegistrationUseCase;
 
     @Override
     public Result<GithubOAuthLoginData, GithubOAuthLoginError> loginOrRegister(GithubOAuthLoginCommand command) {
-        Optional<GithubAccount> existingAccount = githubAppRepository.findByGithubId(command.githubId());
+        Optional<AuthAccountAggregate> existingAccount = authAppRepository.findByGithubId(command.githubId());
 
         if (existingAccount.isPresent()) {
-            GithubAccount existing = existingAccount.get();
+            AuthAccountAggregate aggregate = existingAccount.get();
+            GithubAccount existing = aggregate.githubAccount();
             if (command.accessToken() != null && !command.accessToken().isBlank()) {
-                GithubAccount updatedAccount = new GithubAccount(
-                        existing.getGithubAccountId(),
-                        existing.getAuthId(),
-                        existing.getGithubId(),
-                        // TODO: create a method that updates the access token
-                        //  directly instead of creating a new instance
-                        command.accessToken());
-                githubAppRepository.save(updatedAccount);
+                existing.updateAccessToken(command.accessToken());
+                authAppRepository.save(aggregate);
             }
 
             Result<RegisterRefreshTokenResult, RegisterRefreshTokenError> refreshTokenResult =
                     addRefreshTokenUseCase.add(
-                            existing.getAuthId(),
+                            existing.getId(),
                             command.deviceId(),
                             command.ipAddress(),
                             command.userAgent()
@@ -64,44 +58,48 @@ public class GithubOAuthLoginService implements GithubOAuthLoginUseCase {
 
             String plainRefreshToken = refreshTokenResult.data().rawToken();
 
-            boolean alreadyInitialized = authAppRepository.findByAuthId(existing.getAuthId())
+            boolean alreadyInitialized = authAppRepository.findByAuthId(existing.getId())
                     .map(auth -> auth.getStatus() == Status.ACTIVE)
                     .orElse(false);
 
             return Result.ok(new GithubOAuthLoginData(
-                    existing.getAuthId(),
+                    existing.getId(),
                     alreadyInitialized,
                     plainRefreshToken
             ));
         }
 
-        Result<AuthData, AuthRegistrationError> authRegistrationResult =
-                authOAuthRegistrationUseCase.registerWithOAuth(
-                        new AuthRegisterOAuthCommand(
-                                command.email(),
-                                command.username(),
-                                "USER"
-                        )
-                );
+        if (authAppRepository.emailExists(command.email())) {
+            return Result.fail(GithubOAuthLoginError.EMAIL_TAKEN);
+        }
+
+        if (authAppRepository.existsByUsername(command.username())) {
+            return Result.fail(GithubOAuthLoginError.USERNAME_TAKEN);
+        }
+
+        Roles selectedRole = Roles.USER;
+
+        Result<AuthAccountAggregate, AuthRegistrationError> authRegistrationResult = authOAuthRegistrationUseCase.registerWithOAuth(
+                new AuthRegisterOAuthCommand(
+                        command.email(),
+                        command.username(),
+                        selectedRole.name(),
+                        command.githubId(),
+                        command.accessToken()
+                )
+        );
 
         if (!authRegistrationResult.success()) {
             return Result.fail(GithubOAuthLoginError.from(authRegistrationResult.error()));
         }
 
-        String authId = authRegistrationResult.data().authId();
+        AuthAccountAggregate aggregate = authRegistrationResult.data();
 
-        Result<GithubAccountAttributes, GithubAccountRegistrationError> githubRegistrationResult =
-                githubAccountRegistrationUseCase.registerGithubAccount(
-                        new GithubRegistrationCommand(authId, command.githubId(), command.accessToken())
-                );
-
-        if (!githubRegistrationResult.success()) {
-            return Result.fail(GithubOAuthLoginError.from(githubRegistrationResult.error()));
-        }
+        authAppRepository.save(aggregate);
 
         Result<RegisterRefreshTokenResult, RegisterRefreshTokenError> refreshTokenResult =
                 addRefreshTokenUseCase.add(
-                        authId,
+                        aggregate.auth().getAuthId(),
                         command.deviceId(),
                         command.ipAddress(),
                         command.userAgent()
@@ -112,7 +110,7 @@ public class GithubOAuthLoginService implements GithubOAuthLoginUseCase {
         }
 
         return Result.ok(new GithubOAuthLoginData(
-                authId,
+                aggregate.auth().getAuthId(),
                 false,
                 refreshTokenResult.data().rawToken()
         ));
