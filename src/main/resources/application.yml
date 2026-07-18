@@ -1,0 +1,85 @@
+spring:
+  application:
+    name: codetracker
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: ${DB_HIKARI_MAXIMUM_POOL_SIZE}
+      minimum-idle: ${DB_HIKARI_MINIMUM_IDLE}
+      connection-timeout: ${DB_HIKARI_CONNECTION_TIMEOUT}
+      idle-timeout: ${DB_HIKARI_IDLE_TIMEOUT}
+      max-lifetime: ${DB_HIKARI_MAX_LIFETIME}
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+
+app:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS}
+
+  cookie:
+    jwt:
+      secure: ${APP_COOKIE_JWT_SECURE}
+      http-only: true
+      domain: ${APP_COOKIE_DOMAIN:}
+      path: /
+      same-site: ${APP_COOKIE_SAME_SITE}
+
+    refresh:
+      secure: ${APP_COOKIE_REFRESH_SECURE}
+      http-only: true
+      domain: ${APP_COOKIE_DOMAIN:}
+      path: /
+      same-site: ${APP_COOKIE_SAME_SITE}
+
+    device:
+      secure: ${APP_COOKIE_DEVICE_SECURE}
+      http-only: false
+      domain: ${APP_COOKIE_DOMAIN:}
+      path: /
+      same-site: ${APP_COOKIE_SAME_SITE}
+
+github:
+  client-id: ${GITHUB_CLIENT_ID}
+  client-secret: ${GITHUB_CLIENT_SECRET}
+  redirect-uri: ${GITHUB_REDIRECT_URI}
+  scope: ${GITHUB_SCOPE}
+  allow-signup: ${GITHUB_ALLOW_SIGNUP}
+  prompt-consent: ${GITHUB_PROMPT_CONSENT}
+
+encryption:
+  password: ${ENCRYPTION_PASSWORD}
+  salt: ${ENCRYPTION_SALT}
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration:
+    ms: 300000
+
+refresh:
+  token:
+    lifetime:
+      hour: 168
+
+device:
+  expiration:
+    week: 12
+
+cloudinary:
+  url: ${CLOUDINARY_URL}
