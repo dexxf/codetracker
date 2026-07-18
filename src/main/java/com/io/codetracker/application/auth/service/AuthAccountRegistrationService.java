@@ -2,32 +2,33 @@ package com.io.codetracker.application.auth.service;
 
 import com.io.codetracker.application.auth.command.AuthRegisterOAuthCommand;
 import com.io.codetracker.application.auth.error.AuthRegistrationError;
-import com.io.codetracker.application.auth.result.AuthData;
 import com.io.codetracker.application.auth.port.in.AuthOAuthRegistrationUseCase;
 import com.io.codetracker.application.auth.port.out.AuthAppRepository;
 import com.io.codetracker.application.auth.port.out.UserRegistrationPort;
 import com.io.codetracker.common.result.Result;
-import com.io.codetracker.domain.auth.entity.Auth;
+import com.io.codetracker.domain.auth.aggregate.AuthAccountAggregate;
+import com.io.codetracker.domain.auth.factory.AuthAccountAggregateFactory;
 import com.io.codetracker.domain.auth.result.EmailResult;
 import com.io.codetracker.domain.auth.valueobject.Email;
 import com.io.codetracker.domain.auth.valueobject.Roles;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
-import java.util.UUID;
 
 @Service
-public final class AuthRegistrationService implements AuthOAuthRegistrationUseCase{
+public final class AuthAccountRegistrationService implements AuthOAuthRegistrationUseCase{
 
     private final AuthAppRepository authAppRepository;
     private final UserRegistrationPort userRegistration;
+    private final AuthAccountAggregateFactory authAccountAggregateFactory;
 
-    public AuthRegistrationService(AuthAppRepository authAppRepository, UserRegistrationPort userRegistration) {
+    public AuthAccountRegistrationService(AuthAppRepository authAppRepository, UserRegistrationPort userRegistration, AuthAccountAggregateFactory authAccountAggregateFactory) {
         this.authAppRepository = authAppRepository;
         this.userRegistration = userRegistration;
+        this.authAccountAggregateFactory = authAccountAggregateFactory;
     }
 
-    public Result<AuthData, AuthRegistrationError> registerWithOAuth(AuthRegisterOAuthCommand command) {
+    public Result<AuthAccountAggregate, AuthRegistrationError> registerWithOAuth(AuthRegisterOAuthCommand command) {
         if(authAppRepository.emailExists(command.email())) {
             return Result.fail(AuthRegistrationError.EMAIL_TAKEN);
         }
@@ -52,10 +53,11 @@ public final class AuthRegistrationService implements AuthOAuthRegistrationUseCa
         }
 
         String userId = userRegistration.createShallowUser();
-        Auth auth = Auth.createOAuth(UUID.randomUUID(), userId, emailResult.data(), command.username(), selectedRole);
 
-        authAppRepository.save(auth);
-        return Result.ok(AuthData.from(auth));
+        AuthAccountAggregate aggregate = authAccountAggregateFactory.create(userId,emailResult.data(), command.username(), selectedRole,command.githubId(), command.accessToken());
+
+        authAppRepository.save(aggregate);
+        return Result.ok(aggregate);
     }
 
 }

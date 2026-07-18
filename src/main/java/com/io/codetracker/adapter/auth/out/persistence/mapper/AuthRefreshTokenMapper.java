@@ -8,7 +8,7 @@ public class AuthRefreshTokenMapper {
         if (entity == null) return null;
         return new AuthRefreshToken(
                 entity.getId(),
-                entity.getAuthEntity().getAuthId(),
+                entity.getAuthEntity().getId(),
                 entity.getTokenHash(),
                 entity.getExpiresAt(),
                 entity.isRevoked(),

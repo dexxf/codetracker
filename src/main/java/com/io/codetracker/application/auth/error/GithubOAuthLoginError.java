@@ -15,11 +15,13 @@ public enum GithubOAuthLoginError {
     INVALID_REFRESH_TOKEN_ID;
 
     public static GithubOAuthLoginError from(AuthRegistrationError error) {
-        return GithubOAuthLoginError.valueOf(error.name());
-    }
-
-    public static GithubOAuthLoginError from(GithubAccountRegistrationError error) {
-        return GithubOAuthLoginError.valueOf(error.name());
+        return switch (error) {
+            case USERNAME_TAKEN -> USERNAME_TAKEN;
+            case EMPTY_EMAIL -> EMPTY_EMAIL;
+            case EMAIL_TAKEN -> EMAIL_TAKEN;
+            case INVALID_EMAIL_FORMAT -> INVALID_EMAIL_FORMAT;
+            case INVALID_ROLE -> INVALID_ROLE;
+        };
     }
 
     public static GithubOAuthLoginError from(RegisterRefreshTokenError error) {

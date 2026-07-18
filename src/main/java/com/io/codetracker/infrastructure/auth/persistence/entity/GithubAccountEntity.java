@@ -2,10 +2,7 @@ package com.io.codetracker.infrastructure.auth.persistence.entity;
 
 import com.io.codetracker.common.util.AESEncryptionConverter;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 @Entity
@@ -14,14 +11,17 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class GithubAccountEntity {
 
     @Id
-    @Column(name = "githubAccountId", nullable = false)
-    private String githubAccountId;
-    
-    @Column(name = "auth_id", nullable = false)
-    private String authId;
+    @Column(name = "auth_id",nullable = false)
+    private String id;
+
+    @OneToOne(optional = false)
+    @MapsId
+    @JoinColumn(name = "auth_id", nullable = false)
+    private AuthEntity authEntity;
 
     @Column(name = "github_id", nullable = false)
     private Long githubId;

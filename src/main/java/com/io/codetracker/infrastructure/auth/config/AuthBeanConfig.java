@@ -1,7 +1,5 @@
 package com.io.codetracker.infrastructure.auth.config;
 
-import com.io.codetracker.domain.auth.factory.GithubAccountFactory;
-import com.io.codetracker.domain.auth.repository.GithubAccountDomainRepository;
 import com.io.codetracker.domain.auth.service.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -16,11 +14,6 @@ public class AuthBeanConfig {
         return new PasswordService(hasher);
     }
 
-    @Bean
-    public GithubAccountCreationService githubAccountCreationService(GithubAccountDomainRepository repository, GithubAccountFactory factory) {
-        return new GithubAccountCreationService(repository, factory);
-    }
-    
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();

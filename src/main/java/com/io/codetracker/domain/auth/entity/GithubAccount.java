@@ -1,25 +1,21 @@
 package com.io.codetracker.domain.auth.entity;
 
+import java.util.Objects;
+
 public final class GithubAccount {
 
-    private final String githubAccountId;
-    private final String authId;
+    private final String id;
     private final Long githubId;
-    private final String accessToken;
+    private String accessToken;
 
-    public GithubAccount(String githubAccountId,String authId, Long githubId, String accessToken) {
-        this.githubAccountId = githubAccountId;
-        this.authId = authId;
-        this.githubId = githubId;
-        this.accessToken = accessToken;
+    public GithubAccount(String id, Long githubId, String accessToken) {
+        this.id = Objects.requireNonNull(id, "id must not be null");
+        this.githubId = Objects.requireNonNull(githubId, "githubId must not be null");
+        this.accessToken = Objects.requireNonNull(accessToken, "accessToken must not be null");
     }
 
-    public String getGithubAccountId() {
-        return githubAccountId;
-    }
-    
-    public String getAuthId() {
-        return authId;
+    public String getId() {
+        return id;
     }
 
     public Long getGithubId() {
@@ -28,6 +24,10 @@ public final class GithubAccount {
 
     public String getAccessToken() {
         return accessToken;
+    }
+
+    public void updateAccessToken(String accessToken) {
+        this.accessToken = Objects.requireNonNull(accessToken, "accessToken must not be null");
     }
 
 }

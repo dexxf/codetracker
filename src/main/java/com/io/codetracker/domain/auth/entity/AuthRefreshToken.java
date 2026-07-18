@@ -17,9 +17,9 @@ public final class AuthRefreshToken {
     private String ipAddress;
     private String userAgent;
 
-    private AuthRefreshToken(UUID id, String authId, String tokenHash, Instant expiresAt, boolean revoked,
-                             Instant revokedAt, Instant lastUsedAt, String deviceId,
-                             String ipAddress, String userAgent) {
+    public AuthRefreshToken(UUID id, String authId, String tokenHash, Instant expiresAt, boolean revoked,
+                            Instant revokedAt, Instant lastUsedAt, String deviceId,
+                            String ipAddress, String userAgent) {
         this.id = Objects.requireNonNull(id, "id must not be null");
         this.authId = Objects.requireNonNull(authId, "authId must not be null");
         this.tokenHash = Objects.requireNonNull(tokenHash, "tokenHash must not be null");

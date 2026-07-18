@@ -17,7 +17,7 @@ public class ActivityGithubAccountAppAdapter implements ActivityGithubAccountApp
 
     @Override
     public Optional<GithubAccount> findByAuthId(String authId) {
-        return jpaGithubAccountRepository.findByAuthId(authId)
+        return jpaGithubAccountRepository.findById(authId)
                 .map(GithubAccountMapper::toDomain);
     }
 }

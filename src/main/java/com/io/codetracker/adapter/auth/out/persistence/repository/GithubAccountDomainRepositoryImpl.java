@@ -21,6 +21,6 @@ public class GithubAccountDomainRepositoryImpl implements GithubAccountDomainRep
 
     @Override
     public boolean existByAuthId(String authId) {
-        return repository.existsByAuthId(authId);
+        return repository.existsById(authId);
     }
 }

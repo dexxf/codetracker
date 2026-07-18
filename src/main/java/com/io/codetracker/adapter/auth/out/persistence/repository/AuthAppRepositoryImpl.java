@@ -1,8 +1,11 @@
 package com.io.codetracker.adapter.auth.out.persistence.repository;
 
+import com.io.codetracker.adapter.auth.out.persistence.mapper.AuthAccountAggregateMapper;
 import com.io.codetracker.adapter.auth.out.persistence.mapper.AuthMapper;
+import com.io.codetracker.adapter.auth.out.persistence.mapper.GithubAccountMapper;
 import com.io.codetracker.application.auth.port.out.AuthAppRepository;
 import com.io.codetracker.application.user.port.out.UserAuthPort;
+import com.io.codetracker.domain.auth.aggregate.AuthAccountAggregate;
 import com.io.codetracker.domain.auth.entity.Auth;
 import com.io.codetracker.domain.auth.valueobject.Status;
 import com.io.codetracker.infrastructure.auth.persistence.entity.AuthEntity;
@@ -18,13 +21,17 @@ public class AuthAppRepositoryImpl implements AuthAppRepository,UserAuthPort {
 
     private final JpaAuthRepository jpa;
 
-    public AuthAppRepositoryImpl(@Qualifier("jpaAuthRepository") JpaAuthRepository jpa) {
+    public AuthAppRepositoryImpl(
+            @Qualifier("jpaAuthRepository") JpaAuthRepository jpa
+    ) {
         this.jpa = jpa;
     }
 
     @Override
-    public void save(Auth auth) {
-        jpa.save(AuthMapper.toEntity(auth));
+    public void save(AuthAccountAggregate aggregate) {
+        AuthEntity authEntity = jpa.save(AuthAccountAggregateMapper.toEntity(aggregate));
+        authEntity.linkGithubAccount(GithubAccountMapper.toEntity(aggregate.githubAccount()));
+        jpa.save(authEntity);
     }
 
     @Override
@@ -38,12 +45,6 @@ public class AuthAppRepositoryImpl implements AuthAppRepository,UserAuthPort {
     }
 
     @Override
-    public Optional<Auth> findByEmail(String email) {
-        Optional<AuthEntity> authEntity = jpa.findByEmail(email);
-        return authEntity.map(AuthMapper::toDomain);
-    }
-
-    @Override
     public Optional<Auth> findByAuthId(String authId) {
         return jpa.findById(authId).map(AuthMapper::toDomain);
     }
@@ -51,6 +52,15 @@ public class AuthAppRepositoryImpl implements AuthAppRepository,UserAuthPort {
     @Override
     public boolean existsByAuthId(String authId) {
         return jpa.existsById(authId);
+    }
+
+    @Override
+    public Optional<AuthAccountAggregate> findByGithubId(Long githubId) {
+        return jpa.findByGithubAccountEntity_GithubId(githubId)
+                .map(entity -> new AuthAccountAggregate(
+                        AuthMapper.toDomain(entity),
+                        GithubAccountMapper.toDomain(entity.getGithubAccountEntity())
+                ));
     }
 
     @Override

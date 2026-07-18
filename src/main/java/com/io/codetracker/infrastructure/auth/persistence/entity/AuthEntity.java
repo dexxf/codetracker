@@ -3,10 +3,7 @@ package com.io.codetracker.infrastructure.auth.persistence.entity;
 import com.io.codetracker.domain.auth.valueobject.Roles;
 import com.io.codetracker.domain.auth.valueobject.Status;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 
@@ -18,14 +15,22 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AuthEntity {
 
     @Id
     @Column(name = "auth_id", nullable = false)
-    private String authId;
+    private String id;
 
     @Column(name = "user_id", nullable = false)
     private String userId;
+
+    @OneToOne(
+            mappedBy = "authEntity",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private GithubAccountEntity githubAccountEntity;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
@@ -51,4 +56,11 @@ public class AuthEntity {
     protected void onCreate() {
         this.createdAt = Instant.now();
     }
+
+
+    public void linkGithubAccount(GithubAccountEntity githubAccountEntity) {
+        githubAccountEntity.setAuthEntity(this);
+        this.githubAccountEntity = githubAccountEntity;
+    }
+
 }

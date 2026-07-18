@@ -22,7 +22,7 @@ public class AuthRefreshTokenAppRepositoryImpl implements AuthRefreshTokenAppRep
 
     @Override
     public Optional<AuthRefreshToken> findTokenByAuthIdAndDeviceId(String authId, String deviceId) {
-        return jpaRTRepository.findByAuthEntity_AuthIdAndDeviceId(
+        return jpaRTRepository.findByAuthEntity_IdAndDeviceId(
                 authId,
                 deviceId
         ).map(AuthRefreshTokenMapper::toDomain);

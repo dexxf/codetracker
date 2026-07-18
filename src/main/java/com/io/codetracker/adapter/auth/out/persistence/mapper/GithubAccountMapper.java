@@ -14,8 +14,7 @@ public final class GithubAccountMapper {
         }
 
         return new GithubAccount(
-                entity.getGithubAccountId(),
-                entity.getAuthId(),
+                entity.getId(),
                 entity.getGithubId(),
                 entity.getAccessToken()
         );
@@ -26,12 +25,11 @@ public final class GithubAccountMapper {
             return null;
         }
 
-        return new GithubAccountEntity(
-                domain.getGithubAccountId(),
-                domain.getAuthId(),
-                domain.getGithubId(),
-                domain.getAccessToken()
-        );
-    }
+        return GithubAccountEntity.builder()
+                .id(domain.getId())
+                .githubId(domain.getGithubId())
+                .accessToken(domain.getAccessToken())
+                .build();
 
+    }
 }
