@@ -1,6 +1,6 @@
-package com.io.codetracker.adapter.auth.out.github.result;
+package com.io.codetracker.application.auth.result;
 
-public record GithubUserInfoResult(
+public record GithubFetchUserInfoResult(
     Long id,
     String login,
     String repos_url,

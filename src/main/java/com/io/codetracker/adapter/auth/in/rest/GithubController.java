@@ -1,15 +1,15 @@
 package com.io.codetracker.adapter.auth.in.rest;
 
 import com.io.codetracker.adapter.auth.in.mapper.GithubOAuthHttpMapper;
-import com.io.codetracker.adapter.auth.out.github.result.GithubExchangeResult;
-import com.io.codetracker.adapter.auth.out.github.result.GithubUserInfoResult;
-import com.io.codetracker.adapter.auth.out.github.service.GithubService;
 import com.io.codetracker.adapter.auth.out.service.JwtService;
-import com.io.codetracker.application.auth.command.GithubOAuthLoginCommand;
-import com.io.codetracker.application.auth.error.GithubOAuthLoginError;
+import com.io.codetracker.application.auth.command.GithubOAuthSignInCommand;
+import com.io.codetracker.application.auth.error.GithubOAuthSignInError;
+import com.io.codetracker.application.auth.error.OAuthGithubCallbackError;
+import com.io.codetracker.application.auth.port.in.OAuthGithubCallbackUseCase;
 import com.io.codetracker.application.auth.port.in.OAuthGithubSignInUseCase;
 import com.io.codetracker.application.auth.port.out.OAuthGithubUrlBuilderPort;
-import com.io.codetracker.application.auth.result.GithubOAuthLoginData;
+import com.io.codetracker.application.auth.result.GithubOAuthSignInData;
+import com.io.codetracker.application.auth.result.OAuthGithubCallbackResult;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.infrastructure.auth.config.properties.DeviceIdCookieProperties;
 import com.io.codetracker.infrastructure.auth.config.properties.JwtCookieProperties;
@@ -25,8 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.UUID;
 
@@ -36,8 +34,8 @@ public class GithubController {
 
     private static final String OAUTH_STATE_KEY = "oauth_state";
     private final JwtService jwtService;
-    private final GithubService githubService;
-    private final OAuthGithubSignInUseCase OAuthGithubSignInUseCase;
+    private final OAuthGithubCallbackUseCase oAuthGithubCallbackUseCase;
+    private final OAuthGithubSignInUseCase oAuthGithubSignInUseCase;
     private final int JWT_COOKIE_MAX_AGE_IN_MS;
     private final long REFRESH_TOKEN_MAX_LIFE_TIME_IN_HOUR;
     private final long DEVICE_COOKIE_MAX_AGE_IN_WEEK;
@@ -51,8 +49,8 @@ public class GithubController {
 
     public GithubController(
             JwtService jwtService,
-            GithubService githubService,
-            OAuthGithubSignInUseCase OAuthGithubSignInUseCase,
+            OAuthGithubCallbackUseCase oAuthGithubCallbackUseCase,
+            OAuthGithubSignInUseCase oAuthGithubSignInUseCase,
             OAuthGithubUrlBuilderPort oAuthGithubUrlBuilderPort,
             @Value("${app.cors.allowed-origins}") String frontendOrigin,
             @Value("${jwt.expiration.ms}") int JWT_COOKIE_MAX_AGE_IN_MS,
@@ -63,8 +61,8 @@ public class GithubController {
             DeviceIdCookieProperties deviceIdCookieProperties
     ) {
         this.jwtService = jwtService;
-        this.githubService = githubService;
-        this.OAuthGithubSignInUseCase = OAuthGithubSignInUseCase;
+        this.oAuthGithubCallbackUseCase = oAuthGithubCallbackUseCase;
+        this.oAuthGithubSignInUseCase = oAuthGithubSignInUseCase;
         this.oAuthGithubUrlBuilderPort = oAuthGithubUrlBuilderPort;
         this.frontendOrigin = frontendOrigin;
         this.JWT_COOKIE_MAX_AGE_IN_MS = JWT_COOKIE_MAX_AGE_IN_MS;
@@ -86,7 +84,6 @@ public class GithubController {
                 .location(URI.create(authUrl))
                 .build();
     }
-
 
     @GetMapping("/github/callback")
     public ResponseEntity<Void> githubCallback(
@@ -113,46 +110,43 @@ public class GithubController {
             return redirectToFrontend(false, null, "Missing OAuth code.");
         }
 
-        GithubExchangeResult accessTokenResult = githubService.exchangeCode(code);
-        if (!accessTokenResult.success()) {
-            return redirectToFrontend(false, null, accessTokenResult.message());
+        Result<OAuthGithubCallbackResult, OAuthGithubCallbackError> callbackResult =
+                oAuthGithubCallbackUseCase.handle(code);
+
+        if (!callbackResult.success()) {
+            return redirectToFrontend(false, null, GithubOAuthHttpMapper.toMessage(callbackResult.error()));
         }
 
-        String accessToken = accessTokenResult.fetchResult().accessToken();
-        ResponseEntity<GithubUserInfoResult> githubUserResponse = githubService.fetchGithubUser(accessToken);
+        OAuthGithubCallbackResult callback = callbackResult.data();
 
-        if (!githubUserResponse.getStatusCode().is2xxSuccessful() || githubUserResponse.getBody() == null) {
-            return redirectToFrontend(false, null, "Failed to fetch GitHub user.");
-        }
-
-        GithubUserInfoResult githubUser = githubUserResponse.getBody();
         String userAgent = request.getHeader("User-Agent");
         String deviceId = AuthController.getCookieValue(request, "device_id");
 
-        if(deviceId == null || deviceId.isBlank()) {
+        if (deviceId == null || deviceId.isBlank()) {
             deviceId = UUID.randomUUID().toString();
         }
 
         if (userAgent == null) userAgent = "Unknown";
         String ipAddress = getClientIp(request);
 
-        Result<GithubOAuthLoginData, GithubOAuthLoginError> loginResult =
-                OAuthGithubSignInUseCase.loginOrRegister(
-                        new GithubOAuthLoginCommand(
-                                githubUser.email(),
-                                githubUser.login(),
-                                githubUser.id(),
-                                accessToken,
+        Result<GithubOAuthSignInData, GithubOAuthSignInError> loginResult =
+                oAuthGithubSignInUseCase.loginOrRegister(
+                        new GithubOAuthSignInCommand(
+                                callback.userInfoResult().email(),
+                                callback.userInfoResult().login(),
+                                callback.userInfoResult().id(),
+                                callback.tokenResult().accessToken(),
                                 deviceId,
                                 ipAddress,
                                 userAgent
-                        )                );
+                        )
+                );
 
         if (!loginResult.success()) {
             return redirectToFrontend(false, null, GithubOAuthHttpMapper.toMessage(loginResult.error()));
         }
 
-        GithubOAuthLoginData loginData = loginResult.data();
+        GithubOAuthSignInData loginData = loginResult.data();
         addCookie(response, "jwt", jwtService.generateToken(loginData.authId()),
                 JWT_COOKIE_MAX_AGE_IN_MS / 1000, jwtCookieProperties.httpOnly(),
                 jwtCookieProperties.secure(), jwtCookieProperties.path(), jwtCookieProperties.sameSite(), jwtCookieProperties.domain());

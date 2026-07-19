@@ -1,13 +1,14 @@
 package com.io.codetracker.adapter.auth.in.mapper;
 
+import com.io.codetracker.application.auth.error.GithubOAuthSignInError;
+import com.io.codetracker.application.auth.error.OAuthGithubCallbackError;
 import org.springframework.http.HttpStatus;
-import com.io.codetracker.application.auth.error.GithubOAuthLoginError;
 
 public final class GithubOAuthHttpMapper {
     private GithubOAuthHttpMapper() {
     }
 
-    public static HttpStatus toStatus(GithubOAuthLoginError error) {
+    public static HttpStatus toStatus(GithubOAuthSignInError error) {
         return switch (error) {
             case USERNAME_TAKEN,
                  EMAIL_TAKEN,
@@ -19,7 +20,7 @@ public final class GithubOAuthHttpMapper {
         };
     }
 
-    public static String toMessage(GithubOAuthLoginError error) {
+    public static String toMessage(GithubOAuthSignInError error) {
         return switch (error) {
             case USERNAME_TAKEN -> "Username is already in use.";
             case EMPTY_EMAIL -> "Email must not be empty.";
@@ -33,6 +34,22 @@ public final class GithubOAuthHttpMapper {
             case REFRESH_TOKEN_CREATION_FAILED -> "Failed to create refresh token.";
             case REFRESH_TOKEN_SAVE_FAILED -> "Failed to save refresh token due to server error.";
             case INVALID_REFRESH_TOKEN_ID -> "Invalid Refresh token ID";
+        };
+    }
+
+    public static HttpStatus toStatus(OAuthGithubCallbackError error) {
+        return switch (error) {
+            case MISSING_CODE -> HttpStatus.BAD_REQUEST;
+            case CODE_EXCHANGE_FAILED,
+                 USER_INFO_FETCH_FAILED -> HttpStatus.BAD_GATEWAY;
+        };
+    }
+
+    public static String toMessage(OAuthGithubCallbackError error) {
+        return switch (error) {
+            case MISSING_CODE -> "Missing OAuth code.";
+            case CODE_EXCHANGE_FAILED -> "Failed to exchange code with GitHub.";
+            case USER_INFO_FETCH_FAILED -> "Failed to fetch GitHub user info.";
         };
     }
 }

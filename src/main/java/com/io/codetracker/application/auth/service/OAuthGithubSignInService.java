@@ -3,15 +3,15 @@ package com.io.codetracker.application.auth.service;
 import java.util.Optional;
 
 import com.io.codetracker.application.auth.command.AuthRegisterOAuthCommand;
-import com.io.codetracker.application.auth.command.GithubOAuthLoginCommand;
+import com.io.codetracker.application.auth.command.GithubOAuthSignInCommand;
 import com.io.codetracker.application.auth.error.AuthRegistrationError;
-import com.io.codetracker.application.auth.error.GithubOAuthLoginError;
+import com.io.codetracker.application.auth.error.GithubOAuthSignInError;
 import com.io.codetracker.application.auth.error.RegisterRefreshTokenError;
 import com.io.codetracker.application.auth.port.in.AddRefreshTokenUseCase;
 import com.io.codetracker.application.auth.port.in.AuthOAuthRegistrationUseCase;
 import com.io.codetracker.application.auth.port.in.OAuthGithubSignInUseCase;
 import com.io.codetracker.application.auth.port.out.AuthAppRepository;
-import com.io.codetracker.application.auth.result.GithubOAuthLoginData;
+import com.io.codetracker.application.auth.result.GithubOAuthSignInData;
 import com.io.codetracker.application.auth.result.RegisterRefreshTokenResult;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.auth.aggregate.AuthAccountAggregate;
@@ -30,7 +30,7 @@ public class OAuthGithubSignInService implements OAuthGithubSignInUseCase {
     private final AuthOAuthRegistrationUseCase authOAuthRegistrationUseCase;
 
     @Override
-    public Result<GithubOAuthLoginData, GithubOAuthLoginError> loginOrRegister(GithubOAuthLoginCommand command) {
+    public Result<GithubOAuthSignInData, GithubOAuthSignInError> loginOrRegister(GithubOAuthSignInCommand command) {
         Optional<AuthAccountAggregate> existingAccount = authAppRepository.findByGithubId(command.githubId());
 
         if (existingAccount.isPresent()) {
@@ -50,7 +50,7 @@ public class OAuthGithubSignInService implements OAuthGithubSignInUseCase {
                     );
 
             if (!refreshTokenResult.success()) {
-                return Result.fail(GithubOAuthLoginError.from(refreshTokenResult.error()));
+                return Result.fail(GithubOAuthSignInError.from(refreshTokenResult.error()));
             }
 
             String plainRefreshToken = refreshTokenResult.data().rawToken();
@@ -59,7 +59,7 @@ public class OAuthGithubSignInService implements OAuthGithubSignInUseCase {
                     .map(auth -> auth.getStatus() == Status.ACTIVE)
                     .orElse(false);
 
-            return Result.ok(new GithubOAuthLoginData(
+            return Result.ok(new GithubOAuthSignInData(
                     existing.getId(),
                     alreadyInitialized,
                     plainRefreshToken
@@ -67,11 +67,11 @@ public class OAuthGithubSignInService implements OAuthGithubSignInUseCase {
         }
 
         if (authAppRepository.emailExists(command.email())) {
-            return Result.fail(GithubOAuthLoginError.EMAIL_TAKEN);
+            return Result.fail(GithubOAuthSignInError.EMAIL_TAKEN);
         }
 
         if (authAppRepository.existsByUsername(command.username())) {
-            return Result.fail(GithubOAuthLoginError.USERNAME_TAKEN);
+            return Result.fail(GithubOAuthSignInError.USERNAME_TAKEN);
         }
 
         Roles selectedRole = Roles.USER;
@@ -87,7 +87,7 @@ public class OAuthGithubSignInService implements OAuthGithubSignInUseCase {
         );
 
         if (!authRegistrationResult.success()) {
-            return Result.fail(GithubOAuthLoginError.from(authRegistrationResult.error()));
+            return Result.fail(GithubOAuthSignInError.from(authRegistrationResult.error()));
         }
 
         AuthAccountAggregate aggregate = authRegistrationResult.data();
@@ -103,10 +103,10 @@ public class OAuthGithubSignInService implements OAuthGithubSignInUseCase {
                 );
 
         if (!refreshTokenResult.success()) {
-            return Result.fail(GithubOAuthLoginError.from(refreshTokenResult.error()));
+            return Result.fail(GithubOAuthSignInError.from(refreshTokenResult.error()));
         }
 
-        return Result.ok(new GithubOAuthLoginData(
+        return Result.ok(new GithubOAuthSignInData(
                 aggregate.auth().getAuthId(),
                 false,
                 refreshTokenResult.data().rawToken()

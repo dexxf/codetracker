@@ -1,6 +1,6 @@
 package com.io.codetracker.application.auth.command;
 
-public record GithubOAuthLoginCommand(
+public record GithubOAuthSignInCommand(
         String email,
         String username,
         Long githubId,
