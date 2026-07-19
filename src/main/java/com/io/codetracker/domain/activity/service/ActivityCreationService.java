@@ -30,10 +30,10 @@ public final class ActivityCreationService {
         this.activityUserDomainPort = activityUserDomainPort;
     }
 
-    public Result<Activity, ActivityCreationResult> create(String classroomId, UUID instructorUserId, String title,
+    public Result<Activity, ActivityCreationResult> create(UUID classroomId, UUID instructorUserId, String title,
                                                            String description, Instant dueDate, Integer maxScore, ActivityStatus status) {
 
-        if (classroomId == null || classroomId.isBlank()) {
+        if (classroomId == null) {
             return Result.fail(ActivityCreationResult.INVALID_CLASSROOM_ID);
         }
 

@@ -1,9 +1,11 @@
 package com.io.codetracker.application.classroom.result;
 
-import com.io.codetracker.domain.classroom.result.ClassroomCreationEntity;
+import com.io.codetracker.domain.classroom.aggregate.ClassroomAggregate;
+
+import java.util.UUID;
 
 public record CreateClassroomData(
-    String classroomId,
+    UUID classroomId,
     String name,
     String description,
     String classCode,
@@ -12,17 +14,15 @@ public record CreateClassroomData(
     boolean requireApproval
 ) {
 
-    public static CreateClassroomData from(ClassroomCreationEntity entities) {
+    public static CreateClassroomData from(ClassroomAggregate aggregate) {
         return new CreateClassroomData(
-            entities.classroom().getClassroomId(),
-            entities.classroom().getName(),
-            entities.classroom().getDescription(),
-            entities.classroom().getClassCode(),
-            entities.classroom().getStatus().name(),
-            entities.settings().getMaxStudents(),
-            entities.settings().isRequireApproval()
+            aggregate.classroom().getClassroomId(),
+            aggregate.classroom().getName(),
+            aggregate.classroom().getDescription(),
+            aggregate.classroom().getClassCode(),
+            aggregate.classroom().getStatus().name(),
+            aggregate.settings().getMaxStudents(),
+            aggregate.settings().isRequireApproval()
         );
     }
-
-    
 }

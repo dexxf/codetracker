@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface JpaAuthRefreshTokenRepository extends JpaRepository<AuthRefreshTokenEntity, UUID> {
-    Optional<AuthRefreshTokenEntity> findByAuthEntity_IdAndDeviceId(String authId, String deviceId);
+    Optional<AuthRefreshTokenEntity> findByAuthEntity_IdAndDeviceId(UUID authId, String deviceId);
     @Modifying
     @Query("UPDATE refresh_token rt SET  rt.revoked = true, rt.revokedAt = :revokedAt WHERE rt.id = :id AND rt.deviceId = :deviceId")
     int revokeByIdAndDeviceId(@Param("id") UUID id, @Param("deviceId") String deviceId, @Param("revokedAt") Instant revokedAt);

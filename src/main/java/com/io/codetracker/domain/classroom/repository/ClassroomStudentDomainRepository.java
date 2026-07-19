@@ -3,7 +3,7 @@ package com.io.codetracker.domain.classroom.repository;
 
 import java.util.UUID;
 public interface ClassroomStudentDomainRepository {
-    boolean existsByClassroomIdAndStudentUserId(String classroomId, UUID studentUserId);
-    int countByClassroomId(String classroomId);
+    boolean existsByClassroomIdAndStudentUserId(UUID classroomId, UUID studentUserId);
+    int countByClassroomId(UUID classroomId);
 }
 

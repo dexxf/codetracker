@@ -21,7 +21,7 @@ public class AuthRefreshTokenAppRepositoryImpl implements AuthRefreshTokenAppRep
     private final JpaAuthRepository jpaAuthRepository;
 
     @Override
-    public Optional<AuthRefreshToken> findTokenByAuthIdAndDeviceId(String authId, String deviceId) {
+    public Optional<AuthRefreshToken> findTokenByAuthIdAndDeviceId(UUID authId, String deviceId) {
         return jpaRTRepository.findByAuthEntity_IdAndDeviceId(
                 authId,
                 deviceId

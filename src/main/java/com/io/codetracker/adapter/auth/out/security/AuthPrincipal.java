@@ -31,6 +31,10 @@ public final class AuthPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
+        return auth.getAuthId().toString();
+    }
+
+    public UUID getAuthId() {
         return auth.getAuthId();
     }
 

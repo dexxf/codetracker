@@ -28,6 +28,7 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
         ClassroomEntity classroomEntity = classroomJpa.findById(data.getClassroomId())
                 .orElseThrow(() -> new RuntimeException("Classroom not found"));
 
+
         ActivityEntity entity = ActivityMapper.toEntity(data);
         classroomEntity.addActivity(entity);
         jpa.save(entity);
@@ -35,7 +36,7 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
     }
 
     @Override
-    public List<Activity> findActivitiesByClassroomIdAndInstructorUserId(String classroomId, UUID instructorId) {
+    public List<Activity> findActivitiesByClassroomIdAndInstructorUserId(UUID classroomId, UUID instructorId) {
         return jpa.findByClassroomEntity_ClassroomIdAndClassroomEntity_InstructorUserId(classroomId, instructorId).stream().map(
                 ActivityMapper::toDomain
         ).toList();
@@ -61,7 +62,7 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
     }
 
     @Override
-    public List<StudentActivityViewData> findStudentActivities(String classroomId, UUID userId) {
+    public List<StudentActivityViewData> findStudentActivities(UUID classroomId, UUID userId) {
         return jpa.findStudentActivityViewsByClassroomIdAndUserId(classroomId, userId);
     }
 }

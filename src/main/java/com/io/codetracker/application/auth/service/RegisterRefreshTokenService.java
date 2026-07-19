@@ -32,7 +32,7 @@ public class RegisterRefreshTokenService implements AddRefreshTokenUseCase {
     }
 
     @Override
-    public Result<RegisterRefreshTokenResult, RegisterRefreshTokenError> add(String authId, String deviceId, String ipAddress, String userAgent) {
+    public Result<RegisterRefreshTokenResult, RegisterRefreshTokenError> add(UUID authId, String deviceId, String ipAddress, String userAgent) {
         if (!authAppRepository.existsByAuthId(authId))
             return Result.fail(RegisterRefreshTokenError.AUTH_NOT_FOUND);
 

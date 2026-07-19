@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @AllArgsConstructor
@@ -16,7 +17,7 @@ public class GithubAccountAppAdapter implements GithubAccountAppPort {
     private final JpaGithubAccountRepository jpaGithubAccountRepository;
 
     @Override
-    public Optional<GithubAccount> findByAuthId(String authId) {
+    public Optional<GithubAccount> findByAuthId(UUID authId) {
         return jpaGithubAccountRepository.findById(authId)
                 .map(GithubAccountMapper::toDomain);
     }

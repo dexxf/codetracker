@@ -19,19 +19,18 @@ import java.util.Optional;
 
 @Repository
 public interface JpaClassroomStudentRepository extends JpaRepository<ClassroomStudentEntity, Long> {
-    boolean existsByClassroom_ClassroomIdAndStudentUserId(String classroomId, UUID studentUserId);
-    boolean existsByClassroom_ClassroomIdAndStudentUserIdAndStatus(String classroomId, UUID studentUserId, StudentStatus status);
-    Optional<ClassroomStudentEntity> findByClassroom_ClassroomIdAndStudentUserId(String classroomId, UUID studentUserId);
+    boolean existsByClassroom_ClassroomIdAndStudentUserId(UUID classroomId, UUID studentUserId);
+    boolean existsByClassroom_ClassroomIdAndStudentUserIdAndStatus(UUID classroomId, UUID studentUserId, StudentStatus status);
+    Optional<ClassroomStudentEntity> findByClassroom_ClassroomIdAndStudentUserId(UUID classroomId, UUID studentUserId);
 
     @Query("SELECT cs FROM ClassroomStudentEntity cs JOIN cs.classroom c WHERE cs.studentUserId = :studentUserId AND (:studentStatus IS NULL OR cs.status = :studentStatus) AND (:classroomStatus IS NULL OR c.status = :classroomStatus)")
     List<ClassroomStudentEntity> findEnrollmentsByStatus(@Param("studentUserId") UUID studentUserId, @Param("studentStatus") StudentStatus studentStatus, @Param("classroomStatus") ClassroomStatus classroomStatus);
 
-    int countByClassroom_ClassroomId(String classroomId);
-    int countByClassroom_ClassroomIdAndStatus(String classroomId, StudentStatus status);
+    int countByClassroom_ClassroomIdAndStatus(UUID classroomId, StudentStatus status);
 
-    List<ClassroomStudentEntity> findByClassroom_ClassroomIdAndStatusOrderByJoinedAt(String classroomId, StudentStatus status);
+    List<ClassroomStudentEntity> findByClassroom_ClassroomIdAndStatusOrderByJoinedAt(UUID classroomId, StudentStatus status);
 
-    List<ClassroomStudentEntity> findByClassroom_ClassroomIdAndStatusOrderByJoinedAtDesc(String classroomId, StudentStatus status);
+    List<ClassroomStudentEntity> findByClassroom_ClassroomIdAndStatusOrderByJoinedAtDesc(UUID classroomId, StudentStatus status);
 
     @Query("""
             SELECT new com.io.codetracker.application.activity.result.StudentActivityInfoStudentData(
@@ -46,7 +45,7 @@ public interface JpaClassroomStudentRepository extends JpaRepository<ClassroomSt
               AND cs.status = com.io.codetracker.domain.classroom.valueObject.StudentStatus.ACTIVE
             ORDER BY cs.joinedAt ASC
             """)
-    List<StudentActivityInfoStudentData> findStudentActivityInfoStudentsByClassroomId(@Param("classroomId") String classroomId);
+    List<StudentActivityInfoStudentData> findStudentActivityInfoStudentsByClassroomId(@Param("classroomId") UUID classroomId);
 
     @Query("""
             SELECT new com.io.codetracker.application.classroom.result.ClassroomStudentJoinedData(
@@ -62,7 +61,7 @@ public interface JpaClassroomStudentRepository extends JpaRepository<ClassroomSt
               AND cs.status = com.io.codetracker.domain.classroom.valueObject.StudentStatus.ACTIVE
             ORDER BY cs.joinedAt DESC
             """)
-    List<ClassroomStudentJoinedData> findRecentStudentJoinedByClassroomId(@Param("classroomId") String classroomId, Pageable pageable);
+    List<ClassroomStudentJoinedData> findRecentStudentJoinedByClassroomId(@Param("classroomId") UUID classroomId, Pageable pageable);
 
     @Query("""
     SELECT COUNT(cs)
@@ -70,6 +69,6 @@ public interface JpaClassroomStudentRepository extends JpaRepository<ClassroomSt
     WHERE cs.status = com.io.codetracker.domain.classroom.valueObject.StudentStatus.ACTIVE
       AND cs.classroom.classroomId = :classroomId
     """)
-    long countByStatus_ActiveAndClassroom_ClassroomId(@Param("classroomId") String classroomId);
+    long countByStatus_ActiveAndClassroom_ClassroomId(@Param("classroomId") UUID classroomId);
 }
 

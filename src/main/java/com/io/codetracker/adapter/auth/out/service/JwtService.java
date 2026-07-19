@@ -13,6 +13,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -26,12 +27,12 @@ public final class JwtService {
         this.jwtExpiration = jwtExpiration;
     }
 
-    public String generateToken(String authId) {
+    public String generateToken(UUID authId) {
         Map<String, Object> claims = new HashMap<>();
 
         return Jwts.builder().claims()
                 .add(claims)
-                .subject(authId)
+                .subject(authId.toString())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() +  jwtExpiration))
                 .and()

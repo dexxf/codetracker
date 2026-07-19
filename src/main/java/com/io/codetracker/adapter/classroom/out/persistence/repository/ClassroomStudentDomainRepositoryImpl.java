@@ -15,12 +15,12 @@ public class ClassroomStudentDomainRepositoryImpl implements ClassroomStudentDom
     private final JpaClassroomStudentRepository classroomStudentRepository;
 
     @Override
-    public boolean existsByClassroomIdAndStudentUserId(String classroomId, UUID studentUserId) {
+    public boolean existsByClassroomIdAndStudentUserId(UUID classroomId, UUID studentUserId) {
         return classroomStudentRepository.existsByClassroom_ClassroomIdAndStudentUserIdAndStatus(classroomId, studentUserId, StudentStatus.ACTIVE);
     }
 
     @Override
-    public int countByClassroomId(String classroomId) {
+    public int countByClassroomId(UUID classroomId) {
         return classroomStudentRepository.countByClassroom_ClassroomIdAndStatus(classroomId, StudentStatus.ACTIVE);
     }
 }

@@ -28,7 +28,7 @@ public class GithubRepositoryController {
             @AuthenticationPrincipal AuthPrincipal authPrincipal
     ) {
         Result<List<GithubRepositoryDetailsData>, GetGithubRepositoriesError> result =
-                getGithubRepositoriesUseCase.execute(authPrincipal.getUsername());
+                getGithubRepositoriesUseCase.execute(authPrincipal.getAuthId());
 
         return result.success()
                 ? ResponseEntity.ok(GetGithubRepositoriesResponse.ok(result.data()))

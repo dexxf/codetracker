@@ -8,7 +8,7 @@ import com.io.codetracker.domain.classroom.valueObject.ClassroomStatus;
 
 public final class Classroom {
     
-    private final String classroomId;
+    private final UUID classroomId;
     private final UUID instructorUserId;
     private String name;
     private String description;
@@ -17,7 +17,7 @@ public final class Classroom {
     private final Instant createdAt;
     private Instant updatedAt;
 
-    public Classroom(String classroomId, UUID instructorUserId, String name, String description, String classCode, ClassroomStatus status, Instant createdAt, Instant updatedAt) {
+    public Classroom(UUID classroomId, UUID instructorUserId, String name, String description, String classCode, ClassroomStatus status, Instant createdAt, Instant updatedAt) {
         this.classroomId = classroomId;
         this.instructorUserId = instructorUserId;
         this.name = name;
@@ -28,7 +28,7 @@ public final class Classroom {
         this.updatedAt = updatedAt;
     }
 
-    public String getClassroomId() {
+    public UUID getClassroomId() {
         return classroomId;
     }
 

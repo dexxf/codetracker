@@ -15,7 +15,7 @@ public class ActivityClassroomStudentAppAdapter implements ActivityClassroomStud
 
 
     @Override
-    public boolean existsByClassroomIdAndStudentUserId(String classroomId, UUID studentUserId) {
+    public boolean existsByClassroomIdAndStudentUserId(UUID classroomId, UUID studentUserId) {
         return jpaClassroomStudentRepository.existsByClassroom_ClassroomIdAndStudentUserId(classroomId, studentUserId);
     }
 }

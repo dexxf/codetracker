@@ -19,8 +19,8 @@ public final class ClassroomStudentCreationService {
         this.repository = repository;
     }
 
-    public Result<ClassroomStudent, ClassroomStudentCreationResult> createClassroomStudent(String classroomId, UUID studentUserId, StudentStatus status) {
-            if (classroomId == null || classroomId.isBlank()) {
+    public Result<ClassroomStudent, ClassroomStudentCreationResult> createClassroomStudent(UUID classroomId, UUID studentUserId, StudentStatus status) {
+            if (classroomId == null) {
                 return Result.fail(ClassroomStudentCreationResult.CLASSROOM_ID_INVALID);
             }
             if (studentUserId == null) {

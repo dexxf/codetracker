@@ -1,6 +1,7 @@
 package com.io.codetracker.application.auth.service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import com.io.codetracker.application.auth.command.AuthRegisterOAuthCommand;
 import com.io.codetracker.application.auth.command.GithubOAuthSignInCommand;
@@ -88,7 +89,7 @@ public class OAuthGithubSignInService implements OAuthGithubSignInUseCase {
         return completeSignIn(aggregate.auth().getAuthId(), false, command);
     }
 
-    private Result<GithubOAuthSignInData, GithubOAuthSignInError> completeSignIn(String authId, boolean alreadyInitialized, GithubOAuthSignInCommand command) {
+    private Result<GithubOAuthSignInData, GithubOAuthSignInError> completeSignIn(UUID authId, boolean alreadyInitialized, GithubOAuthSignInCommand command) {
         Result<RegisterRefreshTokenResult, RegisterRefreshTokenError> refreshTokenResult =
                 addRefreshTokenUseCase.add(
                         authId,

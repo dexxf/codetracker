@@ -29,9 +29,10 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
 
     @Override
     public boolean save(ClassroomStudent classroomStudent) {
-        ClassroomEntity classroomEntity = jpaClassroomRepository.findById(classroomStudent.getClassroomId())
-                .orElse(null);
-        if (classroomEntity == null) return false;
+
+        Optional<ClassroomEntity> classroomEntityOpt = jpaClassroomRepository.findByClassroomId((classroomStudent.getClassroomId()));
+        if (classroomEntityOpt.isEmpty()) return false;
+        ClassroomEntity classroomEntity = classroomEntityOpt.get();
 
         ClassroomStudentEntity entity = jpaClassroomStudentRepository.findByClassroom_ClassroomIdAndStudentUserId(
                 classroomStudent.getClassroomId(),
@@ -51,7 +52,7 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    public boolean existsByClassroomIdAndStudentUserId(String classroomId, UUID studentUserId) {
+    public boolean existsByClassroomIdAndStudentUserId(UUID classroomId, UUID studentUserId) {
         return jpaClassroomStudentRepository.existsByClassroom_ClassroomIdAndStudentUserIdAndStatus(
                 classroomId,
                 studentUserId,
@@ -69,9 +70,9 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    public Map<String, Long> countActiveClassroomStudentByClassroomIds(List<String> classroomIds) {
-        Map<String, Long> countMap = new HashMap<>();
-        for (String classroomId : classroomIds) {
+    public Map<UUID, Long> countActiveClassroomStudentByClassroomIds(List<UUID> classroomIds) {
+        Map<UUID, Long> countMap = new HashMap<>();
+        for (UUID classroomId : classroomIds) {
             Long count = jpaClassroomStudentRepository.countByStatus_ActiveAndClassroom_ClassroomId(classroomId);
             countMap.put(classroomId, count);
         }
@@ -79,7 +80,7 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    public List<ClassroomStudent> findClassroomStudents(String classroomId, StudentStatus status, boolean ascending) {
+    public List<ClassroomStudent> findClassroomStudents(UUID classroomId, StudentStatus status, boolean ascending) {
         return ascending
                 ? mapToDomain(jpaClassroomStudentRepository.findByClassroom_ClassroomIdAndStatusOrderByJoinedAt(classroomId, status))
                 : mapToDomain(jpaClassroomStudentRepository.findByClassroom_ClassroomIdAndStatusOrderByJoinedAtDesc(classroomId, status));
@@ -90,12 +91,12 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    public long countActiveClassroomStudentByClassroomId(String classroomId) {
+    public long countActiveClassroomStudentByClassroomId(UUID classroomId) {
         return jpaClassroomStudentRepository.countByStatus_ActiveAndClassroom_ClassroomId(classroomId);
     }
 
     @Override
-    public Optional<ClassroomStudent> findByClassroomIdAndStudentUserId(String classroomId, UUID studentUserId) {
+    public Optional<ClassroomStudent> findByClassroomIdAndStudentUserId(UUID classroomId, UUID studentUserId) {
         return jpaClassroomStudentRepository.findByClassroom_ClassroomIdAndStudentUserId(classroomId, studentUserId)
                 .map(ClassroomStudentMapper::toDomain);
     }

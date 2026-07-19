@@ -3,10 +3,11 @@ package com.io.codetracker.domain.github.entity;
 import com.io.codetracker.domain.github.valueobject.GithubSubmissionMode;
 
 import java.time.Instant;
+import java.util.UUID;
 
 public class GithubSubmission {
 
-        private final String classroomId;
+        private final UUID classroomId;
         private final String studentActivityId;
         private final String activityId;
         private String repositoryOwnerUsername;
@@ -16,7 +17,7 @@ public class GithubSubmission {
         private String repositoryUrl;
         private Instant submittedAt;
 
-    public GithubSubmission(String classroomId, String studentActivityId, String activityId, String repositoryOwnerUsername, String repositoryId, String repositoryName, GithubSubmissionMode mode, String repositoryUrl, Instant submittedAt) {
+    public GithubSubmission(UUID classroomId, String studentActivityId, String activityId, String repositoryOwnerUsername, String repositoryId, String repositoryName, GithubSubmissionMode mode, String repositoryUrl, Instant submittedAt) {
         this.classroomId = classroomId;
         this.studentActivityId = studentActivityId;
         this.activityId = activityId;
@@ -28,13 +29,13 @@ public class GithubSubmission {
         this.submittedAt = submittedAt;
     }
 
-    public static GithubSubmission createNew(String classroomId, String studentActivityId, String activityId, String repositoryOwnerUsername, String repositoryId, String repositoryName, GithubSubmissionMode mode, String repositoryUrl) {
+    public static GithubSubmission createNew(UUID classroomId, String studentActivityId, String activityId, String repositoryOwnerUsername, String repositoryId, String repositoryName, GithubSubmissionMode mode, String repositoryUrl) {
         return new GithubSubmission
                 (classroomId, studentActivityId, activityId,
                 repositoryOwnerUsername, repositoryId, repositoryName, mode, repositoryUrl, Instant.now());
     }
 
-    public String getClassroomId() {
+    public UUID getClassroomId() {
         return classroomId;
     }
 

@@ -7,5 +7,5 @@ import com.io.codetracker.application.activity.result.StudentActivityData;
 import com.io.codetracker.common.result.Result;
 
 public interface SubmitActivityUseCase {
-    Result<StudentActivityData, SubmitActivityError> submit(UUID userId, String classroomId, String activityId);
+    Result<StudentActivityData, SubmitActivityError> submit(UUID userId, UUID classroomId, String activityId);
 }

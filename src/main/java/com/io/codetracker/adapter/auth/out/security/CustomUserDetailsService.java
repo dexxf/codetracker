@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     private final JpaAuthRepository repository;
@@ -19,7 +21,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String authId) throws UsernameNotFoundException {
-        AuthEntity entity = repository.findById(authId)
+        UUID parsedAuthId;
+        try {
+            parsedAuthId = UUID.fromString(authId);
+        } catch (IllegalArgumentException e) {
+            throw new UsernameNotFoundException("Invalid auth id: " + authId, e);
+        }
+
+        AuthEntity entity = repository.findById(parsedAuthId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + authId));
 
         return new AuthPrincipal(AuthMapper.toDomain(entity));

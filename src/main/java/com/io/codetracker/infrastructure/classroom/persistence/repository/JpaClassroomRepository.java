@@ -11,13 +11,12 @@ import com.io.codetracker.infrastructure.classroom.persistence.entity.ClassroomE
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface JpaClassroomRepository extends JpaRepository<ClassroomEntity, String> {
+public interface JpaClassroomRepository extends JpaRepository<ClassroomEntity, UUID> {
     boolean existsByClassCode(String classCode);
     List<ClassroomEntity> findByInstructorUserId(UUID instructorUserId);
     Optional<ClassroomEntity> findByClassCode(String classCode);
-    int countByClassroomId(String classroomId);
-    boolean existsByClassroomId(String classroomId);
-    boolean existsByClassroomIdAndInstructorUserId(String classroomId, UUID instructorUserId);
-    @Query("SELECT ce.instructorUserId FROM ClassroomEntity ce WHERE  ce.classroomId = :classroomId")
-    UUID findInstructorUserIdByClassroomId(@Param("classroomId") String classroomId);
+    boolean existsByClassroomId(UUID classroomId);
+    boolean existsByClassroomIdAndInstructorUserId(UUID classroomId, UUID instructorUserId);
+
+    Optional<ClassroomEntity> findByClassroomId(UUID classroomId);
 }

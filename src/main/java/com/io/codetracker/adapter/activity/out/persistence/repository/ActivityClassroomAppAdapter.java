@@ -21,23 +21,17 @@ public class ActivityClassroomAppAdapter implements ActivityClassroomAppPort {
     private final JpaActivityRepository jpaActivityRepository;
 
     @Override
-    public boolean existsByClassroomId(String s) {
+    public boolean existsByClassroomId(UUID s) {
         return jpa.existsByClassroomId(s);
     }
 
     @Override
-    public boolean existsByClassroomIdAndInstructorUserId(String classroomId, UUID userId) {
+    public boolean existsByClassroomIdAndInstructorUserId(UUID classroomId, UUID userId) {
         return jpa.existsByClassroomIdAndInstructorUserId(classroomId, userId);
     }
 
     @Override
-    public UUID findClassroomOwnerByClassroomId(String classroomId) {
-        return jpa.findInstructorUserIdByClassroomId(classroomId);
-    }
-
-
-    @Override
-    public boolean existsByClassroomIdAndStudentUserId(String classroomId, UUID userId) {
+    public boolean existsByClassroomIdAndStudentUserId(UUID classroomId, UUID userId) {
         return jpaClassroomStudentRepository.existsByClassroom_ClassroomIdAndStudentUserIdAndStatus(
                 classroomId,
                 userId,
@@ -46,12 +40,12 @@ public class ActivityClassroomAppAdapter implements ActivityClassroomAppPort {
     }
 
     @Override
-    public boolean existsByClassroomIdAndActivityId(String classroomId, String activityId) {
+    public boolean existsByClassroomIdAndActivityId(UUID classroomId, String activityId) {
         return jpaActivityRepository.existsByClassroomEntity_ClassroomIdAndActivityId(classroomId, activityId);
     }
 
     @Override
-    public Optional<Integer> findMaxScoreByClassroomIdAndActivityId(String classroomId, String activityId) {
+    public Optional<Integer> findMaxScoreByClassroomIdAndActivityId(UUID classroomId, String activityId) {
         return jpaActivityRepository.findMaxScoreByClassroomIdAndActivityId(classroomId, activityId);
     }
 

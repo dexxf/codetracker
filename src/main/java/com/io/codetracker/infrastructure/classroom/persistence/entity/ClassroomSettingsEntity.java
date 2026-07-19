@@ -5,6 +5,8 @@ import com.io.codetracker.common.util.AESEncryptionConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "classroom_settings")
 @Getter
@@ -15,8 +17,9 @@ public class ClassroomSettingsEntity {
 
     @Id
     @Column(name = "classroom_id")
-    private String classroomId;
+    private UUID classroomId;
 
+    @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classroom_id", insertable = false, updatable = false)
     private ClassroomEntity classroom;

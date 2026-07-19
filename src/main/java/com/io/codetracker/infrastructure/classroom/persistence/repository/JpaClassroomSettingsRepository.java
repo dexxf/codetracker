@@ -4,12 +4,14 @@ import com.io.codetracker.infrastructure.classroom.persistence.entity.ClassroomS
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface JpaClassroomSettingsRepository extends JpaRepository<ClassroomSettingsEntity, String> {
-    Optional<ClassroomSettingsEntity> findByClassroomId(String classroomId);
+public interface JpaClassroomSettingsRepository extends JpaRepository<ClassroomSettingsEntity, UUID> {
+    Optional<ClassroomSettingsEntity> findByClassroomId(UUID classroomId);
 
     @Query("SELECT c.maxStudents FROM ClassroomSettingsEntity c WHERE c.classroomId = :classroomId")
-    Integer findMaxStudentByClassroomId(@Param("classroomId") String classroomId);
+    Integer findMaxStudentByClassroomId(@Param("classroomId") UUID classroomId);
 }

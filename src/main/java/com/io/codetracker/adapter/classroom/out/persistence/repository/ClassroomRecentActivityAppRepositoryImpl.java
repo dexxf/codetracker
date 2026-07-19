@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 @AllArgsConstructor
@@ -26,7 +27,7 @@ public class ClassroomRecentActivityAppRepositoryImpl implements ClassroomRecent
     private final JpaActivityRepository jpaActivityRepository;
 
     @Override
-    public List<ClassroomRecentActivityData> findRecentActivities(String classroomId, int limit) {
+    public List<ClassroomRecentActivityData> findRecentActivities(UUID classroomId, int limit) {
         Pageable pageable = PageRequest.of(0, limit);
 
         List<ClassroomStudentJoinedData> joinedData = jpaClassroomStudentRepository

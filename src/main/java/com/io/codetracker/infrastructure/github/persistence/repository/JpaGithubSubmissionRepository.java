@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface JpaGithubSubmissionRepository extends JpaRepository<GithubSubmissionEntity, Long> {
 
@@ -31,5 +32,5 @@ public interface JpaGithubSubmissionRepository extends JpaRepository<GithubSubmi
 							AND gs.submittedAt IS NOT NULL
 						ORDER BY gs.submittedAt DESC
 						""")
-		List<ClassroomRepositorySubmissionData> findRecentRepositorySubmissionsByClassroomId(@Param("classroomId") String classroomId, Pageable pageable);
+		List<ClassroomRepositorySubmissionData> findRecentRepositorySubmissionsByClassroomId(@Param("classroomId") UUID classroomId, Pageable pageable);
 }

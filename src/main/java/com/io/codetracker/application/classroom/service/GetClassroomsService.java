@@ -32,7 +32,7 @@ public class GetClassroomsService implements GetClassroomUseCase {
             return Result.fail(SimpleClassroomError.NO_CLASSROOM_FOUND);
         }
 
-        Map<String, Long> classroomWithCount = classroomStudentAppRepository
+        Map<UUID, Long> classroomWithCount = classroomStudentAppRepository
                 .countActiveClassroomStudentByClassroomIds(classroomList.stream().map(Classroom::getClassroomId).toList());
 
         List<GetClassroomsProfessorData> dataList = classroomList.stream()

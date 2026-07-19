@@ -8,7 +8,7 @@ import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-public record ClassroomStudentData(String classroomId, String firstName, String lastName, String profileUrl, UUID studentUserId, StudentStatus status, ZonedDateTime lastActiveAt,
+public record ClassroomStudentData(UUID classroomId, String firstName, String lastName, String profileUrl, UUID studentUserId, StudentStatus status, ZonedDateTime lastActiveAt,
                                    ZonedDateTime joinedAt, ZonedDateTime leftAt) {
 
     public static ClassroomStudentData from(ClassroomStudent classroomStudent,String firstName,String lastName, String profileUrl) {

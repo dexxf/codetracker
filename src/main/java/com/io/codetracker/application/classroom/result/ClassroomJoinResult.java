@@ -7,7 +7,7 @@ import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 
 import java.time.Instant;
 
-public record ClassroomJoinResult (String classroomId,
+public record ClassroomJoinResult (UUID classroomId,
                                    UUID studentUserId,
                                    StudentStatus status,
                                    Instant joinedAt,

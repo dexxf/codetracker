@@ -4,6 +4,8 @@ import com.io.codetracker.common.util.AESEncryptionConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 
 @Entity
 @Table(name = "github_account")
@@ -16,7 +18,7 @@ public class GithubAccountEntity {
 
     @Id
     @Column(name = "auth_id",nullable = false)
-    private String id;
+    private UUID id;
 
     @OneToOne(optional = false)
     @MapsId

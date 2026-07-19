@@ -31,13 +31,13 @@ public class GetJoinClassroomService implements GetJoinClassroomUseCase {
         List<ClassroomStudent> enrollments = classroomStudentRepository
                 .findActiveEnrollmentsWithActiveClassroom(userId);
 
-        List<String> classroomIds = enrollments.stream()
+        List<UUID> classroomIds = enrollments.stream()
                 .map(ClassroomStudent::getClassroomId)
                 .distinct()
                 .toList();
 
         List<Classroom> classrooms = classroomRepository.findAllById(classroomIds);        
-        Map<String, Long> counts = classroomStudentRepository.countActiveClassroomStudentByClassroomIds(classroomIds);
+        Map<UUID, Long> counts = classroomStudentRepository.countActiveClassroomStudentByClassroomIds(classroomIds);
 
         return classrooms.stream()
                 .map(classroom -> new GetJoinClassroomDataResult(

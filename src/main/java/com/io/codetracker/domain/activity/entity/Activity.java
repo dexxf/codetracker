@@ -9,7 +9,7 @@ import java.time.Instant;
 public class Activity {
 
     private final String activityId;
-    private final String classroomId;
+    private final UUID classroomId;
     private final UUID instructorUserId;
     private String title;
     private String description;
@@ -19,7 +19,7 @@ public class Activity {
     private final Instant createdAt;
     private Instant updatedAt;
 
-    public Activity(String activityId ,String classroomId, UUID instructorUserId, String title, String description, Instant dueDate, ActivityStatus status, Integer maxScore, Instant createdAt, Instant updatedAt) {
+    public Activity(String activityId ,UUID classroomId, UUID instructorUserId, String title, String description, Instant dueDate, ActivityStatus status, Integer maxScore, Instant createdAt, Instant updatedAt) {
         this.activityId = activityId;
         this.classroomId = classroomId;
         this.instructorUserId = instructorUserId;
@@ -36,7 +36,7 @@ public class Activity {
         return activityId;
     }
 
-    public String getClassroomId() {
+    public UUID getClassroomId() {
         return classroomId;
     }
 

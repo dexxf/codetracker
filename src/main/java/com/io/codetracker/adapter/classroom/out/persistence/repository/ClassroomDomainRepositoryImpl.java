@@ -11,6 +11,7 @@ import com.io.codetracker.domain.classroom.repository.ClassroomDomainRepository;
 import lombok.AllArgsConstructor;
 
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Repository
@@ -20,7 +21,7 @@ public class ClassroomDomainRepositoryImpl implements ClassroomDomainRepository 
     private final JpaClassroomRepository jpaClassroomRepository;
 
     @Override
-    public boolean existsByClassroomId(String classroomId) {
+    public boolean existsByClassroomId(UUID classroomId) {
         return jpaClassroomRepository.existsById(classroomId);
     }
 
@@ -30,7 +31,7 @@ public class ClassroomDomainRepositoryImpl implements ClassroomDomainRepository 
     }
 
     @Override
-    public Optional<Classroom> findByClassroomId(String classroomId) {
+    public Optional<Classroom> findByClassroomId(UUID classroomId) {
         return jpaClassroomRepository.findById(classroomId).map(ClassroomMapper::toDomain);
     }
 

@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 @AllArgsConstructor
@@ -18,12 +19,12 @@ public class StudentActivityInfoAppRepositoryImpl implements StudentActivityInfo
     private final JpaStudentActivityRepository jpaStudentActivityRepository;
 
     @Override
-    public List<StudentActivityInfoStudentData> findClassroomStudents(String classroomId) {
+    public List<StudentActivityInfoStudentData> findClassroomStudents(UUID classroomId) {
         return jpaClassroomStudentRepository.findStudentActivityInfoStudentsByClassroomId(classroomId);
     }
 
     @Override
-    public List<StudentActivityInfoData> findStudentActivityInfos(String classroomId) {
+    public List<StudentActivityInfoData> findStudentActivityInfos(UUID classroomId) {
         return jpaStudentActivityRepository.findStudentActivityInfosByClassroomId(classroomId);
     }
 }

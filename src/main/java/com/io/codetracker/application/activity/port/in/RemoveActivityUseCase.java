@@ -7,6 +7,6 @@ import com.io.codetracker.application.activity.result.ActivityData;
 import com.io.codetracker.common.result.Result;
 
 public interface RemoveActivityUseCase {
-    Result<ActivityData, RemoveActivityError> execute(String classroomId, String activityId, UUID userId);
+    Result<ActivityData, RemoveActivityError> execute(UUID classroomId, String activityId, UUID userId);
 }
 

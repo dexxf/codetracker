@@ -5,11 +5,10 @@ import java.util.UUID;
 import java.util.Optional;
 
 public interface ActivityClassroomAppPort {
-    boolean existsByClassroomId(String s);
-    boolean existsByClassroomIdAndInstructorUserId(String classroomId, UUID userId);
-    UUID findClassroomOwnerByClassroomId(String classroomId);
-    boolean existsByClassroomIdAndStudentUserId(String classroomId, UUID userId);
-    boolean existsByClassroomIdAndActivityId(String classroomId, String activityId);
-    Optional<Integer> findMaxScoreByClassroomIdAndActivityId(String classroomId, String activityId);
+    boolean existsByClassroomId(UUID s);
+    boolean existsByClassroomIdAndInstructorUserId(UUID classroomId, UUID userId);
+    boolean existsByClassroomIdAndStudentUserId(UUID classroomId, UUID userId);
+    boolean existsByClassroomIdAndActivityId(UUID classroomId, String activityId);
+    Optional<Integer> findMaxScoreByClassroomIdAndActivityId(UUID classroomId, String activityId);
 }
 

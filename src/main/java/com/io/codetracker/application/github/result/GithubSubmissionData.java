@@ -3,8 +3,10 @@ package com.io.codetracker.application.github.result;
 import com.io.codetracker.domain.github.entity.GithubSubmission;
 import com.io.codetracker.domain.github.valueobject.GithubSubmissionMode;
 
+import java.util.UUID;
+
 public record GithubSubmissionData(
-		String classroomId,
+		UUID classroomId,
 		String studentActivityId,
 		String activityId,
 		String repositoryOwnerUsername,

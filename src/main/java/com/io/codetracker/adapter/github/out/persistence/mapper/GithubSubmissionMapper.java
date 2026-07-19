@@ -29,7 +29,7 @@ public final class GithubSubmissionMapper {
         }
 
         return new GithubSubmission(
-            entity.getStudentActivity().getActivityEntity().getClassroomEntity().getClassroomId(),
+                entity.getStudentActivity().getActivityEntity().getClassroomEntity().getClassroomId(),
                 entity.getStudentActivity().getStudentActivityId().toString(),
                 entity.getStudentActivity().getActivityEntity().getActivityId(),
                 entity.getRepositoryOwnerUsername(),

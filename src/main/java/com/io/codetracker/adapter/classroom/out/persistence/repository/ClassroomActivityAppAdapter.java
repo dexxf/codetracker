@@ -8,6 +8,8 @@ import com.io.codetracker.infrastructure.activity.persistence.repository.JpaActi
 
 import lombok.AllArgsConstructor;
 
+import java.util.UUID;
+
 @Repository
 @AllArgsConstructor
 public class ClassroomActivityAppAdapter implements ClassroomActivityAppPort {
@@ -15,12 +17,12 @@ public class ClassroomActivityAppAdapter implements ClassroomActivityAppPort {
    private final JpaActivityRepository jpaActivityRepository;
 
     @Override
-    public long countByClassroomId(String classroomId) {
+    public long countByClassroomId(UUID classroomId) {
         return jpaActivityRepository.countByClassroomEntity_ClassroomId(classroomId);
     }
 
     @Override
-    public long countActiveActivitiesByClassroomId(String classroomId) {
+    public long countActiveActivitiesByClassroomId(UUID classroomId) {
         return jpaActivityRepository.countByClassroomEntity_ClassroomIdAndStatus(classroomId, ActivityStatus.PUBLISHED);
     }
 

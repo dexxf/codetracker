@@ -7,7 +7,7 @@ import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
 
 import java.time.Instant;
 
-public record ActivityData(String activityId, String classroomId, UUID instructorUserId, String title, String description,
+public record ActivityData(String activityId, UUID classroomId, UUID instructorUserId, String title, String description,
                            Instant dueDate, ActivityStatus status, Integer maxScore, Instant createdAt, Instant updatedAt) {
 
     public static ActivityData from(Activity activity) {

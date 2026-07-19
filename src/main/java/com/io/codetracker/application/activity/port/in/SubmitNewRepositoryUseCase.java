@@ -7,6 +7,6 @@ import com.io.codetracker.application.activity.result.StudentActivityData;
 import com.io.codetracker.common.result.Result;
 
 public interface SubmitNewRepositoryUseCase {
-    Result<StudentActivityData, SubmitNewRepositoryError> submitNew(String authId, UUID userId, String classroomId, String activityId, String repositoryName);
+    Result<StudentActivityData, SubmitNewRepositoryError> submitNew(UUID authId, UUID userId, UUID classroomId, String activityId, String repositoryName);
 }
 

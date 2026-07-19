@@ -4,7 +4,7 @@ package com.io.codetracker.application.classroom.result;
 import java.util.UUID;
 import com.io.codetracker.domain.classroom.entity.Classroom;
 
-public record GetClassroomsProfessorData (String classroomId,String className, String classCode, String description,
+public record GetClassroomsProfessorData (UUID classroomId,String className, String classCode, String description,
                                           UUID instructorId, Long studentCount, String status, Integer maxStudent) {
 
     public static GetClassroomsProfessorData from(Classroom classroom, Long studentCount, Integer maxStudent) {

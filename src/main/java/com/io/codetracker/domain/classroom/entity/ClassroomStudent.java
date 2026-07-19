@@ -8,14 +8,14 @@ import java.time.Instant;
 
 public final class ClassroomStudent {
 
-    private final String classroomId;
+    private final UUID classroomId;
     private final UUID studentUserId;
     private StudentStatus status;
     private Instant lastActiveAt;
     private final Instant joinedAt;
     private Instant leftAt;
 
-    public ClassroomStudent(String classroomId, UUID studentUserId, StudentStatus status, Instant lastActiveAt, Instant joinedAt, Instant leftAt) {
+    public ClassroomStudent(UUID classroomId, UUID studentUserId, StudentStatus status, Instant lastActiveAt, Instant joinedAt, Instant leftAt) {
         this.classroomId = classroomId;
         this.studentUserId = studentUserId;
         this.status = status;
@@ -24,7 +24,7 @@ public final class ClassroomStudent {
         this.leftAt = leftAt;
     }
 
-    public String getClassroomId() {
+    public UUID getClassroomId() {
         return classroomId;
     }
 

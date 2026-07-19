@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -20,7 +21,7 @@ public class GithubRepositoryService implements GetGithubRepositoriesUseCase {
     private final GithubRepositoryIntegrationPort githubRepositoryIntegrationPort;
 
     @Override
-    public Result<List<GithubRepositoryDetailsData>, GetGithubRepositoriesError> execute(String authId) {
+    public Result<List<GithubRepositoryDetailsData>, GetGithubRepositoriesError> execute(UUID authId) {
         Optional<com.io.codetracker.domain.auth.entity.GithubAccount> githubAccountOptional =
                 githubAccountAppPort.findByAuthId(authId);
 

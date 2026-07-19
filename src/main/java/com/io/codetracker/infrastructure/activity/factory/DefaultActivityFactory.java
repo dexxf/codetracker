@@ -21,7 +21,7 @@ public class DefaultActivityFactory implements ActivityFactory {
     }
 
     @Override
-    public Activity create(String classroomId, UUID instructorUserId, String title, String description, Instant dueDate, Integer maxScore, ActivityStatus status) {
+    public Activity create(UUID classroomId, UUID instructorUserId, String title, String description, Instant dueDate, Integer maxScore, ActivityStatus status) {
         Instant now = Instant.now();
         return new Activity(idGenerator.generate(),classroomId, instructorUserId, title, description, dueDate, status, maxScore, now, now);
     }

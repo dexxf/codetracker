@@ -4,8 +4,9 @@ import com.io.codetracker.application.activity.result.StudentActivityInfoData;
 import com.io.codetracker.application.activity.result.StudentActivityInfoStudentData;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface StudentActivityInfoAppRepository {
-    List<StudentActivityInfoStudentData> findClassroomStudents(String classroomId);
-    List<StudentActivityInfoData> findStudentActivityInfos(String classroomId);
+    List<StudentActivityInfoStudentData> findClassroomStudents(UUID classroomId);
+    List<StudentActivityInfoData> findStudentActivityInfos(UUID classroomId);
 }

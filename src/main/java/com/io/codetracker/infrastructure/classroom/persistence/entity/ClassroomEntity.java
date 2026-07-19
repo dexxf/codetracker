@@ -16,12 +16,14 @@ import java.util.Map;
 @Table(name = "classroom")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class ClassroomEntity {
 
     @Id
     @Column(name = "classroom_id", nullable = false)
-    private String classroomId;
+    private UUID classroomId;
 
     @Column(name = "instructor_user_id", nullable = false)
     private UUID instructorUserId;
@@ -49,7 +51,6 @@ public class ClassroomEntity {
             mappedBy = "classroom",
             cascade = CascadeType.ALL,
             orphanRemoval = true,
-            fetch = FetchType.LAZY,
             optional = false
     )
     private ClassroomSettingsEntity settings;

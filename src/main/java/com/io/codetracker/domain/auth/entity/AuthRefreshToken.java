@@ -7,7 +7,7 @@ import java.util.UUID;
 public final class AuthRefreshToken {
 
     private UUID id;
-    private String authId;
+    private UUID authId;
     private String tokenHash;
     private Instant expiresAt;
     private boolean revoked;
@@ -17,7 +17,7 @@ public final class AuthRefreshToken {
     private String ipAddress;
     private String userAgent;
 
-    public AuthRefreshToken(UUID id, String authId, String tokenHash, Instant expiresAt, boolean revoked,
+    public AuthRefreshToken(UUID id, UUID authId, String tokenHash, Instant expiresAt, boolean revoked,
                             Instant revokedAt, Instant lastUsedAt, String deviceId,
                             String ipAddress, String userAgent) {
         this.id = Objects.requireNonNull(id, "id must not be null");
@@ -32,7 +32,7 @@ public final class AuthRefreshToken {
         this.userAgent = userAgent;
     }
 
-    public static AuthRefreshToken createNew(String authId, String tokenHash, Instant expiresAt,
+    public static AuthRefreshToken createNew(UUID authId, String tokenHash, Instant expiresAt,
                                              String deviceId, String ipAddress, String userAgent) {
         return new AuthRefreshToken(
                 UUID.randomUUID(),
@@ -48,7 +48,7 @@ public final class AuthRefreshToken {
         );
     }
 
-    public static AuthRefreshToken reconstitute(UUID id, String authId, String tokenHash, Instant expiresAt,
+    public static AuthRefreshToken reconstitute(UUID id, UUID authId, String tokenHash, Instant expiresAt,
                                                 boolean revoked, Instant revokedAt, Instant lastUsedAt,
                                                 String deviceId, String ipAddress, String userAgent) {
         return new AuthRefreshToken(
@@ -86,7 +86,7 @@ public final class AuthRefreshToken {
         return id;
     }
 
-    public String getAuthId() {
+    public UUID getAuthId() {
         return authId;
     }
 
@@ -126,7 +126,7 @@ public final class AuthRefreshToken {
         this.id = id;
     }
 
-    public void setAuthId(String authId) {
+    public void setAuthId(UUID authId) {
         this.authId = authId;
     }
 

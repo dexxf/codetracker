@@ -64,7 +64,7 @@ public class RefreshTokenRotationService implements RotateRefreshTokenUseCase {
         }
 
         AuthRefreshToken existingToken = existingTokenOpt.get();
-        String authId = existingToken.getAuthId();
+        UUID authId = existingToken.getAuthId();
 
         try {
             if (existingToken.isRevoked()) {

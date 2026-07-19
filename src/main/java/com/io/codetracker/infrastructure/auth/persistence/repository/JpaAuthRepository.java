@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface JpaAuthRepository extends JpaRepository<AuthEntity, String>{
+public interface JpaAuthRepository extends JpaRepository<AuthEntity, UUID>{
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
     Optional<AuthEntity> findByUserId(UUID userId);

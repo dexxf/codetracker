@@ -7,6 +7,8 @@ import com.io.codetracker.infrastructure.auth.persistence.repository.JpaGithubAc
 
 import lombok.AllArgsConstructor;
 
+import java.util.UUID;
+
 
 @Repository
 @AllArgsConstructor
@@ -15,12 +17,12 @@ public class GithubAccountDomainRepositoryImpl implements GithubAccountDomainRep
     private final JpaGithubAccountRepository repository;
 
     @Override
-    public boolean existsById(String githubAccountId) {
+    public boolean existsById(UUID githubAccountId) {
         return repository.existsById(githubAccountId);
     }
 
     @Override
-    public boolean existByAuthId(String authId) {
+    public boolean existByAuthId(UUID authId) {
         return repository.existsById(authId);
     }
 }

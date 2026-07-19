@@ -5,6 +5,8 @@ import com.io.codetracker.domain.classroom.entity.Classroom;
 import com.io.codetracker.domain.classroom.repository.ClassroomDomainRepository;
 import com.io.codetracker.domain.classroom.result.EditClassroomResult;
 
+import java.util.UUID;
+
 public final class UpdateClassroomService {
 
     private static final int MAX_NAME_LENGTH = 100;
@@ -17,7 +19,7 @@ public final class UpdateClassroomService {
         this.classroomDomainRepository = classroomDomainRepository;
     }
 
-    public Result<Classroom, EditClassroomResult> updateAndValidate(String classroomId, String name, String description) {
+    public Result<Classroom, EditClassroomResult> updateAndValidate(UUID classroomId, String name, String description) {
         Classroom classroom = classroomDomainRepository.findByClassroomId(classroomId).orElse(null);
 
         if (classroom == null) {

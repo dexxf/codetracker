@@ -17,7 +17,7 @@ public interface JpaStudentActivityRepository extends JpaRepository<StudentActiv
     Optional<StudentActivityEntity> findByUserEntity_UserIdAndActivityEntity_ActivityId(UUID userId, String activityId);
 
     @Query("SELECT sa.activityEntity.activityId FROM StudentActivityEntity sa WHERE sa.activityEntity.classroomEntity.classroomId = :classroomId AND sa.userEntity.userId = :userId")
-    Set<String> findActivityIdsByClassroomIdAndUserId(@Param("classroomId") String classroomId,@Param("userId") UUID userId);
+    Set<String> findActivityIdsByClassroomIdAndUserId(@Param("classroomId") UUID classroomId,@Param("userId") UUID userId);
 
     @Query("""
             SELECT new com.io.codetracker.application.activity.result.StudentActivityInfoData(
@@ -27,6 +27,6 @@ public interface JpaStudentActivityRepository extends JpaRepository<StudentActiv
             FROM StudentActivityEntity sa LEFT JOIN sa.githubSubmission gs WHERE sa.activityEntity.classroomEntity.classroomId = :classroomId
             ORDER BY sa.createdAt DESC
             """)
-    List<StudentActivityInfoData> findStudentActivityInfosByClassroomId(@Param("classroomId") String classroomId);
+    List<StudentActivityInfoData> findStudentActivityInfosByClassroomId(@Param("classroomId") UUID classroomId);
 }
 

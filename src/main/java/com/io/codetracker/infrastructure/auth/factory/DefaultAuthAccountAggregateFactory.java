@@ -22,7 +22,7 @@ public class DefaultAuthAccountAggregateFactory implements AuthAccountAggregateF
 
         Auth auth = Auth.createOAuth(authId,userId,email,username,role);
 
-        GithubAccount githubAccount = new GithubAccount(authId.toString(),githubId,accessToken);
+        GithubAccount githubAccount = new GithubAccount(authId,githubId,accessToken);
         return new AuthAccountAggregate(auth,githubAccount);
     }
 }

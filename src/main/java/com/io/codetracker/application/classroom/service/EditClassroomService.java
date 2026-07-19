@@ -7,6 +7,7 @@ import com.io.codetracker.application.classroom.port.out.ClassroomAppRepository;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentAppRepository;
 import com.io.codetracker.application.classroom.result.ClassroomData;
 import com.io.codetracker.common.result.Result;
+import com.io.codetracker.domain.classroom.aggregate.ClassroomAggregate;
 import com.io.codetracker.domain.classroom.entity.Classroom;
 import com.io.codetracker.domain.classroom.entity.ClassroomSettings;
 import com.io.codetracker.domain.classroom.exception.InvalidStudentQuantityException;
@@ -65,7 +66,7 @@ public class EditClassroomService implements EditClassroomUseCase {
         }
 
         Classroom updatedClassroom = result.data();
-        classroomAppRepository.updateClassroom(updatedClassroom, classroomSettings);
+        classroomAppRepository.update(new ClassroomAggregate(updatedClassroom, classroomSettings));
         return Result.ok(ClassroomData.from(updatedClassroom));
     }
 }

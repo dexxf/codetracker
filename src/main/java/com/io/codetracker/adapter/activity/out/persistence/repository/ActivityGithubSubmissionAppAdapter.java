@@ -22,7 +22,7 @@ public class ActivityGithubSubmissionAppAdapter implements ActivityGithubSubmiss
     private final JpaActivityRepository jpaActivityRepository;
 
     @Override
-    public List<ActivityData> getUnsubmittedRepositoryActivity(String classroomId, UUID userId) {
+    public List<ActivityData> getUnsubmittedRepositoryActivity(UUID classroomId, UUID userId) {
         Set<String> submittedActivityIds = jpaStudentActivityRepository.findActivityIdsByClassroomIdAndUserId(classroomId,userId);
 
         List<ActivityEntity> activityEntityList = jpaActivityRepository.findActivitiesByClassroomId(classroomId);

@@ -5,7 +5,8 @@ import com.io.codetracker.application.github.result.GithubRepositoryDetailsData;
 import com.io.codetracker.common.result.Result;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface GetGithubRepositoriesUseCase {
-    Result<List<GithubRepositoryDetailsData>, GetGithubRepositoriesError> execute(String authId);
+    Result<List<GithubRepositoryDetailsData>, GetGithubRepositoriesError> execute(UUID authId);
 }

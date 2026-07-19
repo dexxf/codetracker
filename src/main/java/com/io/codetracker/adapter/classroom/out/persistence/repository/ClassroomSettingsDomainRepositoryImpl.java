@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @AllArgsConstructor
@@ -17,7 +18,7 @@ public class ClassroomSettingsDomainRepositoryImpl implements ClassroomSettingsD
     private final JpaClassroomSettingsRepository jpaClassroomSettingsRepository;
 
     @Override
-    public Optional<ClassroomSettings> findByClassroomId(String classroomId) {
+    public Optional<ClassroomSettings> findByClassroomId(UUID classroomId) {
         Optional<ClassroomSettingsEntity> classroomSettingsEntity = jpaClassroomSettingsRepository.findByClassroomId(classroomId);
         return classroomSettingsEntity.map(ClassroomSettingsMapper::toDomain);
     }

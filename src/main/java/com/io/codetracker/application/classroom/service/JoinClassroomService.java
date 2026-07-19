@@ -15,6 +15,8 @@ import com.io.codetracker.domain.classroom.service.ClassroomStudentCreationServi
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public final class JoinClassroomService implements JoinClassroomUseCase {
 
@@ -37,7 +39,7 @@ public final class JoinClassroomService implements JoinClassroomUseCase {
         }
 
         ClassroomJoinValidationResult joinResult = validation.data();
-        String classroomId = joinResult.classroom().getClassroomId();
+        UUID classroomId = joinResult.classroom().getClassroomId();
 
         ClassroomStudent existingStudent = studentRepository.findByClassroomIdAndStudentUserId(classroomId, command.userId())
                 .orElse(null);

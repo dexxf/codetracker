@@ -45,6 +45,7 @@ import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/classrooms")
@@ -116,7 +117,7 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
     @GetMapping("/{classroomId}/stats")
     public ResponseEntity<GetClassroomStatsResponse> getClassroomStats(
             @AuthenticationPrincipal AuthPrincipal authPrincipal,
-            @PathVariable String classroomId) {
+            @PathVariable UUID classroomId) {
         Result<ClassroomStats, SimpleClassroomError> result = getClassroomStatsUseCase.execute(new ClassroomStatsCommand(classroomId, authPrincipal.getUserId()));
         if (!result.success()) {
             return ResponseEntity.status(SimpleClassroomHttpMapper.toStatus(result.error()))
@@ -128,7 +129,7 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
         @GetMapping("/{classroomId}/recent-activities")
         public ResponseEntity<GetClassroomRecentActivitiesResponse> getClassroomRecentActivities(
             @AuthenticationPrincipal AuthPrincipal authPrincipal,
-            @PathVariable String classroomId,
+            @PathVariable UUID classroomId,
             @RequestParam(defaultValue = "20") int limit) {
         Result<List<ClassroomRecentActivityData>, GetClassroomRecentActivitiesError> result =
             getClassroomRecentActivitiesUseCase.execute(
@@ -146,7 +147,7 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
     @PutMapping("/{classroomId}")
     public ResponseEntity<EditClassroomResponse> updateClassroom(
             @AuthenticationPrincipal AuthPrincipal authPrincipal,
-            @PathVariable String classroomId,
+            @PathVariable UUID classroomId,
             @Valid @RequestBody EditClassroomRequest request) {
         Result<ClassroomData, EditClassroomError> result = editClassroomUseCase.execute(
                 new EditClassroomCommand(
@@ -168,7 +169,7 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
     @PutMapping("/{classroomId}/leave")
     public ResponseEntity<Map<String, Object>> leaveClassroom(
             @AuthenticationPrincipal AuthPrincipal authPrincipal,
-            @PathVariable String classroomId) {
+            @PathVariable UUID classroomId) {
         LeaveClassroomResult result = leaveClassroomUseCase.execute(
                 new LeaveClassroomCommand(classroomId, authPrincipal.getUserId())
         );
@@ -182,7 +183,7 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
     @PutMapping("/{classroomId}/close")
     public ResponseEntity<Map<String, Object>> closeClassroom(
             @AuthenticationPrincipal AuthPrincipal authPrincipal,
-            @PathVariable String classroomId) {
+            @PathVariable UUID classroomId) {
         Result<ClassroomData, CloseClassroomError> result = closeClassroomUseCase.execute(
                 new CloseClassroomCommand(authPrincipal.getUserId(), classroomId)
         );
@@ -199,7 +200,7 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
     @DeleteMapping("/{classroomId}")
     public ResponseEntity<String> deleteClassroom(
             @AuthenticationPrincipal AuthPrincipal authPrincipal,
-            @PathVariable String classroomId) {
+            @PathVariable UUID classroomId) {
         DeleteClassroomResult result = deleteClassroomUseCase.execute(
             new DeleteClassroomCommand(authPrincipal.getUserId(), classroomId)
         );

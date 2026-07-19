@@ -5,5 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.io.codetracker.infrastructure.auth.persistence.entity.GithubAccountEntity;
 
-public interface JpaGithubAccountRepository extends JpaRepository<GithubAccountEntity, String> {
+import java.util.UUID;
+
+public interface JpaGithubAccountRepository extends JpaRepository<GithubAccountEntity, UUID> {
 }

@@ -11,11 +11,11 @@ import java.util.Optional;
 
 public interface ClassroomStudentAppRepository {
     boolean save(ClassroomStudent classroomStudent);
-    boolean existsByClassroomIdAndStudentUserId(String classroomId, UUID studentUserId);
+    boolean existsByClassroomIdAndStudentUserId(UUID classroomId, UUID studentUserId);
     List<ClassroomStudent> findActiveEnrollmentsWithActiveClassroom(UUID studentUserId);
-    Map<String, Long> countActiveClassroomStudentByClassroomIds(List<String> classroomIds);
-    List<ClassroomStudent> findClassroomStudents(String classroomId, StudentStatus status, boolean ascending);
-    long countActiveClassroomStudentByClassroomId(String classroomId);
-    Optional<ClassroomStudent> findByClassroomIdAndStudentUserId(String classroomId, UUID studentUserId);
+    Map<UUID, Long> countActiveClassroomStudentByClassroomIds(List<UUID> classroomIds);
+    List<ClassroomStudent> findClassroomStudents(UUID classroomId, StudentStatus status, boolean ascending);
+    long countActiveClassroomStudentByClassroomId(UUID classroomId);
+    Optional<ClassroomStudent> findByClassroomIdAndStudentUserId(UUID classroomId, UUID studentUserId);
 }
 

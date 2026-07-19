@@ -10,10 +10,10 @@ import java.util.Optional;
 
 public interface ActivityAppRepository {
     Activity save(Activity data);
-    List<Activity> findActivitiesByClassroomIdAndInstructorUserId(String classroomId, UUID instructorId);
+    List<Activity> findActivitiesByClassroomIdAndInstructorUserId(UUID classroomId, UUID instructorId);
     Optional<Activity> findById(String activityId);
     void deleteByActivityId(String activityId);
     void update(Activity updatedActivity);
-    List<StudentActivityViewData> findStudentActivities(String classroomId, UUID userId);
+    List<StudentActivityViewData> findStudentActivities(UUID classroomId, UUID userId);
 }
 

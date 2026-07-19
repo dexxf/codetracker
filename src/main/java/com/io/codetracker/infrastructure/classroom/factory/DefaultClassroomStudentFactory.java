@@ -13,7 +13,7 @@ import java.time.Instant;
 public class DefaultClassroomStudentFactory implements ClassroomStudentFactory {
 
     @Override
-    public ClassroomStudent create(String classroomId, UUID studentUserId, StudentStatus status) {
+    public ClassroomStudent create(UUID classroomId, UUID studentUserId, StudentStatus status) {
         Instant now = Instant.now();
 
         return new ClassroomStudent(classroomId, studentUserId, status, now, now, null);

@@ -2,9 +2,11 @@ package com.io.codetracker.domain.classroom.entity;
 
 import com.io.codetracker.domain.classroom.exception.InvalidStudentQuantityException;
 
+import java.util.UUID;
+
 public final class ClassroomSettings {
 
-    private final String classroomId;
+    private final UUID classroomId;
     private String passcode;
     private int maxStudents;
     private boolean requireApproval;
@@ -12,7 +14,7 @@ public final class ClassroomSettings {
     public static int MAX_STUDENTS = 100;
     public static int MIN_STUDENTS = 1;
 
-    public ClassroomSettings(String classroomId,boolean requireApproval, String passcode, int maxStudents) {
+    public ClassroomSettings(UUID classroomId,boolean requireApproval, String passcode, int maxStudents) {
         if (maxStudents < MIN_STUDENTS || maxStudents > MAX_STUDENTS) {
             throw new InvalidStudentQuantityException("Max students must be between " + MIN_STUDENTS + " and " + MAX_STUDENTS);
         }
@@ -23,7 +25,7 @@ public final class ClassroomSettings {
         this.maxStudents = maxStudents;
     }
 
-    public String getClassroomId() {
+    public UUID getClassroomId() {
         return classroomId;
     }
 

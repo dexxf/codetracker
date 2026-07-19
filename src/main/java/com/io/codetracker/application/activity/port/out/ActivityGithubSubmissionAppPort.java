@@ -7,6 +7,6 @@ import com.io.codetracker.application.activity.result.ActivityData;
 import java.util.List;
 
 public interface ActivityGithubSubmissionAppPort {
-    List<ActivityData> getUnsubmittedRepositoryActivity(String classroomId, UUID userId);
+    List<ActivityData> getUnsubmittedRepositoryActivity(UUID classroomId, UUID userId);
 }
 

@@ -8,7 +8,7 @@ import com.io.codetracker.domain.classroom.valueObject.ClassroomStatus;
 import java.time.Instant;
 
 public record ClassroomData(
-        String classroomId,
+        UUID classroomId,
         UUID instructorUserId,
         String name,
         String description,

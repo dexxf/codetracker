@@ -6,6 +6,7 @@ import com.io.codetracker.application.classroom.port.in.CloseClassroomUseCase;
 import com.io.codetracker.application.classroom.port.out.ClassroomAppRepository;
 import com.io.codetracker.application.classroom.result.ClassroomData;
 import com.io.codetracker.common.result.Result;
+import com.io.codetracker.domain.classroom.aggregate.ClassroomAggregate;
 import com.io.codetracker.domain.classroom.entity.Classroom;
 import com.io.codetracker.domain.classroom.entity.ClassroomSettings;
 import com.io.codetracker.domain.classroom.valueObject.ClassroomStatus;
@@ -46,7 +47,7 @@ public class CloseClassroomService implements CloseClassroomUseCase {
             return Result.fail(CloseClassroomError.CLASSROOM_SETTINGS_NOT_FOUND);
         }
 
-        classroomAppRepository.saveClassroom(classroom, settings.get());
+        classroomAppRepository.update(new ClassroomAggregate(classroom, settings.get()));
         return Result.ok(ClassroomData.from(classroom));
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
@@ -23,7 +24,7 @@ public class ClassroomStudentController {
     private final GetClassroomStudentUseCase getClassroomStudentUseCase;
 
     @GetMapping
-    public ResponseEntity<?> getStudents(@PathVariable String classroomId,
+    public ResponseEntity<?> getStudents(@PathVariable UUID classroomId,
                                          @RequestParam(defaultValue = "ACTIVE") StudentStatus status,
                                          @RequestParam(defaultValue = "true") boolean ascending,
                                          @AuthenticationPrincipal AuthPrincipal principal) {

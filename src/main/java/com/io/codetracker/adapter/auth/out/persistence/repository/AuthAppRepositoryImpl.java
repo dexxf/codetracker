@@ -44,7 +44,7 @@ public class AuthAppRepositoryImpl implements AuthAppRepository,UserAuthPort {
     }
 
     @Override
-    public Optional<Auth> findByAuthId(String authId) {
+    public Optional<Auth> findByAuthId(UUID authId) {
         return jpa.findById(authId).map(AuthMapper::toDomain);
     }
 
@@ -54,7 +54,7 @@ public class AuthAppRepositoryImpl implements AuthAppRepository,UserAuthPort {
     }
 
     @Override
-    public boolean existsByAuthId(String authId) {
+    public boolean existsByAuthId(UUID authId) {
         return jpa.existsById(authId);
     }
 
