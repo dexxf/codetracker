@@ -44,8 +44,7 @@ public class UserController {
         @RequestPart("data") @Valid UserRegistrationRequest request,
         @RequestPart(value = "profile", required = false) MultipartFile profile) {
 
-        UserRegistrationCommand command = new UserRegistrationCommand(request.firstName(), request.lastName(), 
-        request.phoneNumber(),request.gender(),request.birthday(),profile,request.bio());
+        UserRegistrationCommand command = new UserRegistrationCommand(request.firstName(), request.lastName(),request.gender(),profile);
 
         Result<UserData, UserRegistrationError> result = completeInitializationUseCase.completeInitialization(principal.getUserId(),command);
         return result.success() ?

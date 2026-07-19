@@ -8,9 +8,6 @@ public record UserRegistrationRequest(
         @NotBlank 
         String firstName,
         @NotBlank String lastName,
-        @NotBlank String phoneNumber,
-        @NotBlank String gender,
-        @NotNull LocalDate birthday,
-        String bio
+        @NotBlank String gender
 ) {}
  
