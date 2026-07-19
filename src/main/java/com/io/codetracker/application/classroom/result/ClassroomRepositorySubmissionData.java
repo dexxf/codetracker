@@ -1,9 +1,11 @@
 package com.io.codetracker.application.classroom.result;
 
+
+import java.util.UUID;
 import java.time.Instant;
 
 public record ClassroomRepositorySubmissionData(
-        String studentUserId,
+        UUID studentUserId,
         String firstName,
         String lastName,
         String profileUrl,
@@ -14,3 +16,4 @@ public record ClassroomRepositorySubmissionData(
         Instant submittedAt
 ) {
 }
+

@@ -12,7 +12,7 @@ import java.util.UUID;
 public final class Auth {
 
     private final String authId;
-    private final String userId;
+    private final UUID userId;
     private Email email;
     private final String username;
     private HashedPassword password;
@@ -20,7 +20,7 @@ public final class Auth {
     private Status status;
     private Roles role;
 
-    private Auth(String authId, String userId, Email email, String username, HashedPassword password, Roles role, Status status, Instant createdAt) {
+    private Auth(String authId, UUID userId, Email email, String username, HashedPassword password, Roles role, Status status, Instant createdAt) {
         this.authId = Objects.requireNonNull(authId, "authId must not be null");
         this.userId = Objects.requireNonNull(userId, "userId must not be null");
         this.email = Objects.requireNonNull(email, "email must not be null");
@@ -31,7 +31,7 @@ public final class Auth {
         this.createdAt = Objects.requireNonNull(createdAt, "createdAt must not be null");
     }
 
-    public static Auth createOAuth(UUID authId, String userId, Email email, String username, Roles role) {
+    public static Auth createOAuth(UUID authId, UUID userId, Email email, String username, Roles role) {
         return new Auth(
                 Objects.requireNonNull(authId, "authId must not be null").toString(),
                 userId,
@@ -46,7 +46,7 @@ public final class Auth {
 
     public static Auth reconstitute(
             String authId,
-            String userId,
+            UUID userId,
             Email email,
             String username,
             HashedPassword password,
@@ -101,7 +101,8 @@ public final class Auth {
         this.email = Objects.requireNonNull(email, "email must not be null");
     }
 
-    public String getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 }
+

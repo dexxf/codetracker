@@ -1,5 +1,7 @@
 package com.io.codetracker.adapter.activity.out.persistence.repository;
 
+
+import java.util.UUID;
 import com.io.codetracker.adapter.activity.out.persistence.mapper.ActivityMapper;
 import com.io.codetracker.application.activity.port.out.ActivityGithubSubmissionAppPort;
 import com.io.codetracker.application.activity.result.ActivityData;
@@ -20,7 +22,7 @@ public class ActivityGithubSubmissionAppAdapter implements ActivityGithubSubmiss
     private final JpaActivityRepository jpaActivityRepository;
 
     @Override
-    public List<ActivityData> getUnsubmittedRepositoryActivity(String classroomId, String userId) {
+    public List<ActivityData> getUnsubmittedRepositoryActivity(String classroomId, UUID userId) {
         Set<String> submittedActivityIds = jpaStudentActivityRepository.findActivityIdsByClassroomIdAndUserId(classroomId,userId);
 
         List<ActivityEntity> activityEntityList = jpaActivityRepository.findActivitiesByClassroomId(classroomId);
@@ -35,3 +37,4 @@ public class ActivityGithubSubmissionAppAdapter implements ActivityGithubSubmiss
                 .toList();
     }
 }
+

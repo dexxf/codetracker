@@ -1,5 +1,7 @@
 package com.io.codetracker.domain.classroom.repository;
 
+
+import java.util.UUID;
 public interface ClassroomUserDomainPort {
-    boolean existsByUserId(String instructorUserId);
+    boolean existsByUserId(UUID instructorUserId);
 }

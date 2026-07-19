@@ -79,3 +79,4 @@ public class AuthRefreshTokenAppRepositoryImpl implements AuthRefreshTokenAppRep
         return rowsAffected == 1;
     }
 }
+

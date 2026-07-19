@@ -1,5 +1,7 @@
 package com.io.codetracker.adapter.activity.in.rest;
 
+
+import java.util.UUID;
 import com.io.codetracker.adapter.activity.in.dto.request.SubmitExistingRepositoryRequest;
 import com.io.codetracker.adapter.activity.in.dto.request.MarkStudentAsGradedRequest;
 import com.io.codetracker.adapter.activity.in.dto.request.SubmitNewRepositoryRequest;
@@ -81,7 +83,7 @@ public class ActivityController {
 
     @GetMapping("/submitted")
     public ResponseEntity<GetStudentActivityInfoResponse> getSubmittedActivities(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
-        Result<Map<String, StudentActivityInfoUserData>, GetClassroomOwnerActivityError> response =
+        Result<Map<UUID, StudentActivityInfoUserData>, GetClassroomOwnerActivityError> response =
                 getStudentActivityInfoUseCase.execute(new GetActivityCommand(classroomId, principal.getUserId()));
         return response.success() ? ResponseEntity.ok(GetStudentActivityInfoResponse.success(response.data()))
                 : ResponseEntity.status(GetActivityHttpMapper.ownerToStatus(response.error()))
@@ -182,7 +184,7 @@ public class ActivityController {
     public ResponseEntity<StudentActivityResponse> markStudentAsGraded(
             @PathVariable String classroomId,
             @PathVariable String activityId,
-            @PathVariable String studentUserId,
+            @PathVariable UUID studentUserId,
             @Valid @RequestBody(required = false) MarkStudentAsGradedRequest request,
             @AuthenticationPrincipal AuthPrincipal authPrincipal
     ) {
@@ -202,3 +204,4 @@ public class ActivityController {
                 .body(StudentActivityResponse.fail(MarkStudentAsGradedHttpMapper.toMessage(response.error())));
     }
 }
+

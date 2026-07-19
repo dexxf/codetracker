@@ -1,5 +1,7 @@
 package com.io.codetracker.adapter.classroom.out.persistence.repository;
 
+
+import java.util.UUID;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +42,7 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
     }
 
     @Override
-    public List<Classroom> findByInstructorUserId(String instructorUserId) {
+    public List<Classroom> findByInstructorUserId(UUID instructorUserId) {
         return jpaClassroomRepository.findByInstructorUserId(instructorUserId)
             .stream()
             .map(ClassroomMapper::toDomain)
@@ -70,7 +72,7 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
     }
 
     @Override
-    public boolean existsByClassroomIdAndInstructorUserId(String classroomId, String instructorUserId) {
+    public boolean existsByClassroomIdAndInstructorUserId(String classroomId, UUID instructorUserId) {
         return jpaClassroomRepository.existsByClassroomIdAndInstructorUserId(classroomId, instructorUserId);
     }
 

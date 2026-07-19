@@ -1,6 +1,8 @@
 package com.io.codetracker.application.classroom.service;
 
 
+
+import java.util.UUID;
 import com.io.codetracker.application.classroom.port.in.CreateClassroomUseCase;
 import org.springframework.stereotype.Service;
 import com.io.codetracker.application.classroom.command.CreateClassroomCommand;
@@ -26,7 +28,7 @@ public class CreateClassroomService implements CreateClassroomUseCase {
         this.classroomAppRepository = classroomAppRepository;
     }
     
-    public Result<CreateClassroomData, CreateClassroomError> execute(String userId, CreateClassroomCommand command) {
+    public Result<CreateClassroomData, CreateClassroomError> execute(UUID userId, CreateClassroomCommand command) {
 
         Result<ClassroomCreationEntity, ClassroomCreationResult> result =
             classroomCreationService.createClassroom(

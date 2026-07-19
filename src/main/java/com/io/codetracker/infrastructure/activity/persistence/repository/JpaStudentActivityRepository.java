@@ -1,5 +1,7 @@
 package com.io.codetracker.infrastructure.activity.persistence.repository;
 
+
+import java.util.UUID;
 import com.io.codetracker.infrastructure.activity.persistence.entity.StudentActivityEntity;
 import com.io.codetracker.application.activity.result.StudentActivityInfoData;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,12 +12,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public interface JpaStudentActivityRepository extends JpaRepository<StudentActivityEntity, java.util.UUID> {
-    boolean existsByUserEntity_UserIdAndActivityEntity_ActivityId(String userId, String activityId);
-    Optional<StudentActivityEntity> findByUserEntity_UserIdAndActivityEntity_ActivityId(String userId, String activityId);
+public interface JpaStudentActivityRepository extends JpaRepository<StudentActivityEntity, UUID> {
+    boolean existsByUserEntity_UserIdAndActivityEntity_ActivityId(UUID userId, String activityId);
+    Optional<StudentActivityEntity> findByUserEntity_UserIdAndActivityEntity_ActivityId(UUID userId, String activityId);
 
     @Query("SELECT sa.activityEntity.activityId FROM StudentActivityEntity sa WHERE sa.activityEntity.classroomEntity.classroomId = :classroomId AND sa.userEntity.userId = :userId")
-    Set<String> findActivityIdsByClassroomIdAndUserId(@Param("classroomId") String classroomId,@Param("userId") String userId);
+    Set<String> findActivityIdsByClassroomIdAndUserId(@Param("classroomId") String classroomId,@Param("userId") UUID userId);
 
     @Query("""
             SELECT new com.io.codetracker.application.activity.result.StudentActivityInfoData(
@@ -27,3 +29,4 @@ public interface JpaStudentActivityRepository extends JpaRepository<StudentActiv
             """)
     List<StudentActivityInfoData> findStudentActivityInfosByClassroomId(@Param("classroomId") String classroomId);
 }
+

@@ -1,13 +1,11 @@
 package com.io.codetracker.infrastructure.user.persistence.entity;
 
+import com.io.codetracker.domain.user.valueobject.Gender;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.time.LocalDate;
 import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -15,10 +13,12 @@ import java.time.Instant;
 @NoArgsConstructor
 @Setter
 @Getter
+@Builder
 public class UserEntity {
+
     @Id
     @Column(name = "user_id", nullable = false, updatable = false)
-    private String userId;
+    private UUID userId;
 
     @Column(name = "first_name")
     private String firstName;
@@ -26,29 +26,32 @@ public class UserEntity {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "phone_number")
-    private String phoneNumber;
-
     @Column(name = "gender")
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
-    @Column(name = "birthday")
-    private LocalDate birthday;
-
-    @Column(name = "profile_url", nullable = true)
+    @Column(name = "profile_url")
     private String profileUrl;
-
-    @Column(name = "bio")
-    private String bio;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(name = "has_fully_initialized")
-    private boolean hasFullyInitialized;
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
+
+    @Column(name = "has_fully_initialized", nullable = false)
+    private Boolean hasFullyInitialized;
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = Instant.now();
+        Instant now = Instant.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = Instant.now();
     }
 }
+

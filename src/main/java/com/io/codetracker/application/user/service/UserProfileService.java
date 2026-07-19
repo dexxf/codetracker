@@ -1,5 +1,7 @@
 package com.io.codetracker.application.user.service;
 
+
+import java.util.UUID;
 import com.io.codetracker.application.user.command.UserProfileCommand;
 import com.io.codetracker.application.user.error.UserProfileError;
 import com.io.codetracker.application.user.port.in.GetUserProfileDataUseCase;
@@ -23,7 +25,7 @@ public final class UserProfileService implements UpdateUserProfileUseCase, GetUs
        private final UserAppRepository repository;
        private final UserProfileUpdater userProfileUpdater;
 
-       public Result<UserData, List<UserProfileError>> updateProfile(String userId, UserProfileCommand command) {
+       public Result<UserData, List<UserProfileError>> updateProfile(UUID userId, UserProfileCommand command) {
            Optional<User> userOpt = repository.findByUserId(userId);
 
            if(userOpt.isEmpty())
@@ -32,7 +34,7 @@ public final class UserProfileService implements UpdateUserProfileUseCase, GetUs
            User user = userOpt.get();
 
            List<UserProfileUpdateResult> userProfileUpdaterResult = userProfileUpdater.update(user, command.firstName(), command.lastName(),
-                   command.gender(), command.phoneNumber(), command.bio(), command.birthday());
+                   command.gender());
 
            if(!userProfileUpdaterResult.isEmpty())
                return Result.fail(UserProfileError.from(userProfileUpdaterResult));
@@ -41,8 +43,9 @@ public final class UserProfileService implements UpdateUserProfileUseCase, GetUs
            return Result.ok(UserData.from(user));
        }
 
-       public Optional<UserData> getProfileData(String userId) {
+       public Optional<UserData> getProfileData(UUID userId) {
             Optional<User> userOpt = repository.findByUserId(userId);
            return userOpt.map(UserData::from);
        }
 }
+

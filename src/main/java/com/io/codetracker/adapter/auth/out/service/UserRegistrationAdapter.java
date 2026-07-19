@@ -4,6 +4,8 @@ import com.io.codetracker.application.auth.port.out.UserRegistrationPort;
 import com.io.codetracker.application.user.port.in.UserShallowRegistrationUseCase;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 /**
  * used to expose the UserRegistration service to auth module.
  * auth module (AuthRegistration service) uses UserRegistrationPort interface to use the UserRegistration
@@ -19,7 +21,8 @@ public class UserRegistrationAdapter implements UserRegistrationPort {
     }
 
     @Override
-    public String createShallowUser() {
+    public UUID createShallowUser() {
         return userShallowRegistrationUseCase.createShallowUser();
     }
 }
+

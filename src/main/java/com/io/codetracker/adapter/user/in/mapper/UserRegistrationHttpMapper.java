@@ -13,7 +13,7 @@ public final class UserRegistrationHttpMapper {
             case USER_NOT_FOUND -> HttpStatus.NOT_FOUND;
             case USER_ALREADY_INITIALIZED -> HttpStatus.CONFLICT;
             case PROFILE_UPLOAD_FAILED, PROFILE_DELETE_FAILED -> HttpStatus.INTERNAL_SERVER_ERROR;
-            case INVALID_USER_DATA -> HttpStatus.BAD_REQUEST;
+            case INVALID_GENDER -> HttpStatus.BAD_REQUEST;
         };
     }
 
@@ -23,7 +23,7 @@ public final class UserRegistrationHttpMapper {
             case USER_ALREADY_INITIALIZED -> "User is already fully initialized.";
             case PROFILE_UPLOAD_FAILED -> "Failed to upload profile image.";
             case PROFILE_DELETE_FAILED -> "Failed to delete uploaded profile image.";
-            case INVALID_USER_DATA -> "Invalid user registration data.";
+            case INVALID_GENDER -> "Invalid gender.";
         };
     }
 }

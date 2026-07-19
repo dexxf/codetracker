@@ -1,5 +1,7 @@
 package com.io.codetracker.adapter.classroom.out.persistence.repository;
 
+
+import java.util.UUID;
 import com.io.codetracker.adapter.classroom.out.persistence.mapper.ClassroomStudentMapper;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentAppRepository;
 import com.io.codetracker.domain.classroom.entity.ClassroomStudent;
@@ -49,7 +51,7 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    public boolean existsByClassroomIdAndStudentUserId(String classroomId, String studentUserId) {
+    public boolean existsByClassroomIdAndStudentUserId(String classroomId, UUID studentUserId) {
         return jpaClassroomStudentRepository.existsByClassroom_ClassroomIdAndStudentUserIdAndStatus(
                 classroomId,
                 studentUserId,
@@ -58,7 +60,7 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    public List<ClassroomStudent> findActiveEnrollmentsWithActiveClassroom(String studentUserId) {
+    public List<ClassroomStudent> findActiveEnrollmentsWithActiveClassroom(UUID studentUserId) {
         List<ClassroomStudentEntity> entities = jpaClassroomStudentRepository
                 .findEnrollmentsByStatus(studentUserId, StudentStatus.ACTIVE, ClassroomStatus.ACTIVE);
         return entities.stream()
@@ -93,9 +95,10 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    public Optional<ClassroomStudent> findByClassroomIdAndStudentUserId(String classroomId, String studentUserId) {
+    public Optional<ClassroomStudent> findByClassroomIdAndStudentUserId(String classroomId, UUID studentUserId) {
         return jpaClassroomStudentRepository.findByClassroom_ClassroomIdAndStudentUserId(classroomId, studentUserId)
                 .map(ClassroomStudentMapper::toDomain);
     }
 
 }
+

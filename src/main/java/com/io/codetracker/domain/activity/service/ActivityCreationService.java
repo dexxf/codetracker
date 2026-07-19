@@ -1,5 +1,7 @@
 package com.io.codetracker.domain.activity.service;
 
+
+import java.util.UUID;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.activity.entity.Activity;
 import com.io.codetracker.domain.activity.factory.ActivityFactory;
@@ -28,14 +30,14 @@ public final class ActivityCreationService {
         this.activityUserDomainPort = activityUserDomainPort;
     }
 
-    public Result<Activity, ActivityCreationResult> create(String classroomId, String instructorUserId, String title,
+    public Result<Activity, ActivityCreationResult> create(String classroomId, UUID instructorUserId, String title,
                                                            String description, Instant dueDate, Integer maxScore, ActivityStatus status) {
 
         if (classroomId == null || classroomId.isBlank()) {
             return Result.fail(ActivityCreationResult.INVALID_CLASSROOM_ID);
         }
 
-        if (instructorUserId == null || instructorUserId.isBlank()) {
+        if (instructorUserId == null) {
             return Result.fail(ActivityCreationResult.INVALID_INSTRUCTOR_ID);
         }
 
@@ -71,3 +73,4 @@ public final class ActivityCreationService {
         return Result.ok(activity);
     }
 }
+

@@ -1,5 +1,7 @@
 package com.io.codetracker.infrastructure.classroom.persistence.entity;
 
+
+import java.util.UUID;
 import com.io.codetracker.domain.classroom.valueObject.ClassroomStatus;
 import com.io.codetracker.infrastructure.activity.persistence.entity.ActivityEntity;
 
@@ -22,7 +24,7 @@ public class ClassroomEntity {
     private String classroomId;
 
     @Column(name = "instructor_user_id", nullable = false)
-    private String instructorUserId;
+    private UUID instructorUserId;
 
     @Column(name = "name", nullable = false, length = 100)
     private String name;
@@ -58,7 +60,7 @@ public class ClassroomEntity {
             fetch = FetchType.LAZY
     )
     @MapKey(name = "studentUserId")
-    private Map<String, ClassroomStudentEntity> students = new HashMap<>();
+    private Map<UUID, ClassroomStudentEntity> students = new HashMap<>();
 
     @OneToMany(
     mappedBy = "classroomEntity",
@@ -96,3 +98,4 @@ public class ClassroomEntity {
     }
 
 }
+

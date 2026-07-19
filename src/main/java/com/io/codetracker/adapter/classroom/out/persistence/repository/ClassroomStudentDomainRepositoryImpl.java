@@ -1,5 +1,7 @@
 package com.io.codetracker.adapter.classroom.out.persistence.repository;
 
+
+import java.util.UUID;
 import com.io.codetracker.domain.classroom.repository.ClassroomStudentDomainRepository;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 import com.io.codetracker.infrastructure.classroom.persistence.repository.JpaClassroomStudentRepository;
@@ -13,7 +15,7 @@ public class ClassroomStudentDomainRepositoryImpl implements ClassroomStudentDom
     private final JpaClassroomStudentRepository classroomStudentRepository;
 
     @Override
-    public boolean existsByClassroomIdAndStudentUserId(String classroomId, String studentUserId) {
+    public boolean existsByClassroomIdAndStudentUserId(String classroomId, UUID studentUserId) {
         return classroomStudentRepository.existsByClassroom_ClassroomIdAndStudentUserIdAndStatus(classroomId, studentUserId, StudentStatus.ACTIVE);
     }
 
@@ -22,3 +24,4 @@ public class ClassroomStudentDomainRepositoryImpl implements ClassroomStudentDom
         return classroomStudentRepository.countByClassroom_ClassroomIdAndStatus(classroomId, StudentStatus.ACTIVE);
     }
 }
+

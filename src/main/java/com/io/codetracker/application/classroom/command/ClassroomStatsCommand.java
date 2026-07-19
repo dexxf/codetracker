@@ -1,5 +1,8 @@
 package com.io.codetracker.application.classroom.command;
 
-public record ClassroomStatsCommand (String classroomId, String userId){
+
+import java.util.UUID;
+public record ClassroomStatsCommand (String classroomId, UUID userId){
     
 }
+

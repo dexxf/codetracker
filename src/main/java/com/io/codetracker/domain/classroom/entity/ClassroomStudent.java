@@ -1,5 +1,7 @@
 package com.io.codetracker.domain.classroom.entity;
 
+
+import java.util.UUID;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 
 import java.time.Instant;
@@ -7,13 +9,13 @@ import java.time.Instant;
 public final class ClassroomStudent {
 
     private final String classroomId;
-    private final String studentUserId;
+    private final UUID studentUserId;
     private StudentStatus status;
     private Instant lastActiveAt;
     private final Instant joinedAt;
     private Instant leftAt;
 
-    public ClassroomStudent(String classroomId, String studentUserId, StudentStatus status, Instant lastActiveAt, Instant joinedAt, Instant leftAt) {
+    public ClassroomStudent(String classroomId, UUID studentUserId, StudentStatus status, Instant lastActiveAt, Instant joinedAt, Instant leftAt) {
         this.classroomId = classroomId;
         this.studentUserId = studentUserId;
         this.status = status;
@@ -26,7 +28,7 @@ public final class ClassroomStudent {
         return classroomId;
     }
 
-    public String getStudentUserId() {
+    public UUID getStudentUserId() {
         return studentUserId;
     }
 
@@ -94,3 +96,4 @@ public final class ClassroomStudent {
         this.leftAt = null;
     }
 }
+

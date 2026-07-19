@@ -1,5 +1,7 @@
 package com.io.codetracker.adapter.user.out.persistence.repository;
 
+
+import java.util.UUID;
 import com.io.codetracker.adapter.user.out.persistence.mapper.UserMapper;
 import com.io.codetracker.application.user.port.out.UserAppRepository;
 import com.io.codetracker.domain.classroom.repository.ClassroomUserDomainPort;
@@ -25,7 +27,7 @@ public class UserAppRepositoryImpl implements UserAppRepository,ClassroomUserDom
     }
 
     @Override
-    public Optional<User> findByUserId(String userId) {
+    public Optional<User> findByUserId(UUID userId) {
         Optional<UserEntity> userEntityOpt= jpa.findById(userId);
 
         if(userEntityOpt.isEmpty()) return Optional.empty();
@@ -34,12 +36,12 @@ public class UserAppRepositoryImpl implements UserAppRepository,ClassroomUserDom
     }
 
     @Override
-    public int updateProfileUrlByUserId(String userId, String newProfileUrl) {
+    public int updateProfileUrlByUserId(UUID userId, String newProfileUrl) {
         return jpa.updateProfileUrlByUserId(userId,newProfileUrl);
     }
 
     @Override
-    public boolean existsByUserId(String instructorUserId) {
+    public boolean existsByUserId(UUID instructorUserId) {
         return jpa.existsById(instructorUserId);
     }
 }

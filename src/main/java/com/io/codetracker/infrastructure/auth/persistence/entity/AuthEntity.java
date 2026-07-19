@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(name = "auth", uniqueConstraints = {
@@ -23,7 +24,7 @@ public class AuthEntity {
     private String id;
 
     @Column(name = "user_id", nullable = false)
-    private String userId;
+    private UUID userId;
 
     @OneToOne(
             mappedBy = "authEntity",
@@ -64,3 +65,4 @@ public class AuthEntity {
     }
 
 }
+

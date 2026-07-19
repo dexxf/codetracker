@@ -1,4 +1,6 @@
 package com.io.codetracker.application.classroom.command;
 
-public record JoinClassroomCommand(String userId, String code, String passcode) {
+
+import java.util.UUID;
+public record JoinClassroomCommand(UUID userId, String code, String passcode) {
 }

@@ -1,5 +1,7 @@
 package com.io.codetracker.application.activity.service;
 
+
+import java.util.UUID;
 import com.io.codetracker.application.activity.error.MarkStudentAsGradedError;
 import com.io.codetracker.application.activity.error.SubmitActivityError;
 import com.io.codetracker.application.activity.error.SubmitExistingRepositoryError;
@@ -38,7 +40,7 @@ public class SubmitRepositoryService implements SubmitNewRepositoryUseCase, Subm
     private final CreateGithubSubmissionUseCase createGithubSubmissionUseCase;
 
     @Override
-    public Result<StudentActivityData, MarkStudentAsGradedError> grade(String instructorUserId, String classroomId, String activityId, String studentUserId, String feedback, Integer score) {
+    public Result<StudentActivityData, MarkStudentAsGradedError> grade(UUID instructorUserId, String classroomId, String activityId, UUID studentUserId, String feedback, Integer score) {
         if (!activityClassroomAppPort.existsByClassroomId(classroomId))
             return Result.fail(MarkStudentAsGradedError.CLASSROOM_NOT_FOUND);
 
@@ -87,7 +89,7 @@ public class SubmitRepositoryService implements SubmitNewRepositoryUseCase, Subm
     }
 
     @Override
-    public Result<StudentActivityData, SubmitActivityError> submit(String userId, String classroomId, String activityId) {
+    public Result<StudentActivityData, SubmitActivityError> submit(UUID userId, String classroomId, String activityId) {
         if (!activityClassroomAppPort.existsByClassroomId(classroomId))
             return Result.fail(SubmitActivityError.CLASSROOM_NOT_FOUND);
 
@@ -121,7 +123,7 @@ public class SubmitRepositoryService implements SubmitNewRepositoryUseCase, Subm
     }
 
     @Override
-    public Result<StudentActivityData, SubmitExistingRepositoryError> submitExisting(String authId, String userId, String classroomId, String activityId, String repositoryUrl) {
+    public Result<StudentActivityData, SubmitExistingRepositoryError> submitExisting(String authId, UUID userId, String classroomId, String activityId, String repositoryUrl) {
         if (!activityClassroomAppPort.existsByClassroomId(classroomId))
             return Result.fail(SubmitExistingRepositoryError.CLASSROOM_NOT_FOUND);
 
@@ -171,7 +173,7 @@ public class SubmitRepositoryService implements SubmitNewRepositoryUseCase, Subm
     }
 
     @Override
-    public Result<StudentActivityData, SubmitNewRepositoryError> submitNew(String authId, String userId, String classroomId, String activityId, String repositoryName) {
+    public Result<StudentActivityData, SubmitNewRepositoryError> submitNew(String authId, UUID userId, String classroomId, String activityId, String repositoryName) {
         if (!activityClassroomAppPort.existsByClassroomId(classroomId))
             return Result.fail(SubmitNewRepositoryError.CLASSROOM_NOT_FOUND);
 
@@ -224,3 +226,4 @@ public class SubmitRepositoryService implements SubmitNewRepositoryUseCase, Subm
     }
 
 }
+

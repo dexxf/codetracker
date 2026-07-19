@@ -65,3 +65,4 @@ public class StudentActivityEntity {
         this.updatedAt = Instant.now();
     }
 }
+

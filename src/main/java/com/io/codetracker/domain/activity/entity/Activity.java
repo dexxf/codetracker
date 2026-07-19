@@ -1,5 +1,7 @@
 package com.io.codetracker.domain.activity.entity;
 
+
+import java.util.UUID;
 import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
 
 import java.time.Instant;
@@ -8,7 +10,7 @@ public class Activity {
 
     private final String activityId;
     private final String classroomId;
-    private final String instructorUserId;
+    private final UUID instructorUserId;
     private String title;
     private String description;
     private Instant dueDate;
@@ -17,7 +19,7 @@ public class Activity {
     private final Instant createdAt;
     private Instant updatedAt;
 
-    public Activity(String activityId ,String classroomId, String instructorUserId, String title, String description, Instant dueDate, ActivityStatus status, Integer maxScore, Instant createdAt, Instant updatedAt) {
+    public Activity(String activityId ,String classroomId, UUID instructorUserId, String title, String description, Instant dueDate, ActivityStatus status, Integer maxScore, Instant createdAt, Instant updatedAt) {
         this.activityId = activityId;
         this.classroomId = classroomId;
         this.instructorUserId = instructorUserId;
@@ -90,7 +92,7 @@ public class Activity {
         this.title = title;
     }
 
-    public String getInstructorUserId() {
+    public UUID getInstructorUserId() {
         return instructorUserId;
     }
 
@@ -109,3 +111,4 @@ public class Activity {
         this.updatedAt = Instant.now();
     }
 }
+

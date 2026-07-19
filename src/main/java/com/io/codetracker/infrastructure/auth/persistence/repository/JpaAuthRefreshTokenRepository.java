@@ -16,3 +16,4 @@ public interface JpaAuthRefreshTokenRepository extends JpaRepository<AuthRefresh
     @Query("UPDATE refresh_token rt SET  rt.revoked = true, rt.revokedAt = :revokedAt WHERE rt.id = :id AND rt.deviceId = :deviceId")
     int revokeByIdAndDeviceId(@Param("id") UUID id, @Param("deviceId") String deviceId, @Param("revokedAt") Instant revokedAt);
 }
+

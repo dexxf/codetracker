@@ -1,5 +1,7 @@
 package com.io.codetracker.adapter.classroom.out.persistence.repository;
 
+
+import java.util.UUID;
 import com.io.codetracker.adapter.user.out.persistence.mapper.UserMapper;
 import com.io.codetracker.infrastructure.user.persistence.repository.JpaUserRepository;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentUserAppPort;
@@ -23,11 +25,11 @@ public class ClassroomStudentUserAppAdapter implements ClassroomStudentUserAppPo
 
     @Override
     public List<ClassroomStudentData> addUserData(List<ClassroomStudent> classroomStudents) {
-        List<String> userIds = classroomStudents.stream()
+        List<UUID> userIds = classroomStudents.stream()
                 .map(ClassroomStudent::getStudentUserId)
                 .toList();
 
-        Map<String, User> usersMap = jpa.findAllById(userIds).stream()
+        Map<UUID, User> usersMap = jpa.findAllById(userIds).stream()
                 .map(UserMapper::toDomain)
                 .collect(Collectors.toMap(User::getUserId, u -> u));
 
@@ -48,3 +50,4 @@ public class ClassroomStudentUserAppAdapter implements ClassroomStudentUserAppPo
         return studentDataList;
     }
 }
+

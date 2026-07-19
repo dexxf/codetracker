@@ -1,5 +1,7 @@
 package com.io.codetracker.domain.classroom.service;
 
+
+import java.util.UUID;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.classroom.entity.Classroom;
 import com.io.codetracker.domain.classroom.entity.ClassroomSettings;
@@ -27,7 +29,7 @@ public class ClassroomJoinService {
         this.classroomStudentDomainRepository = classroomStudentDomainRepository;
     }
 
-    public Result<ClassroomJoinValidationResult, ClassroomJoinFailResult> validate(String userId, String code, String passcode) {
+    public Result<ClassroomJoinValidationResult, ClassroomJoinFailResult> validate(UUID userId, String code, String passcode) {
 
         Optional<Classroom> classroomOptional = classroomDomainRepository.findByClassCode(code);
         if (classroomOptional.isEmpty()) return Result.fail(ClassroomJoinFailResult.CODE_NOT_FOUND);
@@ -71,3 +73,4 @@ public class ClassroomJoinService {
 
 
 }
+

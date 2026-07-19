@@ -1,4 +1,7 @@
 package com.io.codetracker.application.activity.command;
 
-public record FindUnsubmittedRepositoryCommand(String userId, String classroomId) {
+
+import java.util.UUID;
+public record FindUnsubmittedRepositoryCommand(UUID userId, String classroomId) {
 }
+

@@ -1,5 +1,7 @@
 package com.io.codetracker.adapter.activity.out.persistence.repository;
 
+
+import java.util.UUID;
 import com.io.codetracker.application.activity.port.out.ActivityClassroomAppPort;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 import com.io.codetracker.infrastructure.activity.persistence.repository.JpaActivityRepository;
@@ -24,18 +26,18 @@ public class ActivityClassroomAppAdapter implements ActivityClassroomAppPort {
     }
 
     @Override
-    public boolean existsByClassroomIdAndInstructorUserId(String classroomId, String userId) {
+    public boolean existsByClassroomIdAndInstructorUserId(String classroomId, UUID userId) {
         return jpa.existsByClassroomIdAndInstructorUserId(classroomId, userId);
     }
 
     @Override
-    public String findClassroomOwnerByClassroomId(String classroomId) {
+    public UUID findClassroomOwnerByClassroomId(String classroomId) {
         return jpa.findInstructorUserIdByClassroomId(classroomId);
     }
 
 
     @Override
-    public boolean existsByClassroomIdAndStudentUserId(String classroomId, String userId) {
+    public boolean existsByClassroomIdAndStudentUserId(String classroomId, UUID userId) {
         return jpaClassroomStudentRepository.existsByClassroom_ClassroomIdAndStudentUserIdAndStatus(
                 classroomId,
                 userId,
@@ -54,3 +56,4 @@ public class ActivityClassroomAppAdapter implements ActivityClassroomAppPort {
     }
 
 }
+

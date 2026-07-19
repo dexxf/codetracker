@@ -1,5 +1,7 @@
 package com.io.codetracker.infrastructure.classroom.persistence.repository;
 
+
+import java.util.UUID;
 import com.io.codetracker.domain.classroom.valueObject.ClassroomStatus;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 import com.io.codetracker.application.classroom.result.ClassroomStudentJoinedData;
@@ -17,12 +19,12 @@ import java.util.Optional;
 
 @Repository
 public interface JpaClassroomStudentRepository extends JpaRepository<ClassroomStudentEntity, Long> {
-    boolean existsByClassroom_ClassroomIdAndStudentUserId(String classroomId, String studentUserId);
-    boolean existsByClassroom_ClassroomIdAndStudentUserIdAndStatus(String classroomId, String studentUserId, StudentStatus status);
-    Optional<ClassroomStudentEntity> findByClassroom_ClassroomIdAndStudentUserId(String classroomId, String studentUserId);
+    boolean existsByClassroom_ClassroomIdAndStudentUserId(String classroomId, UUID studentUserId);
+    boolean existsByClassroom_ClassroomIdAndStudentUserIdAndStatus(String classroomId, UUID studentUserId, StudentStatus status);
+    Optional<ClassroomStudentEntity> findByClassroom_ClassroomIdAndStudentUserId(String classroomId, UUID studentUserId);
 
     @Query("SELECT cs FROM ClassroomStudentEntity cs JOIN cs.classroom c WHERE cs.studentUserId = :studentUserId AND (:studentStatus IS NULL OR cs.status = :studentStatus) AND (:classroomStatus IS NULL OR c.status = :classroomStatus)")
-    List<ClassroomStudentEntity> findEnrollmentsByStatus(@Param("studentUserId") String studentUserId, @Param("studentStatus") StudentStatus studentStatus, @Param("classroomStatus") ClassroomStatus classroomStatus);
+    List<ClassroomStudentEntity> findEnrollmentsByStatus(@Param("studentUserId") UUID studentUserId, @Param("studentStatus") StudentStatus studentStatus, @Param("classroomStatus") ClassroomStatus classroomStatus);
 
     int countByClassroom_ClassroomId(String classroomId);
     int countByClassroom_ClassroomIdAndStatus(String classroomId, StudentStatus status);
@@ -70,3 +72,4 @@ public interface JpaClassroomStudentRepository extends JpaRepository<ClassroomSt
     """)
     long countByStatus_ActiveAndClassroom_ClassroomId(@Param("classroomId") String classroomId);
 }
+

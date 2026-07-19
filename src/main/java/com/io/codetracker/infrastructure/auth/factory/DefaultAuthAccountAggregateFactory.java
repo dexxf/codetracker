@@ -17,7 +17,7 @@ public class DefaultAuthAccountAggregateFactory implements AuthAccountAggregateF
 
 
     @Override
-    public AuthAccountAggregate create( String userId, Email email, String username, Roles role, Long githubId, String accessToken) {
+    public AuthAccountAggregate create(UUID userId, Email email, String username, Roles role, Long githubId, String accessToken) {
         UUID authId = UUID.randomUUID();
 
         Auth auth = Auth.createOAuth(authId,userId,email,username,role);
@@ -26,3 +26,4 @@ public class DefaultAuthAccountAggregateFactory implements AuthAccountAggregateF
         return new AuthAccountAggregate(auth,githubAccount);
     }
 }
+

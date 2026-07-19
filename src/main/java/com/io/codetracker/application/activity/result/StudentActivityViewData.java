@@ -91,3 +91,4 @@ public record StudentActivityViewData(
         );
     }
 }
+

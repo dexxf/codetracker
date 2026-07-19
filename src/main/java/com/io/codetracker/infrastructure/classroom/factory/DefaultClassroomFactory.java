@@ -1,5 +1,7 @@
 package com.io.codetracker.infrastructure.classroom.factory;
 
+
+import java.util.UUID;
 import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,7 +26,7 @@ public class DefaultClassroomFactory implements ClassroomFactory {
     }
 
     @Override
-    public Classroom createClassroom(String instructorUserId, String name,String description) {
+    public Classroom createClassroom(UUID instructorUserId, String name,String description) {
         return new Classroom(classroomIdGenerator.generate(), instructorUserId, name, description,
              codeGenerator.generateCode(),ClassroomStatus.ACTIVE,Instant.now(), Instant.now());
     }
@@ -35,3 +37,4 @@ public class DefaultClassroomFactory implements ClassroomFactory {
     }
 
 }
+

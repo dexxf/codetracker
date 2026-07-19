@@ -1,5 +1,7 @@
 package com.io.codetracker.domain.classroom.service;
 
+
+import java.util.UUID;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.classroom.entity.Classroom;
 import com.io.codetracker.domain.classroom.entity.ClassroomSettings;
@@ -24,10 +26,10 @@ public final class ClassroomCreationService {
     }
 
    
-    public Result<ClassroomCreationEntity, ClassroomCreationResult> createClassroom(String instructorUserId,String name,String description,int maxStudents,boolean requireApproval,
+    public Result<ClassroomCreationEntity, ClassroomCreationResult> createClassroom(UUID instructorUserId,String name,String description,int maxStudents,boolean requireApproval,
             String passcode) {
 
-        if (instructorUserId == null || instructorUserId.isBlank()) {
+        if (instructorUserId == null) {
             return Result.fail(ClassroomCreationResult.INVALID_INSTRUCTOR);
         }
 
@@ -66,3 +68,4 @@ public final class ClassroomCreationService {
         return Result.ok(new ClassroomCreationEntity(classroom, settings));
     }
 }
+

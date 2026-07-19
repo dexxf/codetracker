@@ -1,5 +1,7 @@
 package com.io.codetracker.adapter.auth.out.security;
 
+
+import java.util.UUID;
 import com.io.codetracker.domain.auth.entity.Auth;
 import com.io.codetracker.domain.auth.valueobject.Status;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,7 +34,7 @@ public final class AuthPrincipal implements UserDetails {
         return auth.getAuthId();
     }
 
-    public String getUserId() {
+    public UUID getUserId() {
         return auth.getUserId();
     }
 
@@ -68,3 +70,4 @@ public final class AuthPrincipal implements UserDetails {
         return isFullyInitialized();
     }
 }
+

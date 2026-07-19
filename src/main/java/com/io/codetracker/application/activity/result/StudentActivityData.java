@@ -1,11 +1,12 @@
 package com.io.codetracker.application.activity.result;
 
 import com.io.codetracker.domain.activity.entity.StudentActivity;
+import java.util.UUID;
 import com.io.codetracker.domain.activity.valueObject.SubmissionStatus;
 
 public record StudentActivityData(
         String activityId,
-        String userId,
+        UUID userId,
         SubmissionStatus submissionStatus,
         String feedback,
         Integer score
@@ -20,3 +21,4 @@ public record StudentActivityData(
         );
     }
 }
+

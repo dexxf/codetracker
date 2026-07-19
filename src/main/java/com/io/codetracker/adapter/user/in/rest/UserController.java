@@ -58,7 +58,7 @@ public class UserController {
     public ResponseEntity<UserProfileResponse> updateUserProfile(
             @AuthenticationPrincipal AuthPrincipal principal,
             @Valid @RequestBody UserProfileRequest request) {
-        UserProfileCommand command = new UserProfileCommand(request.firstName(), request.lastName(), request.gender(), request.phoneNumber(), request.bio(), request.birthday());
+        UserProfileCommand command = new UserProfileCommand(request.firstName(), request.lastName(), request.gender());
         Result<UserData, List<UserProfileError>> result = updateUserProfileUseCase.updateProfile(principal.getUserId(), command);
         return result.success() ?
                 ResponseEntity.ok(UserProfileResponse.ok(result.data()))

@@ -1,8 +1,8 @@
 package com.io.codetracker.application.user.port.out;
 
-import java.util.Optional;
+import java.util.UUID;
 
 public interface UserAuthPort {
-    void markUserAsFullyInitialized(String userId);
-    Optional<String> getUserIdByAuthId(String authId);
+    void changeStatusActiveByUserId(UUID userId);
 }
+

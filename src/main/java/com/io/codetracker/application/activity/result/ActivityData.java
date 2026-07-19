@@ -1,11 +1,13 @@
 package com.io.codetracker.application.activity.result;
 
+
+import java.util.UUID;
 import com.io.codetracker.domain.activity.entity.Activity;
 import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
 
 import java.time.Instant;
 
-public record ActivityData(String activityId, String classroomId, String instructorUserId, String title, String description,
+public record ActivityData(String activityId, String classroomId, UUID instructorUserId, String title, String description,
                            Instant dueDate, ActivityStatus status, Integer maxScore, Instant createdAt, Instant updatedAt) {
 
     public static ActivityData from(Activity activity) {
@@ -14,3 +16,4 @@ public record ActivityData(String activityId, String classroomId, String instruc
                 activity.getMaxScore(), activity.getCreatedAt(), activity.getUpdatedAt());
     }
 }
+

@@ -1,5 +1,7 @@
 package com.io.codetracker.infrastructure.activity.factory;
 
+
+import java.util.UUID;
 import com.io.codetracker.common.id.IDGenerator;
 import com.io.codetracker.domain.activity.entity.Activity;
 import com.io.codetracker.domain.activity.factory.ActivityFactory;
@@ -19,9 +21,10 @@ public class DefaultActivityFactory implements ActivityFactory {
     }
 
     @Override
-    public Activity create(String classroomId, String instructorUserId, String title, String description, Instant dueDate, Integer maxScore, ActivityStatus status) {
+    public Activity create(String classroomId, UUID instructorUserId, String title, String description, Instant dueDate, Integer maxScore, ActivityStatus status) {
         Instant now = Instant.now();
         return new Activity(idGenerator.generate(),classroomId, instructorUserId, title, description, dueDate, status, maxScore, now, now);
     }
 
 }
+

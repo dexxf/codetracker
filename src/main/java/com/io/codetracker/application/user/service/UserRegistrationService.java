@@ -10,30 +10,29 @@ import com.io.codetracker.application.user.port.out.UserAppRepository;
 import com.io.codetracker.application.user.result.UserData;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.user.entity.User;
-import com.io.codetracker.domain.user.result.UserCreationResult;
-import com.io.codetracker.domain.user.service.UserCreationService;
+import com.io.codetracker.domain.user.valueobject.Gender;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public final class UserRegistrationService implements UserShallowRegistrationUseCase, CompleteInitializationUseCase {
 
     private final UserAppRepository repository;
-    private final UserCreationService userCreationService;
     private final UserAuthPort authRepository;
     private final CloudinaryPort cloudinaryPort;
 
-    public String createShallowUser() {
-        User user = userCreationService.createShallowUser();
+    public UUID createShallowUser() {
+        User user = User.createShallow(UUID.randomUUID());
         repository.save(user);
         return user.getUserId();
     }
 
-    public Result<UserData, UserRegistrationError> completeInitialization(String userId, UserRegistrationCommand command) {
+    public Result<UserData, UserRegistrationError> completeInitialization(UUID userId, UserRegistrationCommand command) {
         Optional<User> userOpt = repository.findByUserId(userId);
 
         if (userOpt.isEmpty()) {
@@ -42,7 +41,7 @@ public final class UserRegistrationService implements UserShallowRegistrationUse
 
         User user = userOpt.get();
 
-        if (user.isHasFullyInitialized()) {
+        if (user.getHasFullyInitialized()) {
             return Result.fail(UserRegistrationError.USER_ALREADY_INITIALIZED);
         }
 
@@ -51,41 +50,42 @@ public final class UserRegistrationService implements UserShallowRegistrationUse
             try {
                 profileUrl = cloudinaryPort.uploadProfilePicture(
                         command.profile().getBytes(),
-                        userId
+                        userId.toString()
                 );
             } catch (IOException e) {
                 return Result.fail(UserRegistrationError.PROFILE_UPLOAD_FAILED);
             }
         }
 
-        UserCreationResult result = userCreationService.finalizeUser(
-                user,
+        Gender gender;
+
+        try {
+            gender = Gender.valueOf(command.gender());
+        } catch(IllegalArgumentException e) {
+            return Result.fail(UserRegistrationError.INVALID_GENDER);
+        }
+
+        User result = User.createFullyInitialized(
+                user.getUserId(),
                 command.firstName(),
                 command.lastName(),
-                command.phoneNumber(),
-                command.gender(),
-                command.birthday(),
-                profileUrl,
-                command.bio()
+                gender,
+                profileUrl
         );
-
-        if (result != UserCreationResult.SUCCESS) {
 
             if (profileUrl != null) {
                 try {
-                    cloudinaryPort.deleteImageByPublicId(user.getUserId());
+                    cloudinaryPort.deleteImageByPublicId(user.getUserId().toString());
                 } catch (IOException e) {
                     return Result.fail(UserRegistrationError.PROFILE_DELETE_FAILED);
                 }
             }
 
-            return Result.fail(UserRegistrationError.INVALID_USER_DATA);
-        }
-
-        authRepository.markUserAsFullyInitialized(user.getUserId());
-        repository.save(user);
+        authRepository.changeStatusActiveByUserId(user.getUserId());
+        repository.save(result);
 
         return Result.ok(UserData.from(user));
     }
 
 }
+

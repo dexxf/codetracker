@@ -1,8 +1,11 @@
 package com.io.codetracker.application.classroom.command;
 
+
+import java.util.UUID;
 public record GetClassroomRecentActivitiesCommand(
-        String userId,
+        UUID userId,
         String classroomId,
         int limit
 ) {
 }
+

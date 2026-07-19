@@ -1,5 +1,7 @@
 package com.io.codetracker.application.activity.service;
 
+
+import java.util.UUID;
 import com.io.codetracker.application.activity.error.GetClassroomOwnerActivityError;
 import com.io.codetracker.application.activity.error.GetClassroomStudentActivityError;
 import com.io.codetracker.application.activity.port.in.GetClassroomOwnerActivityUseCase;
@@ -65,7 +67,7 @@ public class GetActivityService implements GetClassroomOwnerActivityUseCase, Get
     }
 
     @Override
-    public Result<Map<String, StudentActivityInfoUserData>, GetClassroomOwnerActivityError> execute(GetActivityCommand command) {
+    public Result<Map<UUID, StudentActivityInfoUserData>, GetClassroomOwnerActivityError> execute(GetActivityCommand command) {
         if (!activityClassroomAppPort.existsByClassroomId(command.classroomId())) {
             return Result.fail(GetClassroomOwnerActivityError.CLASSROOM_NOT_FOUND);
         }
@@ -77,7 +79,7 @@ public class GetActivityService implements GetClassroomOwnerActivityUseCase, Get
         List<StudentActivityInfoStudentData> students = studentActivityInfoAppRepository.findClassroomStudents(command.classroomId());
         List<StudentActivityInfoData> studentActivities = studentActivityInfoAppRepository.findStudentActivityInfos(command.classroomId());
 
-        Map<String, StudentActivityInfoUserData> studentActivityInfoMap = new LinkedHashMap<>();
+        Map<UUID, StudentActivityInfoUserData> studentActivityInfoMap = new LinkedHashMap<>();
         for (StudentActivityInfoStudentData student : students) {
             studentActivityInfoMap.put(student.userId(), new StudentActivityInfoUserData(
                     student.userId(),
@@ -100,3 +102,4 @@ public class GetActivityService implements GetClassroomOwnerActivityUseCase, Get
         return Result.ok(studentActivityInfoMap);
     }
 }
+

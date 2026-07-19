@@ -107,3 +107,4 @@ public class RefreshTokenRotationService implements RotateRefreshTokenUseCase {
         return rawSecret + "." + tokenId;
     }
 }
+

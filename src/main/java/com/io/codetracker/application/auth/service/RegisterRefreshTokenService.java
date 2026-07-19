@@ -88,3 +88,4 @@ public class RegisterRefreshTokenService implements AddRefreshTokenUseCase {
         return rawSecret + "." + tokenId;
     }
 }
+

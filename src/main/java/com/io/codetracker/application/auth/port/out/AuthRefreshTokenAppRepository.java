@@ -13,3 +13,4 @@ public interface AuthRefreshTokenAppRepository {
     Optional<AuthRefreshToken> findByRefreshTokenId(UUID refreshTokenID);
     boolean revokeToken(UUID id, String deviceId);
 }
+

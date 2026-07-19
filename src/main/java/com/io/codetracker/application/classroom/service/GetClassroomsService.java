@@ -1,5 +1,7 @@
 package com.io.codetracker.application.classroom.service;
 
+
+import java.util.UUID;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +26,7 @@ public class GetClassroomsService implements GetClassroomUseCase {
         this.classroomAppRepository = classroomAppRepository;
     }
 
-    public Result<List<GetClassroomsProfessorData>, SimpleClassroomError> execute(String userId) {
+    public Result<List<GetClassroomsProfessorData>, SimpleClassroomError> execute(UUID userId) {
         List<Classroom> classroomList = classroomAppRepository.findByInstructorUserId(userId);
         if (classroomList.isEmpty()) {
             return Result.fail(SimpleClassroomError.NO_CLASSROOM_FOUND);

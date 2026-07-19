@@ -1,12 +1,14 @@
 package com.io.codetracker.application.classroom.result;
 
+
+import java.util.UUID;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 public record ClassroomRecentActivityData(
         String eventType,
         ZonedDateTime occurredAt,
-        String studentUserId,
+        UUID studentUserId,
         String firstName,
         String lastName,
         String profileUrl,
@@ -61,3 +63,4 @@ public record ClassroomRecentActivityData(
         );
     }
 }
+

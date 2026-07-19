@@ -1,5 +1,7 @@
 package com.io.codetracker.adapter.activity.out.persistence.repository;
 
+
+import java.util.UUID;
 import com.io.codetracker.adapter.activity.out.persistence.mapper.ActivityMapper;
 import com.io.codetracker.application.activity.port.out.ActivityAppRepository;
 import com.io.codetracker.application.activity.result.StudentActivityViewData;
@@ -33,7 +35,7 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
     }
 
     @Override
-    public List<Activity> findActivitiesByClassroomIdAndInstructorUserId(String classroomId, String instructorId) {
+    public List<Activity> findActivitiesByClassroomIdAndInstructorUserId(String classroomId, UUID instructorId) {
         return jpa.findByClassroomEntity_ClassroomIdAndClassroomEntity_InstructorUserId(classroomId, instructorId).stream().map(
                 ActivityMapper::toDomain
         ).toList();
@@ -59,7 +61,8 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
     }
 
     @Override
-    public List<StudentActivityViewData> findStudentActivities(String classroomId, String userId) {
+    public List<StudentActivityViewData> findStudentActivities(String classroomId, UUID userId) {
         return jpa.findStudentActivityViewsByClassroomIdAndUserId(classroomId, userId);
     }
 }
+

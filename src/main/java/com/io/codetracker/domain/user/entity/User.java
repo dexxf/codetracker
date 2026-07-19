@@ -1,46 +1,57 @@
 package com.io.codetracker.domain.user.entity;
 
-import com.io.codetracker.domain.user.valueobject.Birthday;
 import com.io.codetracker.domain.user.valueobject.Gender;
-import com.io.codetracker.domain.user.valueobject.PhoneNumber;
 
-import java.time.Instant;
+import java.util.Objects;
+import java.util.UUID;
+
 
 public final class User {
 
-    private final String userId;
+    private final UUID userId;
     private String firstName;
     private String lastName;
     private Gender gender;
-    private PhoneNumber phoneNumber;
     private String profileUrl;
-    private String bio;
-    private Birthday birthday;
 
-    private boolean hasFullyInitialized;
-    private final Instant createdAt;
+    private final Boolean hasFullyInitialized;
 
-    public User(String userId, Instant createdAt, boolean hasFullyInitialized) {
+    private User(UUID userId, Boolean hasFullyInitialized) {
         this.userId = userId;
-        this.createdAt = createdAt;
         this.hasFullyInitialized = hasFullyInitialized;
     }
 
-    public User(String userId, String firstName, String lastName, Gender gender, PhoneNumber phoneNumber,
-                String profileUrl, String bio, Birthday birthday, boolean hasFullyInitialized, Instant createdAt) {
-        this.userId = userId;
+    private User(UUID userId, String firstName, String lastName, Gender gender,
+                 String profileUrl, Boolean hasFullyInitialized) {
+        this.userId = Objects.requireNonNull(userId, "userId must not be null");
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
-        this.phoneNumber = phoneNumber;
         this.profileUrl = profileUrl;
-        this.bio = bio;
-        this.birthday = birthday;
-        this.hasFullyInitialized = hasFullyInitialized;
-        this.createdAt = createdAt;
+        this.hasFullyInitialized = Objects.requireNonNull(hasFullyInitialized, "hasFullyInitialized must not be null");;
     }
 
-    public String getUserId() {
+    public static User createShallow(UUID userId) {
+        return new User(userId, false);
+    }
+
+    public static User createFullyInitialized(UUID userId, String firstName, String lastName, Gender gender, String profileUrl) {
+
+        Objects.requireNonNull(firstName, "firstName must not be null");
+        Objects.requireNonNull(lastName, "lastName must not be null");
+        Objects.requireNonNull(gender, "gender must not be null");
+
+        return new User(userId, firstName, lastName, gender, profileUrl, true);
+    }
+
+    public static User reconstitute(UUID userId, String firstName, String lastName, Gender gender
+                                    , String profileUrl,
+                                    boolean hasFullyInitialized) {
+        return new User(userId, firstName, lastName, gender,  profileUrl,
+                hasFullyInitialized);
+    }
+
+    public UUID getUserId() {
         return userId;
     }
 
@@ -68,13 +79,6 @@ public final class User {
         this.gender = gender;
     }
 
-    public PhoneNumber getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(PhoneNumber phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 
     public String getProfileUrl() {
         return profileUrl;
@@ -84,31 +88,7 @@ public final class User {
         this.profileUrl = profileUrl;
     }
 
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
-    public Birthday getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Birthday birthday) {
-        this.birthday = birthday;
-    }
-
-    public boolean isHasFullyInitialized() {
+    public Boolean getHasFullyInitialized() {
         return hasFullyInitialized;
-    }
-
-    public void setHasFullyInitialized(boolean hasFullyInitialized) {
-        this.hasFullyInitialized = hasFullyInitialized;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
     }
 }

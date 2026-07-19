@@ -1,5 +1,7 @@
 package com.io.codetracker.application.activity.service;
 
+
+import java.util.UUID;
 import java.util.Optional;
 
 import com.io.codetracker.application.activity.error.RemoveActivityError;
@@ -21,7 +23,7 @@ public final class RemoveActivityService implements RemoveActivityUseCase {
     private final ActivityAppRepository activityAppRepository;
     private final ActivityClassroomAppPort activityClassroomAppPort;
 
-    public Result<ActivityData, RemoveActivityError> execute(String classroomId, String activityId, String userId) {
+    public Result<ActivityData, RemoveActivityError> execute(String classroomId, String activityId, UUID userId) {
       boolean isInstructor = activityClassroomAppPort.existsByClassroomIdAndInstructorUserId(classroomId, userId);
 
       if(!isInstructor) return Result.fail(RemoveActivityError.USER_NOT_CLASSROOM_INSTRUCTOR);
@@ -33,3 +35,4 @@ public final class RemoveActivityService implements RemoveActivityUseCase {
       return Result.ok(ActivityData.from(activity.get()));
     }
 }
+

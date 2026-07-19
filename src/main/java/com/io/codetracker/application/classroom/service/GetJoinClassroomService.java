@@ -1,5 +1,7 @@
 package com.io.codetracker.application.classroom.service;
 
+
+import java.util.UUID;
 import com.io.codetracker.application.classroom.port.in.GetJoinClassroomUseCase;
 import com.io.codetracker.application.classroom.port.out.ClassroomAppRepository;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentAppRepository;
@@ -25,7 +27,7 @@ public class GetJoinClassroomService implements GetJoinClassroomUseCase {
         this.classroomRepository = classroomRepository;
     }
 
-    public List<GetJoinClassroomDataResult> execute(String userId) {
+    public List<GetJoinClassroomDataResult> execute(UUID userId) {
         List<ClassroomStudent> enrollments = classroomStudentRepository
                 .findActiveEnrollmentsWithActiveClassroom(userId);
 

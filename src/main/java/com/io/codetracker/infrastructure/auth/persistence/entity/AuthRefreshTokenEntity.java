@@ -70,3 +70,4 @@ public class AuthRefreshTokenEntity {
         this.updatedAt = Instant.now();
     }
 }
+

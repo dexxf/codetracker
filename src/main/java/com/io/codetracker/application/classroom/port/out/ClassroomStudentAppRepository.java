@@ -1,5 +1,7 @@
 package com.io.codetracker.application.classroom.port.out;
 
+
+import java.util.UUID;
 import com.io.codetracker.domain.classroom.entity.ClassroomStudent;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 
@@ -9,10 +11,11 @@ import java.util.Optional;
 
 public interface ClassroomStudentAppRepository {
     boolean save(ClassroomStudent classroomStudent);
-    boolean existsByClassroomIdAndStudentUserId(String classroomId, String studentUserId);
-    List<ClassroomStudent> findActiveEnrollmentsWithActiveClassroom(String studentUserId);
+    boolean existsByClassroomIdAndStudentUserId(String classroomId, UUID studentUserId);
+    List<ClassroomStudent> findActiveEnrollmentsWithActiveClassroom(UUID studentUserId);
     Map<String, Long> countActiveClassroomStudentByClassroomIds(List<String> classroomIds);
     List<ClassroomStudent> findClassroomStudents(String classroomId, StudentStatus status, boolean ascending);
     long countActiveClassroomStudentByClassroomId(String classroomId);
-    Optional<ClassroomStudent> findByClassroomIdAndStudentUserId(String classroomId, String studentUserId);
+    Optional<ClassroomStudent> findByClassroomIdAndStudentUserId(String classroomId, UUID studentUserId);
 }
+

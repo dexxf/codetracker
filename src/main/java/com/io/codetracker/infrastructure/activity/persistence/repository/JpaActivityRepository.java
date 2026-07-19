@@ -1,5 +1,7 @@
 package com.io.codetracker.infrastructure.activity.persistence.repository;
 
+
+import java.util.UUID;
 import com.io.codetracker.application.activity.result.StudentActivityViewData;
 import com.io.codetracker.application.classroom.result.ClassroomActivityCreatedData;
 import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
@@ -14,7 +16,7 @@ import java.util.Optional;
 
 public interface JpaActivityRepository extends JpaRepository<ActivityEntity, String> {
     boolean existsByClassroomEntity_ClassroomIdAndActivityId(String classroomId, String activityId);
-    List<ActivityEntity> findByClassroomEntity_ClassroomIdAndClassroomEntity_InstructorUserId(String classroomId, String instructorUserId);
+    List<ActivityEntity> findByClassroomEntity_ClassroomIdAndClassroomEntity_InstructorUserId(String classroomId, UUID instructorUserId);
 
     @Query("""
     SELECT new com.io.codetracker.application.activity.result.StudentActivityViewData(
@@ -41,7 +43,7 @@ public interface JpaActivityRepository extends JpaRepository<ActivityEntity, Str
     """)
     List<StudentActivityViewData> findStudentActivityViewsByClassroomIdAndUserId(
             @Param("classroomId") String classroomId,
-            @Param("userId") String userId
+            @Param("userId") UUID userId
     );
 
     long countByClassroomEntity_ClassroomIdAndStatus(String classroomId, ActivityStatus status);
@@ -71,3 +73,4 @@ public interface JpaActivityRepository extends JpaRepository<ActivityEntity, Str
             """)
     List<ClassroomActivityCreatedData> findRecentCreatedActivitiesByClassroomId(@Param("classroomId") String classroomId, Pageable pageable);
 }
+

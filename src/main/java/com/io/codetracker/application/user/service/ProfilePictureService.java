@@ -1,5 +1,7 @@
 package com.io.codetracker.application.user.service;
 
+
+import java.util.UUID;
 import com.io.codetracker.application.user.port.in.RemoveProfilePictureUseCase;
 import com.io.codetracker.application.user.port.in.UpdateProfilePictureUseCase;
 import com.io.codetracker.application.user.port.out.CloudinaryPort;
@@ -20,9 +22,9 @@ public class ProfilePictureService implements RemoveProfilePictureUseCase, Updat
     private final UserAppRepository userAppRepository;
 
     @Transactional
-    public ProfilePictureResult removeProfilePicture(String userId) {
+    public ProfilePictureResult removeProfilePicture(UUID userId) {
         try {
-            cloudinaryPort.deleteImageByPublicId(userId);
+            cloudinaryPort.deleteImageByPublicId(userId.toString());
             int rowsAffected = userAppRepository.updateProfileUrlByUserId(userId, null);
 
             return switch (rowsAffected) {
@@ -36,9 +38,9 @@ public class ProfilePictureService implements RemoveProfilePictureUseCase, Updat
     }
 
     @Transactional
-    public ProfilePictureResult updateProfilePicture(String userId, MultipartFile imgByte) {
+    public ProfilePictureResult updateProfilePicture(UUID userId, MultipartFile imgByte) {
         try {
-            String imageUrl = cloudinaryPort.uploadProfilePicture(imgByte.getBytes(), userId);
+            String imageUrl = cloudinaryPort.uploadProfilePicture(imgByte.getBytes(), userId.toString());
             int rowsAffected = userAppRepository.updateProfileUrlByUserId(userId, imageUrl);
 
             return switch (rowsAffected) {
@@ -52,3 +54,4 @@ public class ProfilePictureService implements RemoveProfilePictureUseCase, Updat
         }
     }
 }
+

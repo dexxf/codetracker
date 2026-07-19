@@ -1,5 +1,7 @@
 package com.io.codetracker.infrastructure.classroom.persistence.entity;
 
+
+import java.util.UUID;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,7 +21,7 @@ public class ClassroomStudentEntity {
     private Long id;
 
     @Column(name = "student_user_id", nullable = false)
-    private String studentUserId;
+    private UUID studentUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classroom_id", nullable = false)

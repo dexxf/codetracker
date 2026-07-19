@@ -14,6 +14,7 @@ import com.io.codetracker.domain.auth.valueobject.Roles;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
+import java.util.UUID;
 
 @Service
 public final class AuthAccountRegistrationService implements AuthOAuthRegistrationUseCase{
@@ -52,7 +53,7 @@ public final class AuthAccountRegistrationService implements AuthOAuthRegistrati
             return Result.fail(AuthRegistrationError.INVALID_ROLE);
         }
 
-        String userId = userRegistration.createShallowUser();
+        UUID userId = userRegistration.createShallowUser();
 
         AuthAccountAggregate aggregate = authAccountAggregateFactory.create(userId,emailResult.data(), command.username(), selectedRole,command.githubId(), command.accessToken());
 
@@ -61,3 +62,4 @@ public final class AuthAccountRegistrationService implements AuthOAuthRegistrati
     }
 
 }
+

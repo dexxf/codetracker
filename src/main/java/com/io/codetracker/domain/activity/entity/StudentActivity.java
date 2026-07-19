@@ -1,17 +1,18 @@
 package com.io.codetracker.domain.activity.entity;
 
 import com.io.codetracker.domain.activity.valueObject.SubmissionStatus;
+import java.util.UUID;
 
 public final class StudentActivity {
 
     private final String studentActivityId;
     private final String activityId;
-    private final String userId;
+    private final UUID userId;
     private SubmissionStatus submissionStatus;
     private String feedback;
     private Integer score;
 
-    public StudentActivity(String studentActivityId, String activityId, String userId, SubmissionStatus submissionStatus, String feedback, Integer score) {
+    public StudentActivity(String studentActivityId, String activityId, UUID userId, SubmissionStatus submissionStatus, String feedback, Integer score) {
         this.studentActivityId = studentActivityId;
         this.activityId = activityId;
         this.userId = userId;
@@ -20,12 +21,12 @@ public final class StudentActivity {
         this.score = score;
     }
 
-    public StudentActivity(String activityId, String userId, SubmissionStatus submissionStatus, String feedback, Integer score) {
+    public StudentActivity(String activityId, UUID userId, SubmissionStatus submissionStatus, String feedback, Integer score) {
         this(null, activityId, userId, submissionStatus, feedback, score);
     }
 
     // created createNew bc making factory or service is too much.. it only has 4 attributes
-    public static StudentActivity createNew(String activityId, String userId) {
+    public static StudentActivity createNew(String activityId, UUID userId) {
         return new StudentActivity(null, activityId, userId, SubmissionStatus.PENDING, null, null);
     }
 
@@ -37,7 +38,7 @@ public final class StudentActivity {
         return activityId;
     }
 
-    public String getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 
@@ -108,3 +109,4 @@ public final class StudentActivity {
         return trimmed.isEmpty() ? null : trimmed;
     }
 }
+

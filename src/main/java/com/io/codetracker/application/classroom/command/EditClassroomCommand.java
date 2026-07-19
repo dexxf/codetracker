@@ -1,10 +1,13 @@
 package com.io.codetracker.application.classroom.command;
 
+
+import java.util.UUID;
 public record EditClassroomCommand(
-    String userId,
+    UUID userId,
     String classroomId,
     String name,
     String description,
     Integer maxStudents
 ) {
 }
+

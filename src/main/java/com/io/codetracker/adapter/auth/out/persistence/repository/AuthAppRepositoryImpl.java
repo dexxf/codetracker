@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class AuthAppRepositoryImpl implements AuthAppRepository,UserAuthPort {
@@ -64,7 +65,7 @@ public class AuthAppRepositoryImpl implements AuthAppRepository,UserAuthPort {
     }
 
     @Override
-    public void markUserAsFullyInitialized(String userId) {
+    public void changeStatusActiveByUserId(UUID userId) {
         Optional<AuthEntity> authEntityOpt = jpa.findByUserId(userId);
         if (authEntityOpt.isPresent()) {
             Auth auth = AuthMapper.toDomain(authEntityOpt.get());
@@ -73,10 +74,5 @@ public class AuthAppRepositoryImpl implements AuthAppRepository,UserAuthPort {
         }
     }
 
-    @Override
-    public Optional<String> getUserIdByAuthId(String authId) {
-        Optional<AuthEntity> authEntityOpt = jpa.findById(authId);
-        if(authEntityOpt.isEmpty()) return Optional.empty();
-        return Optional.of(authEntityOpt.get().getUserId());
-    }
 }
+

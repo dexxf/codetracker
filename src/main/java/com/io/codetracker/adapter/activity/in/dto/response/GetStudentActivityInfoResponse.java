@@ -1,12 +1,14 @@
 package com.io.codetracker.adapter.activity.in.dto.response;
 
+
+import java.util.UUID;
 import com.io.codetracker.application.activity.result.StudentActivityInfoUserData;
 
 import java.util.Map;
 
-public record GetStudentActivityInfoResponse(Map<String, StudentActivityInfoUserData> data, String error) {
+public record GetStudentActivityInfoResponse(Map<UUID, StudentActivityInfoUserData> data, String error) {
 
-    public static GetStudentActivityInfoResponse success(Map<String, StudentActivityInfoUserData> data) {
+    public static GetStudentActivityInfoResponse success(Map<UUID, StudentActivityInfoUserData> data) {
         return new GetStudentActivityInfoResponse(data, null);
     }
 
@@ -14,3 +16,4 @@ public record GetStudentActivityInfoResponse(Map<String, StudentActivityInfoUser
         return new GetStudentActivityInfoResponse(null, error);
     }
 }
+

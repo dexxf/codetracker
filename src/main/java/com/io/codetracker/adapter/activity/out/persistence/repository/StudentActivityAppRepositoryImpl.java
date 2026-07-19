@@ -22,20 +22,20 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
     private final JpaActivityRepository jpaActivityRepository;
 
     @Override
-    public boolean existsSubmission(String userId, String activityId) {
+    public boolean existsSubmission(UUID userId, String activityId) {
         return jpaStudentActivityRepository.existsByUserEntity_UserIdAndActivityEntity_ActivityId(userId, activityId);
     }
 
     @Override
-    public boolean existsByUserId(String userId) {
+    public boolean existsByUserId(UUID userId) {
         return jpaUserRepository.existsById(userId);
     }
 
     @Override
-    public Optional<StudentActivity> findByUserIdAndActivityId(String userId, String activityId) {
+    public Optional<StudentActivity> findByUserIdAndActivityId(UUID userId, String activityId) {
         return jpaStudentActivityRepository.findByUserEntity_UserIdAndActivityEntity_ActivityId(userId, activityId)
                 .map(savedEntity -> new StudentActivity(
-                        savedEntity.getStudentActivityId().toString(),
+                                savedEntity.getStudentActivityId().toString(),
                         savedEntity.getActivityEntity().getActivityId(),
                         savedEntity.getUserEntity().getUserId(),
                         savedEntity.getSubmissionStatus(),
@@ -72,8 +72,9 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
                 savedEntity.getActivityEntity().getActivityId(),
                 savedEntity.getUserEntity().getUserId(),
                 savedEntity.getSubmissionStatus(),
-            savedEntity.getFeedback(),
-            savedEntity.getScore()
+                savedEntity.getFeedback(),
+                savedEntity.getScore()
         );
     }
 }
+

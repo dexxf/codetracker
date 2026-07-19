@@ -1,5 +1,7 @@
 package com.io.codetracker.application.classroom.result;
 
+
+import java.util.UUID;
 import com.io.codetracker.domain.classroom.entity.Classroom;
 import com.io.codetracker.domain.classroom.valueObject.ClassroomStatus;
 
@@ -7,7 +9,7 @@ import java.time.Instant;
 
 public record ClassroomData(
         String classroomId,
-        String instructorUserId,
+        UUID instructorUserId,
         String name,
         String description,
         String classCode,
@@ -29,3 +31,4 @@ public record ClassroomData(
         );
     }
 }
+
