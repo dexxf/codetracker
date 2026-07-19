@@ -73,6 +73,10 @@ jwt:
   expiration:
     ms: 300000
 
+rest-client:
+  connect-timeout-ms: 5000
+  read-timeout-ms: 10000
+
 refresh:
   token:
     lifetime:
