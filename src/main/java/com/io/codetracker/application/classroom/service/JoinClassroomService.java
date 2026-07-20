@@ -9,9 +9,7 @@ import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.classroom.entity.ClassroomStudent;
 import com.io.codetracker.domain.classroom.result.ClassroomJoinFailResult;
 import com.io.codetracker.domain.classroom.result.ClassroomJoinValidationResult;
-import com.io.codetracker.domain.classroom.result.ClassroomStudentCreationResult;
 import com.io.codetracker.domain.classroom.service.ClassroomJoinService;
-import com.io.codetracker.domain.classroom.service.ClassroomStudentCreationService;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +19,11 @@ import java.util.UUID;
 public final class JoinClassroomService implements JoinClassroomUseCase {
 
     private final ClassroomJoinService joinService;
-    private final ClassroomStudentCreationService creationService;
     private final ClassroomStudentAppRepository studentRepository;
 
-    public JoinClassroomService(ClassroomJoinService joinService, ClassroomStudentCreationService creationService,
+    public JoinClassroomService(ClassroomJoinService joinService,
                                 ClassroomStudentAppRepository studentRepository) {
         this.joinService = joinService;
-        this.creationService = creationService;
         this.studentRepository = studentRepository;
     }
 
@@ -52,17 +48,9 @@ public final class JoinClassroomService implements JoinClassroomUseCase {
             return Result.ok(ClassroomJoinResult.from(existingStudent, hasPassword));
         }
 
-        Result<ClassroomStudent, ClassroomStudentCreationResult> creation = creationService.createClassroomStudent(
-                classroomId,
+        ClassroomStudent student = ClassroomStudent.create(classroomId,
                 command.userId(),
-                StudentStatus.ACTIVE
-        );
-
-        if (!creation.success()) {
-            return Result.fail(ClassroomJoinError.from(creation.error()));
-        }
-
-        ClassroomStudent student = creation.data();
+                StudentStatus.ACTIVE);
 
         studentRepository.save(student);
 

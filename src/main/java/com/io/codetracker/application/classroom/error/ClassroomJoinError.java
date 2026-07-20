@@ -1,7 +1,6 @@
 package com.io.codetracker.application.classroom.error;
 
 import com.io.codetracker.domain.classroom.result.ClassroomJoinFailResult;
-import com.io.codetracker.domain.classroom.result.ClassroomStudentCreationResult;
 
 public enum ClassroomJoinError {
     CODE_NOT_FOUND,
@@ -11,10 +10,8 @@ public enum ClassroomJoinError {
     PASSCODE_REQUIRED,
     WRONG_PASSCODE,
     CLASSROOM_FULL,
-    CLASSROOM_ID_INVALID,
-    STUDENT_USER_ID_INVALID,
-    STATUS_INVALID,
     USER_ALREADY_IN_CLASSROOM;
+
 
     public static ClassroomJoinError from(ClassroomJoinFailResult result) {
         return switch (result) {
@@ -29,12 +26,5 @@ public enum ClassroomJoinError {
         };
     }
 
-    public static ClassroomJoinError from(ClassroomStudentCreationResult result) {
-        return switch (result) {
-            case CLASSROOM_ID_INVALID -> CLASSROOM_ID_INVALID;
-            case STUDENT_USER_ID_INVALID -> STUDENT_USER_ID_INVALID;
-            case STATUS_INVALID -> STATUS_INVALID;
-            case USER_ALREADY_IN_CLASSROOM -> USER_ALREADY_IN_CLASSROOM;
-        };
-    }
+
 }

@@ -15,13 +15,28 @@ public final class ClassroomStudent {
     private final Instant joinedAt;
     private Instant leftAt;
 
-    public ClassroomStudent(UUID classroomId, UUID studentUserId, StudentStatus status, Instant lastActiveAt, Instant joinedAt, Instant leftAt) {
+    private ClassroomStudent(UUID classroomId, UUID studentUserId, StudentStatus status, Instant lastActiveAt, Instant joinedAt, Instant leftAt) {
         this.classroomId = classroomId;
         this.studentUserId = studentUserId;
         this.status = status;
         this.lastActiveAt = lastActiveAt;
         this.joinedAt = joinedAt;
         this.leftAt = leftAt;
+    }
+
+    public static ClassroomStudent create(UUID classroomId, UUID studentUserId, StudentStatus status) {
+        return new ClassroomStudent(
+                classroomId,
+                studentUserId,
+                status,
+                null,
+                Instant.now(),
+                null
+        );
+    }
+
+    public static ClassroomStudent reconstitute(UUID classroomId, UUID studentUserId, StudentStatus status, Instant lastActiveAt, Instant joinedAt, Instant leftAt) {
+        return new ClassroomStudent(classroomId, studentUserId, status, lastActiveAt, joinedAt, leftAt);
     }
 
     public UUID getClassroomId() {
@@ -96,4 +111,3 @@ public final class ClassroomStudent {
         this.leftAt = null;
     }
 }
-

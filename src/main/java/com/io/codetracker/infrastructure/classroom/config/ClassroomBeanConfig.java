@@ -5,12 +5,10 @@ import java.security.SecureRandom;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.io.codetracker.domain.classroom.factory.ClassroomStudentFactory;
 import com.io.codetracker.domain.classroom.repository.ClassroomDomainRepository;
 import com.io.codetracker.domain.classroom.repository.ClassroomSettingsDomainRepository;
 import com.io.codetracker.domain.classroom.repository.ClassroomStudentDomainRepository;
 import com.io.codetracker.domain.classroom.service.ClassroomJoinService;
-import com.io.codetracker.domain.classroom.service.ClassroomStudentCreationService;
 import com.io.codetracker.domain.classroom.service.UpdateClassroomService;
 
 @Configuration
@@ -19,14 +17,6 @@ public class ClassroomBeanConfig {
     @Bean
     public SecureRandom clSecureRandom() {
         return new SecureRandom();
-    }
-
-    @Bean
-    public ClassroomStudentCreationService classroomStudentCreationService(
-            ClassroomStudentFactory factory,
-            ClassroomStudentDomainRepository repository
-    ) {
-        return new ClassroomStudentCreationService(factory, repository);
     }
 
     @Bean

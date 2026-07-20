@@ -25,7 +25,7 @@ public final class ClassroomStudentMapper {
     public static ClassroomStudent toDomain(ClassroomStudentEntity entity) {
         if (Objects.isNull(entity)) return null;
 
-        return new ClassroomStudent(
+        return ClassroomStudent.reconstitute(
                 entity.getClassroom() != null ? entity.getClassroom().getClassroomId() : null,
                 entity.getStudentUserId(),
                 entity.getStatus(),
