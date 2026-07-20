@@ -44,21 +44,23 @@ public final class AuthAccountAggregateMapper {
         return authEntity;
     }
 
-
     public static AuthAccountAggregate toDomain(AuthEntity entity) {
         Auth auth = Auth.reconstitute(
                 entity.getId(),
                 entity.getUserId(),
-                entity.getEmail() == null ? null :
-                        Email.of(entity.getEmail()).data(),
+                entity.getEmail() == null ? null : Email.of(entity.getEmail()).data(),
                 entity.getUsername(),
-                entity.getPassword() == null ? null
-                        : HashedPassword.of(entity.getPassword()).data(),
+                entity.getPassword() == null ? null : HashedPassword.of(entity.getPassword()).data(),
                 entity.getRole(),
                 entity.getStatus(),
                 entity.getCreatedAt()
         );
 
-        return new AuthAccountAggregate(auth, new GithubAccount(entity.getId(), entity.getGithubAccountEntity().getGithubId(), entity.getGithubAccountEntity().getAccessToken()));
+        GithubAccountEntity githubEntity = entity.getGithubAccountEntity();
+        GithubAccount githubAccount = githubEntity == null
+                ? null
+                : new GithubAccount(entity.getId(), githubEntity.getGithubId(), githubEntity.getAccessToken());
+
+        return new AuthAccountAggregate(auth, githubAccount);
     }
 }
