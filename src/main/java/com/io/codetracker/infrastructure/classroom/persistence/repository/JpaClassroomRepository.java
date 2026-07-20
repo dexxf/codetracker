@@ -8,8 +8,6 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.io.codetracker.infrastructure.classroom.persistence.entity.ClassroomEntity;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 public interface JpaClassroomRepository extends JpaRepository<ClassroomEntity, UUID> {
     boolean existsByClassCode(String classCode);

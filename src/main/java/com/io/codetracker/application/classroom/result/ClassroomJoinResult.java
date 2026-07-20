@@ -13,9 +13,10 @@ public record ClassroomJoinResult (UUID classroomId,
                                    Instant joinedAt,
                                    Instant lastActiveAt,
                                    Instant leftAt,
-                                   boolean hasPassword){
+                                   boolean hasPassword,
+                                   boolean needsApproval){
 
-    public static ClassroomJoinResult from(ClassroomStudent student, boolean hasPassword) {
+    public static ClassroomJoinResult from(ClassroomStudent student, boolean hasPassword, boolean needsApproval) {
         return new ClassroomJoinResult(
                 student.getClassroomId(),
                 student.getStudentUserId(),
@@ -23,7 +24,8 @@ public record ClassroomJoinResult (UUID classroomId,
                 student.getJoinedAt(),
                 student.getLastActiveAt(),
                 student.getLeftAt(),
-                hasPassword
+                hasPassword,
+                needsApproval
         );
     }
 }

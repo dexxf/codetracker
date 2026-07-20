@@ -28,7 +28,8 @@ public final class JoinClassroomService implements JoinClassroomUseCase {
     }
 
     public Result<ClassroomJoinResult, ClassroomJoinError> execute(JoinClassroomCommand command) {
-        Result<ClassroomJoinValidationResult, ClassroomJoinFailResult> validation = joinService.validate(command.userId(), command.code(), command.passcode());
+        Result<ClassroomJoinValidationResult, ClassroomJoinFailResult> validation =
+                joinService.validate(command.userId(), command.code(), command.passcode());
 
         if (!validation.success()) {
             return Result.fail(ClassroomJoinError.from(validation.error()));
@@ -36,26 +37,39 @@ public final class JoinClassroomService implements JoinClassroomUseCase {
 
         ClassroomJoinValidationResult joinResult = validation.data();
         UUID classroomId = joinResult.classroom().getClassroomId();
+        boolean requireApproval = joinResult.classroomSettings().isRequireApproval();
 
-        ClassroomStudent existingStudent = studentRepository.findByClassroomIdAndStudentUserId(classroomId, command.userId())
+        ClassroomStudent existingStudent = studentRepository
+                .findByClassroomIdAndStudentUserId(classroomId, command.userId())
                 .orElse(null);
-        if (existingStudent != null) {
-            existingStudent.rejoin();
-            studentRepository.save(existingStudent);
 
-            boolean hasPassword = joinResult.classroomSettings().getPasscode() != null
-                    && !joinResult.classroomSettings().getPasscode().isBlank();
-            return Result.ok(ClassroomJoinResult.from(existingStudent, hasPassword));
+        if (existingStudent != null) {
+            if (existingStudent.getStatus() == StudentStatus.KICKED) {
+                return Result.fail(ClassroomJoinError.USER_KICKED);
+            }
+
+            if (requireApproval) {
+                existingStudent.rejoinWithApproval();
+            } else {
+                existingStudent.rejoinWithoutApproval();
+            }
+
+            studentRepository.save(existingStudent);
+            return Result.ok(toResult(existingStudent, joinResult));
         }
 
-        ClassroomStudent student = ClassroomStudent.create(classroomId,
-                command.userId(),
-                StudentStatus.ACTIVE);
+        ClassroomStudent student = requireApproval
+                ? ClassroomStudent.createPendingStudent(classroomId, command.userId())
+                : ClassroomStudent.createActiveStudent(classroomId, command.userId());
 
         studentRepository.save(student);
+        return Result.ok(toResult(student, joinResult));
+    }
 
-        boolean hasPassword = joinResult.classroomSettings().getPasscode() != null
-            && !joinResult.classroomSettings().getPasscode().isBlank();
-        return Result.ok(ClassroomJoinResult.from(student, hasPassword));
+    private ClassroomJoinResult toResult(ClassroomStudent student, ClassroomJoinValidationResult joinResult) {
+        String passcode = joinResult.classroomSettings().getPasscode();
+        boolean hasPassword = passcode != null && !passcode.isBlank();
+        boolean needsApproval = student.getStatus() == StudentStatus.PENDING;
+        return ClassroomJoinResult.from(student, hasPassword, needsApproval);
     }
 }

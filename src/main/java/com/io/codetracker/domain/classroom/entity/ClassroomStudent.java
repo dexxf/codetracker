@@ -1,6 +1,5 @@
 package com.io.codetracker.domain.classroom.entity;
 
-
 import java.util.UUID;
 import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 
@@ -24,12 +23,23 @@ public final class ClassroomStudent {
         this.leftAt = leftAt;
     }
 
-    public static ClassroomStudent create(UUID classroomId, UUID studentUserId, StudentStatus status) {
+    public static ClassroomStudent createPendingStudent(UUID classroomId, UUID studentUserId) {
         return new ClassroomStudent(
                 classroomId,
                 studentUserId,
-                status,
+                StudentStatus.PENDING,
                 null,
+                Instant.now(),
+                null
+        );
+    }
+
+    public static ClassroomStudent createActiveStudent(UUID classroomId, UUID studentUserId) {
+        return new ClassroomStudent(
+                classroomId,
+                studentUserId,
+                StudentStatus.ACTIVE,
+                Instant.now(),
                 Instant.now(),
                 null
         );
@@ -102,12 +112,20 @@ public final class ClassroomStudent {
         this.leftAt = Instant.now();
     }
 
-    public void rejoin() {
+    public void rejoinWithoutApproval() {
         if (status != StudentStatus.DROPPED) {
             throw new IllegalStateException("Only dropped students can rejoin classroom.");
         }
         this.status = StudentStatus.ACTIVE;
         this.lastActiveAt = Instant.now();
+        this.leftAt = null;
+    }
+
+    public void rejoinWithApproval() {
+        if (status != StudentStatus.DROPPED) {
+            throw new IllegalStateException("Only dropped students can rejoin classroom.");
+        }
+        this.status = StudentStatus.PENDING;
         this.leftAt = null;
     }
 }

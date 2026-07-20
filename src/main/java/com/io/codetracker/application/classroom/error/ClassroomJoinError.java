@@ -10,7 +10,7 @@ public enum ClassroomJoinError {
     PASSCODE_REQUIRED,
     WRONG_PASSCODE,
     CLASSROOM_FULL,
-    USER_ALREADY_IN_CLASSROOM;
+    USER_ALREADY_IN_CLASSROOM, USER_KICKED;
 
 
     public static ClassroomJoinError from(ClassroomJoinFailResult result) {
