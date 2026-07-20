@@ -5,10 +5,12 @@ import com.io.codetracker.application.auth.command.LogoutCommand;
 import com.io.codetracker.application.auth.port.in.LogoutUseCase;
 import com.io.codetracker.application.auth.result.LogoutResult;
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
+import com.io.codetracker.infrastructure.auth.config.properties.DeviceIdCookieProperties;
+import com.io.codetracker.infrastructure.auth.config.properties.JwtCookieProperties;
+import com.io.codetracker.infrastructure.auth.config.properties.RefreshCookieProperties;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,58 +25,20 @@ public class AuthController {
 
     private final LogoutUseCase logoutUseCase;
 
-    private final boolean jwtSecure;
-    private final boolean jwtHttpOnly;
-    private final String jwtPath;
-    private final String jwtSameSite;
-    private final String jwtDomain;
-
-    private final boolean refreshSecure;
-    private final boolean refreshHttpOnly;
-    private final String refreshPath;
-    private final String refreshSameSite;
-    private final String refreshDomain;
-
-    private final boolean deviceSecure;
-    private final boolean deviceHttpOnly;
-    private final String devicePath;
-    private final String deviceSameSite;
-    private final String deviceDomain;
+    private final JwtCookieProperties jwtCookieProperties;
+    private final RefreshCookieProperties refreshCookieProperties;
+    private final DeviceIdCookieProperties deviceIdCookieProperties;
 
     public AuthController(
             LogoutUseCase logoutUseCase,
-            @Value("${app.cookie.jwt.secure}") boolean jwtSecure,
-            @Value("${app.cookie.jwt.http-only}") boolean jwtHttpOnly,
-            @Value("${app.cookie.jwt.path}") String jwtPath,
-            @Value("${app.cookie.jwt.same-site}") String jwtSameSite,
-            @Value("${app.cookie.jwt.domain}") String jwtDomain,
-            @Value("${app.cookie.refresh.secure}") boolean refreshSecure,
-            @Value("${app.cookie.refresh.http-only}") boolean refreshHttpOnly,
-            @Value("${app.cookie.refresh.path}") String refreshPath,
-            @Value("${app.cookie.refresh.same-site}") String refreshSameSite,
-            @Value("${app.cookie.refresh.domain}") String refreshDomain,
-            @Value("${app.cookie.device.secure}") boolean deviceSecure,
-            @Value("${app.cookie.device.http-only}") boolean deviceHttpOnly,
-            @Value("${app.cookie.device.path}") String devicePath,
-            @Value("${app.cookie.device.same-site}") String deviceSameSite,
-            @Value("${app.cookie.device.domain}") String deviceDomain
+            JwtCookieProperties jwtCookieProperties,
+            RefreshCookieProperties refreshCookieProperties,
+            DeviceIdCookieProperties deviceIdCookieProperties
     ) {
         this.logoutUseCase = logoutUseCase;
-        this.jwtSecure = jwtSecure;
-        this.jwtHttpOnly = jwtHttpOnly;
-        this.jwtPath = jwtPath;
-        this.jwtSameSite = jwtSameSite;
-        this.jwtDomain = jwtDomain;
-        this.refreshSecure = refreshSecure;
-        this.refreshHttpOnly = refreshHttpOnly;
-        this.refreshPath = refreshPath;
-        this.refreshSameSite = refreshSameSite;
-        this.refreshDomain = refreshDomain;
-        this.deviceSecure = deviceSecure;
-        this.deviceHttpOnly = deviceHttpOnly;
-        this.devicePath = devicePath;
-        this.deviceSameSite = deviceSameSite;
-        this.deviceDomain = deviceDomain;
+        this.jwtCookieProperties = jwtCookieProperties;
+        this.refreshCookieProperties = refreshCookieProperties;
+        this.deviceIdCookieProperties = deviceIdCookieProperties;
     }
 
     @GetMapping("/check")
@@ -102,9 +66,12 @@ public class AuthController {
         String refreshToken = getCookieValue(request, "refresh_token");
         LogoutResult result = logoutUseCase.execute(new LogoutCommand(deviceId, refreshToken));
 
-        clearCookie(response, "jwt", jwtHttpOnly, jwtSecure, jwtPath, jwtSameSite, jwtDomain);
-        clearCookie(response, "refresh_token", refreshHttpOnly, refreshSecure, refreshPath, refreshSameSite, refreshDomain);
-        clearCookie(response, "device_id", deviceHttpOnly, deviceSecure, devicePath, deviceSameSite, deviceDomain);
+        clearCookie(response, "jwt", jwtCookieProperties.httpOnly(), jwtCookieProperties.secure(),
+                jwtCookieProperties.path(), jwtCookieProperties.sameSite(), jwtCookieProperties.domain());
+        clearCookie(response, "refresh_token", refreshCookieProperties.httpOnly(), refreshCookieProperties.secure(),
+                refreshCookieProperties.path(), refreshCookieProperties.sameSite(), refreshCookieProperties.domain());
+        clearCookie(response, "device_id", deviceIdCookieProperties.httpOnly(), deviceIdCookieProperties.secure(),
+                deviceIdCookieProperties.path(), deviceIdCookieProperties.sameSite(), deviceIdCookieProperties.domain());
 
         return ResponseEntity
                 .status(LogoutHttpMapper.toStatus(result))
