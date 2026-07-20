@@ -30,9 +30,7 @@ public class AuthAppRepositoryImpl implements AuthAppRepository,UserAuthPort {
 
     @Override
     public void save(AuthAccountAggregate aggregate) {
-        AuthEntity authEntity = jpa.save(AuthAccountAggregateMapper.toEntity(aggregate));
-        authEntity.linkGithubAccount(GithubAccountMapper.toEntity(aggregate.githubAccount()));
-        jpa.save(authEntity);
+        jpa.save(AuthAccountAggregateMapper.toEntity(aggregate));
     }
 
     @Override
@@ -48,6 +46,11 @@ public class AuthAppRepositoryImpl implements AuthAppRepository,UserAuthPort {
     @Override
     public Optional<Auth> findByAuthId(String authId) {
         return jpa.findById(authId).map(AuthMapper::toDomain);
+    }
+
+    @Override
+    public Optional<Auth> findByEmail(String email) {
+        return jpa.findByEmail(email).map(AuthMapper::toDomain);
     }
 
     @Override
@@ -68,9 +71,9 @@ public class AuthAppRepositoryImpl implements AuthAppRepository,UserAuthPort {
     public void changeStatusActiveByUserId(UUID userId) {
         Optional<AuthEntity> authEntityOpt = jpa.findByUserId(userId);
         if (authEntityOpt.isPresent()) {
-            Auth auth = AuthMapper.toDomain(authEntityOpt.get());
-            auth.changeStatus(Status.ACTIVE);
-            jpa.save(AuthMapper.toEntity(auth));
+            AuthEntity authEntity = authEntityOpt.get();
+            authEntity.setStatus(Status.ACTIVE);
+            jpa.save(authEntity);
         }
     }
 

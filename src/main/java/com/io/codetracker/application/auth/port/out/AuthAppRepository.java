@@ -10,6 +10,7 @@ public interface AuthAppRepository {
     boolean emailExists(String email);
     boolean existsByUsername(String username);
     Optional<Auth> findByAuthId(String authId);
+    Optional<Auth> findByEmail(String email);
     boolean existsByAuthId(String authId);
     Optional<AuthAccountAggregate> findByGithubId(Long aLong);
 }

@@ -10,6 +10,7 @@ public interface JpaAuthRepository extends JpaRepository<AuthEntity, String>{
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
     Optional<AuthEntity> findByUserId(UUID userId);
+    Optional<AuthEntity> findByEmail(String email);
     Optional<AuthEntity> findByGithubAccountEntity_GithubId(Long githubAccountEntityGithubId);
 }
 
