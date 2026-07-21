@@ -60,10 +60,6 @@ public class OAuthGithubSignInService implements OAuthGithubSignInUseCase {
             return completeSignIn(auth.getAuthId(), auth.getStatus() == Status.ACTIVE, command);
         }
 
-        if (authAppRepository.emailExists(command.email())) {
-            return Result.fail(GithubOAuthSignInError.EMAIL_TAKEN);
-        }
-
         if (authAppRepository.existsByUsername(command.username())) {
             return Result.fail(GithubOAuthSignInError.USERNAME_TAKEN);
         }
