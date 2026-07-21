@@ -84,7 +84,7 @@ public final class UserRegistrationService implements UserShallowRegistrationUse
         authRepository.changeStatusActiveByUserId(user.getUserId());
         repository.save(result);
 
-        return Result.ok(UserData.from(user));
+        return Result.ok(UserData.from(result));
     }
 
 }
