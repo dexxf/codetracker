@@ -1,5 +1,5 @@
 package com.io.codetracker.application.announcement.error;
 
 public enum CreateAnnouncementError {
-    CANT_UPLOAD_FILE,
+    CANT_UPLOAD_FILE, UNSUPPORTED_FILE_TYPE,
 }

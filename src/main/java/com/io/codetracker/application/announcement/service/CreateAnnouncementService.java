@@ -5,15 +5,19 @@ import com.io.codetracker.application.announcement.error.CreateAnnouncementError
 import com.io.codetracker.application.announcement.port.in.CreateAnnouncementUseCase;
 import com.io.codetracker.application.announcement.port.out.AnnouncementAppRepository;
 import com.io.codetracker.application.announcement.port.out.AnnouncementAttachmentStoragePort;
+import com.io.codetracker.application.announcement.port.out.AttachmentTypeResolverPort;
 import com.io.codetracker.application.announcement.result.CreateAnnouncementResult;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.announcement.entity.Announcement;
 import com.io.codetracker.domain.announcement.entity.AnnouncementAttachment;
+import com.io.codetracker.domain.announcement.exception.UnsupportedAttachmentTypeException;
+import com.io.codetracker.domain.announcement.valueobject.AttachmentType;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +30,7 @@ public class CreateAnnouncementService implements CreateAnnouncementUseCase {
 
     private final AnnouncementAppRepository announcementRepository;
     private final AnnouncementAttachmentStoragePort attachmentStorage;
+    private final AttachmentTypeResolverPort typeResolver;
 
     @Override
     @Transactional
@@ -33,13 +38,19 @@ public class CreateAnnouncementService implements CreateAnnouncementUseCase {
 
         List<AnnouncementAttachment> announcementAttachments = new ArrayList<>();
 
-        for (CreateAnnouncementCommand.AttachmentUpload attachmentUpload : command.attachments()) {
+        for (CreateAnnouncementCommand.AttachmentUpload upload : command.attachments()) {
             UUID attachmentId = UUID.randomUUID();
 
             try {
-                String url = attachmentStorage.upload(attachmentUpload.content(), command.classroomId(), attachmentId);
-                announcementAttachments.add(new AnnouncementAttachment(attachmentId, url, attachmentUpload.type()));
-            } catch (IOException ex) {
+                AttachmentType type = typeResolver.resolve(new ByteArrayInputStream(upload.content()), upload.filename());
+
+                String url = attachmentStorage.upload(upload.content(), command.classroomId(), attachmentId);
+                announcementAttachments.add(new AnnouncementAttachment(attachmentId, url, type));
+            }
+            catch(UnsupportedAttachmentTypeException ex) {
+                return Result.fail(CreateAnnouncementError.UNSUPPORTED_FILE_TYPE);
+            }
+            catch (IOException ex) {
                 rollbackUploadedAttachments(command.classroomId(), announcementAttachments);
                 return Result.fail(CreateAnnouncementError.CANT_UPLOAD_FILE);
             }
