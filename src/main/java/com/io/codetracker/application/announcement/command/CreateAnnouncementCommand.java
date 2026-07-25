@@ -16,8 +16,6 @@ public record CreateAnnouncementCommand(
 
     public record AttachmentUpload(
             byte[] content,
-            String filename,
-            String contentType,
             AttachmentType type
     ) { }
 
