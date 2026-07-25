@@ -1,6 +1,5 @@
 package com.io.codetracker.domain.announcement.entity;
 
-import com.io.codetracker.domain.announcement.exception.EmptyAttachmentPublicIdException;
 import com.io.codetracker.domain.announcement.exception.EmptyAttachmentUrlException;
 import com.io.codetracker.domain.announcement.valueobject.AttachmentType;
 
@@ -16,7 +15,6 @@ public final class AnnouncementAttachment {
     public AnnouncementAttachment(
             UUID attachmentId,
             String url,
-            String publicId,
             AttachmentType type
     ) {
         this.attachmentId = Objects.requireNonNull(attachmentId);
@@ -25,18 +23,11 @@ public final class AnnouncementAttachment {
         validateUrl(url);
         this.url = url;
 
-        validatePublicId(publicId);
     }
 
     private static void validateUrl(String url) {
         if (url == null || url.isBlank()) {
             throw new EmptyAttachmentUrlException();
-        }
-    }
-
-    private static void validatePublicId(String publicId) {
-        if (publicId == null || publicId.isBlank()) {
-            throw new EmptyAttachmentPublicIdException();
         }
     }
 
