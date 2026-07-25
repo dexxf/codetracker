@@ -55,6 +55,7 @@ public class ClassroomEntity {
     )
     private ClassroomSettingsEntity settings;
 
+    @Builder.Default
     @OneToMany(
             mappedBy = "classroom",
             cascade = CascadeType.REMOVE,
@@ -63,6 +64,7 @@ public class ClassroomEntity {
     @MapKey(name = "studentUserId")
     private Map<UUID, ClassroomStudentEntity> students = new HashMap<>();
 
+    @Builder.Default
     @OneToMany(
     mappedBy = "classroomEntity",
     cascade = CascadeType.REMOVE,
