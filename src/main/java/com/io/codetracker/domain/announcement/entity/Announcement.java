@@ -4,6 +4,9 @@ import com.io.codetracker.domain.announcement.exception.AnnouncementMessageTooLo
 import com.io.codetracker.domain.announcement.exception.EmptyAnnouncementMessageException;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -15,6 +18,7 @@ public final class Announcement {
     private final UUID classroomId;
     private final UUID authorId;
     private String message;
+    private final List<AnnouncementAttachment> attachments;
     private final Instant createdAt;
     private Instant updatedAt;
 
@@ -23,6 +27,7 @@ public final class Announcement {
             UUID classroomId,
             UUID authorId,
             String message,
+            List<AnnouncementAttachment> attachments,
             Instant createdAt,
             Instant updatedAt
     ) {
@@ -31,6 +36,7 @@ public final class Announcement {
         this.authorId = Objects.requireNonNull(authorId);
         this.createdAt = Objects.requireNonNull(createdAt);
         this.updatedAt = Objects.requireNonNull(updatedAt);
+        this.attachments = new ArrayList<>(Objects.requireNonNull(attachments));
 
         validateMessage(message);
         this.message = message.trim();
@@ -40,16 +46,20 @@ public final class Announcement {
             UUID classroomId,
             UUID authorId,
             String message,
+            List<AnnouncementAttachment> attachments,
             Instant now
     ) {
-        return new Announcement(
+        Announcement announcement = new Announcement(
                 UUID.randomUUID(),
                 classroomId,
                 authorId,
                 message,
+                new ArrayList<>(),
                 now,
                 now
         );
+        attachments.forEach(announcement::addAttachment);
+        return announcement;
     }
 
     public static Announcement reconstitute(
@@ -57,6 +67,7 @@ public final class Announcement {
             UUID classroomId,
             UUID authorId,
             String message,
+            List<AnnouncementAttachment> attachments,
             Instant createdAt,
             Instant updatedAt
     ) {
@@ -65,18 +76,25 @@ public final class Announcement {
                 classroomId,
                 authorId,
                 message,
+                attachments,
                 createdAt,
                 updatedAt
         );
     }
 
-    public void changeMessage(String message, Instant now) {
-        validateMessage(message);
-
-        this.message = message.trim();
-        this.updatedAt = Objects.requireNonNull(now);
+    public void addAttachment(AnnouncementAttachment attachment) {
+        Objects.requireNonNull(attachment);
+        if (attachment.isDisplayImage()) {
+            attachments.stream()
+                    .filter(AnnouncementAttachment::isDisplayImage)
+                    .forEach(AnnouncementAttachment::unmarkAsDisplayImage);
+        }
+        attachments.add(attachment);
     }
 
+    public void removeAttachment(UUID attachmentId) {
+        attachments.removeIf(attachment -> attachment.attachmentId().equals(attachmentId));
+    }
 
     private static void validateMessage(String message) {
         if (message == null || message.isBlank()) {
@@ -87,6 +105,7 @@ public final class Announcement {
             throw new AnnouncementMessageTooLongException(MAX_MESSAGE_LENGTH);
         }
     }
+
     public UUID announcementId() {
         return announcementId;
     }
@@ -101,6 +120,10 @@ public final class Announcement {
 
     public String message() {
         return message;
+    }
+
+    public List<AnnouncementAttachment> attachments() {
+        return Collections.unmodifiableList(attachments);
     }
 
     public Instant createdAt() {
