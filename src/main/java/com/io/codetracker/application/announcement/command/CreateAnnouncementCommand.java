@@ -1,6 +1,5 @@
 package com.io.codetracker.application.announcement.command;
 
-import com.io.codetracker.domain.announcement.valueobject.AttachmentType;
 
 import java.time.Instant;
 import java.util.List;
@@ -16,7 +15,7 @@ public record CreateAnnouncementCommand(
 
     public record AttachmentUpload(
             byte[] content,
-            AttachmentType type
+            String filename
     ) { }
 
 }
