@@ -37,13 +37,7 @@ public class AnnouncementAttachmentEntity {
     @Column(name = "url", nullable = false, length = 2048)
     private String url;
 
-    @Column(name = "public_id", nullable = false, length = 500)
-    private String publicId;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 30)
     private AttachmentType type;
-
-    @Column(name = "display_image", nullable = false)
-    private boolean displayImage;
 }
