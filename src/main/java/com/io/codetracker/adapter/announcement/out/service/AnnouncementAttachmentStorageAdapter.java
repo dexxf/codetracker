@@ -32,7 +32,7 @@ public class AnnouncementAttachmentStorageAdapter implements AnnouncementAttachm
     }
 
     @Override
-    public void delete(UUID classroomId, String publicId) throws IOException {
+    public void delete(UUID classroomId, UUID publicId) throws IOException {
         String fullPublicId = classroomId + "/" + publicId;
         cloudinary.uploader().destroy(fullPublicId, ObjectUtils.emptyMap());
     }
