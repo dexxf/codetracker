@@ -84,11 +84,6 @@ public final class Announcement {
 
     public void addAttachment(AnnouncementAttachment attachment) {
         Objects.requireNonNull(attachment);
-        if (attachment.isDisplayImage()) {
-            attachments.stream()
-                    .filter(AnnouncementAttachment::isDisplayImage)
-                    .forEach(AnnouncementAttachment::unmarkAsDisplayImage);
-        }
         attachments.add(attachment);
     }
 
