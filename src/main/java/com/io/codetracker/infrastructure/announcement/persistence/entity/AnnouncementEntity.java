@@ -47,4 +47,9 @@ public class AnnouncementEntity {
 
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    public void addAttachment(AnnouncementAttachmentEntity attachment) {
+        attachments.add(attachment);
+        attachment.assignAnnouncement(this);
+    }
 }

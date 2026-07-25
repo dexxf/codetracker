@@ -10,11 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -40,4 +36,8 @@ public class AnnouncementAttachmentEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 30)
     private AttachmentType type;
+
+    void assignAnnouncement(AnnouncementEntity announcement) {
+        this.announcement = announcement;
+    }
 }
