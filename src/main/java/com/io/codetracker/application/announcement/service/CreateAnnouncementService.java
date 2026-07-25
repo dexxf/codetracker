@@ -6,6 +6,7 @@ import com.io.codetracker.application.announcement.port.in.CreateAnnouncementUse
 import com.io.codetracker.application.announcement.port.out.AnnouncementAppRepository;
 import com.io.codetracker.application.announcement.port.out.AnnouncementAttachmentStoragePort;
 import com.io.codetracker.application.announcement.port.out.AttachmentTypeResolverPort;
+import com.io.codetracker.application.announcement.port.out.ClassroomAnnouncementAppRepository;
 import com.io.codetracker.application.announcement.result.CreateAnnouncementResult;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.announcement.entity.Announcement;
@@ -29,12 +30,23 @@ import java.util.UUID;
 public class CreateAnnouncementService implements CreateAnnouncementUseCase {
 
     private final AnnouncementAppRepository announcementRepository;
+    private final ClassroomAnnouncementAppRepository classroomAnnouncementAppRepository;
     private final AnnouncementAttachmentStoragePort attachmentStorage;
     private final AttachmentTypeResolverPort typeResolver;
 
     @Override
     @Transactional
     public Result<CreateAnnouncementResult, CreateAnnouncementError> createAnnouncement(CreateAnnouncementCommand command) {
+
+        if (!classroomAnnouncementAppRepository.existsByClassroomId(command.classroomId())) {
+            return Result.fail(CreateAnnouncementError.CLASSROOM_NOT_FOUND);
+        }
+
+        if (!classroomAnnouncementAppRepository.isClassroomInstructor(
+                command.classroomId(),
+                command.authorId())) {
+            return Result.fail(CreateAnnouncementError.NOT_CLASSROOM_INSTRUCTOR);
+        }
 
         List<AnnouncementAttachment> announcementAttachments = new ArrayList<>();
 
