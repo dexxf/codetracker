@@ -8,6 +8,7 @@ import com.io.codetracker.application.announcement.error.CreateAnnouncementError
 import com.io.codetracker.application.announcement.port.in.CreateAnnouncementUseCase;
 import com.io.codetracker.application.announcement.result.CreateAnnouncementResult;
 import com.io.codetracker.common.result.Result;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,7 +30,7 @@ public class AnnouncementController {
     @PostMapping
     public ResponseEntity<CreateAnnouncementResponse> createAnnouncement(
             @PathVariable UUID classroomId,
-            @RequestPart("data") CreateAnnouncementRequest request,
+            @Valid @RequestPart("data") CreateAnnouncementRequest request,
             @RequestPart(value = "attachments", required = false) List<MultipartFile> attachments,
             @AuthenticationPrincipal AuthPrincipal authPrincipal
     ) {
