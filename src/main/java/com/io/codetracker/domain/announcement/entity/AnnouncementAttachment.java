@@ -11,14 +11,17 @@ public final class AnnouncementAttachment {
     private final UUID attachmentId;
     private final String url;
     private final AttachmentType type;
+    private final String resourceType;
 
     public AnnouncementAttachment(
             UUID attachmentId,
             String url,
-            AttachmentType type
+            AttachmentType type,
+            String resourceType
     ) {
         this.attachmentId = Objects.requireNonNull(attachmentId);
         this.type = Objects.requireNonNull(type);
+        this.resourceType = Objects.requireNonNull(resourceType);
 
         validateUrl(url);
         this.url = url;
@@ -41,6 +44,10 @@ public final class AnnouncementAttachment {
 
     public AttachmentType type() {
         return type;
+    }
+
+    public String resourceType() {
+        return resourceType;
     }
 
 }

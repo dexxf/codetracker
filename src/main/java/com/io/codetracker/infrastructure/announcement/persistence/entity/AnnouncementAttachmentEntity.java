@@ -37,6 +37,9 @@ public class AnnouncementAttachmentEntity {
     @Column(name = "type", nullable = false, length = 30)
     private AttachmentType type;
 
+    @Column(name = "resource_type", nullable = false, length = 30)
+    private String resourceType;
+
     void assignAnnouncement(AnnouncementEntity announcement) {
         this.announcement = announcement;
     }

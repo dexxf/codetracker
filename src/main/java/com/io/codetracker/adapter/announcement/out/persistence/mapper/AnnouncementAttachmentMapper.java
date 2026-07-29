@@ -9,7 +9,8 @@ public class AnnouncementAttachmentMapper {
         return new AnnouncementAttachment(
                 entity.getAttachmentId(),
                 entity.getUrl(),
-                entity.getType()
+                entity.getType(),
+                entity.getResourceType()
         );
     }
 
@@ -18,6 +19,7 @@ public class AnnouncementAttachmentMapper {
                 .attachmentId(attachment.attachmentId())
                 .url(attachment.url())
                 .type(attachment.type())
+                .resourceType(attachment.resourceType())
                 .build();
     }
 

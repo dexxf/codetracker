@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.UUID;
 
 public interface AnnouncementAttachmentStoragePort {
-    String upload(byte[] content, UUID classroomId, UUID attachmentId) throws IOException;
-    void delete(UUID classroomId, UUID publicId) throws IOException;
+    UploadedAttachment upload(byte[] content, UUID classroomId, UUID attachmentId) throws IOException;
+    void delete(UUID classroomId, UUID publicId, String resourceType) throws IOException;
+
+    record UploadedAttachment(String url, String resourceType) { }
 }

@@ -48,7 +48,7 @@ public class CreateAnnouncementService implements CreateAnnouncementUseCase {
             return Result.fail(CreateAnnouncementError.NOT_CLASSROOM_INSTRUCTOR);
         }
 
-        List<UUID> uploadedAttachmentIds = new ArrayList<>();
+        List<AnnouncementAttachment> uploadedAttachments = new ArrayList<>();
 
         Announcement announcement = Announcement.create(
                 command.classroomId(),
@@ -64,7 +64,7 @@ public class CreateAnnouncementService implements CreateAnnouncementUseCase {
         try {
             for (CreateAnnouncementCommand.AttachmentUpload upload : uploads) {
                 if (upload == null || upload.content() == null) {
-                    rollbackUploadedAttachments(command.classroomId(), uploadedAttachmentIds);
+                    rollbackUploadedAttachments(command.classroomId(), uploadedAttachments);
                     return Result.fail(CreateAnnouncementError.CANT_UPLOAD_FILE);
                 }
 
@@ -72,32 +72,37 @@ public class CreateAnnouncementService implements CreateAnnouncementUseCase {
 
                 AttachmentType type = typeResolver.resolve(new ByteArrayInputStream(upload.content()), upload.filename());
 
-                String url = attachmentStorage.upload(upload.content(), command.classroomId(), attachmentId);
-                uploadedAttachmentIds.add(attachmentId);
-                AnnouncementAttachment attachment = new AnnouncementAttachment(attachmentId, url, type);
+                var uploadedAttachment = attachmentStorage.upload(upload.content(), command.classroomId(), attachmentId);
+                AnnouncementAttachment attachment = new AnnouncementAttachment(
+                        attachmentId,
+                        uploadedAttachment.url(),
+                        type,
+                        uploadedAttachment.resourceType()
+                );
+                uploadedAttachments.add(attachment);
                 announcement.addAttachment(attachment);
             }
             announcementRepository.save(announcement);
         } catch (UnsupportedAttachmentTypeException ex) {
-            rollbackUploadedAttachments(command.classroomId(), uploadedAttachmentIds);
+            rollbackUploadedAttachments(command.classroomId(), uploadedAttachments);
             return Result.fail(CreateAnnouncementError.UNSUPPORTED_FILE_TYPE);
         } catch (IOException ex) {
-            rollbackUploadedAttachments(command.classroomId(), uploadedAttachmentIds);
+            rollbackUploadedAttachments(command.classroomId(), uploadedAttachments);
             return Result.fail(CreateAnnouncementError.CANT_UPLOAD_FILE);
         } catch (RuntimeException ex) {
-            rollbackUploadedAttachments(command.classroomId(), uploadedAttachmentIds);
+            rollbackUploadedAttachments(command.classroomId(), uploadedAttachments);
             throw ex;
         }
 
         return Result.ok(CreateAnnouncementResult.toResult(announcement));
     }
 
-    private void rollbackUploadedAttachments(UUID classroomId, List<UUID> uploadedAttachmentIds) {
-        for (UUID attachmentId : uploadedAttachmentIds) {
+    private void rollbackUploadedAttachments(UUID classroomId, List<AnnouncementAttachment> uploadedAttachments) {
+        for (AnnouncementAttachment attachment : uploadedAttachments) {
             try {
-                attachmentStorage.delete(classroomId, attachmentId);
+                attachmentStorage.delete(classroomId, attachment.attachmentId(), attachment.resourceType());
             } catch (IOException ex) {
-                log.warn("Failed to rollback attachment {} in classroom {}", attachmentId, classroomId, ex);
+                log.warn("Failed to rollback attachment {} in classroom {}", attachment.attachmentId(), classroomId, ex);
             }
         }
     }

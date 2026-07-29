@@ -17,7 +17,7 @@ public class AnnouncementAttachmentStorageAdapter implements AnnouncementAttachm
     private final Cloudinary cloudinary;
 
     @Override
-    public String upload(byte[] content, UUID classroomId, UUID attachmentId) throws IOException {
+    public UploadedAttachment upload(byte[] content, UUID classroomId, UUID attachmentId) throws IOException {
 
         Map<String, Object> options = ObjectUtils.asMap(
                 "public_id", attachmentId.toString(),
@@ -28,12 +28,15 @@ public class AnnouncementAttachmentStorageAdapter implements AnnouncementAttachm
 
         Map uploadResult = cloudinary.uploader().upload(content, options);
 
-        return (String) uploadResult.get("secure_url");
+        return new UploadedAttachment(
+                (String) uploadResult.get("secure_url"),
+                (String) uploadResult.get("resource_type")
+        );
     }
 
     @Override
-    public void delete(UUID classroomId, UUID publicId) throws IOException {
+    public void delete(UUID classroomId, UUID publicId, String resourceType) throws IOException {
         String fullPublicId = classroomId + "/" + publicId;
-        cloudinary.uploader().destroy(fullPublicId, ObjectUtils.emptyMap());
+        cloudinary.uploader().destroy(fullPublicId, ObjectUtils.asMap("resource_type", resourceType, "type", "upload","invalidate", true));
     }
 }
