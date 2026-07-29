@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class AttachmentTypeResolverAdapter implements AttachmentTypeResolverPort
         return properties.supportedTypes()
                 .entrySet()
                 .stream()
-                .filter(entry -> supports(entry.getValue(), mimeType))
+                .filter(entry -> supports(entry.getValue(), mimeType, filename))
                 .map(Map.Entry::getKey)
                 .findFirst()
                 .orElseThrow(() -> new UnsupportedAttachmentTypeException(mimeType));
@@ -35,8 +36,19 @@ public class AttachmentTypeResolverAdapter implements AttachmentTypeResolverPort
 
     private boolean supports(
             AttachmentProperties.AttachmentCategory category,
-            String mimeType
+            String mimeType,
+            String filename
     ) {
-        return category.mimeTypes().contains(mimeType);
+        if (!category.mimeTypes().contains(mimeType) || filename == null) {
+            return false;
+        }
+
+        int dot = filename.lastIndexOf('.');
+        if (dot < 0 || dot == filename.length() - 1) {
+            return false;
+        }
+
+        String extension = filename.substring(dot + 1).toLowerCase(Locale.ROOT);
+        return category.extensions().contains(extension);
     }
 }
