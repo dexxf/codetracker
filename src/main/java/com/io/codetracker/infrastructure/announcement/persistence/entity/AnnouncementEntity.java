@@ -39,7 +39,7 @@ public class AnnouncementEntity {
     @Builder.Default
     private List<AnnouncementAttachmentEntity> attachments = new ArrayList<>();
 
-    @Column(name = "message", nullable = false, length = 5000)
+    @Column(name = "message", length = 5000)
     private String message;
 
     @Column(name = "created_at", nullable = false, updatable = false)

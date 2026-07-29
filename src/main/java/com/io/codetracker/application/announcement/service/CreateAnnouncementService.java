@@ -71,7 +71,7 @@ public class CreateAnnouncementService implements CreateAnnouncementUseCase {
         Announcement announcement = Announcement.create(
                 command.classroomId(),
                 command.authorId(),
-                command.message(),
+                command.message() == null ? null : command.message(),
                 announcementAttachments,
                 command.now()
         );

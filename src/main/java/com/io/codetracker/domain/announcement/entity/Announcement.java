@@ -1,7 +1,6 @@
 package com.io.codetracker.domain.announcement.entity;
 
 import com.io.codetracker.domain.announcement.exception.AnnouncementMessageTooLongException;
-import com.io.codetracker.domain.announcement.exception.EmptyAnnouncementMessageException;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public final class Announcement {
         this.attachments = new ArrayList<>(Objects.requireNonNull(attachments));
 
         validateMessage(message);
-        this.message = message.trim();
+        this.message = Objects.isNull(message) ? null : message.trim();
     }
 
     public static Announcement create(
@@ -58,6 +57,7 @@ public final class Announcement {
                 now,
                 now
         );
+        Objects.requireNonNull(attachments);
         attachments.forEach(announcement::addAttachment);
         return announcement;
     }
@@ -83,7 +83,7 @@ public final class Announcement {
     }
 
     public void addAttachment(AnnouncementAttachment attachment) {
-        Objects.requireNonNull(attachment);
+        Objects.requireNonNull(attachment, "attachments must not be null");
         attachments.add(attachment);
     }
 
@@ -92,11 +92,7 @@ public final class Announcement {
     }
 
     private static void validateMessage(String message) {
-        if (message == null || message.isBlank()) {
-            throw new EmptyAnnouncementMessageException();
-        }
-
-        if (message.length() > MAX_MESSAGE_LENGTH) {
+        if (message != null && message.trim().length() > MAX_MESSAGE_LENGTH) {
             throw new AnnouncementMessageTooLongException(MAX_MESSAGE_LENGTH);
         }
     }
