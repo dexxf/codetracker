@@ -48,45 +48,56 @@ public class CreateAnnouncementService implements CreateAnnouncementUseCase {
             return Result.fail(CreateAnnouncementError.NOT_CLASSROOM_INSTRUCTOR);
         }
 
-        List<AnnouncementAttachment> announcementAttachments = new ArrayList<>();
-
-        for (CreateAnnouncementCommand.AttachmentUpload upload : command.attachments()) {
-            UUID attachmentId = UUID.randomUUID();
-
-            try {
-                AttachmentType type = typeResolver.resolve(new ByteArrayInputStream(upload.content()), upload.filename());
-
-                String url = attachmentStorage.upload(upload.content(), command.classroomId(), attachmentId);
-                announcementAttachments.add(new AnnouncementAttachment(attachmentId, url, type));
-            }
-            catch(UnsupportedAttachmentTypeException ex) {
-                return Result.fail(CreateAnnouncementError.UNSUPPORTED_FILE_TYPE);
-            }
-            catch (IOException ex) {
-                rollbackUploadedAttachments(command.classroomId(), announcementAttachments);
-                return Result.fail(CreateAnnouncementError.CANT_UPLOAD_FILE);
-            }
-        }
+        List<UUID> uploadedAttachmentIds = new ArrayList<>();
 
         Announcement announcement = Announcement.create(
                 command.classroomId(),
                 command.authorId(),
-                command.message() == null ? null : command.message(),
-                announcementAttachments,
+                command.message(),
+                List.of(),
                 command.now()
         );
 
-        announcementRepository.save(announcement);
+        List<CreateAnnouncementCommand.AttachmentUpload> uploads =
+                command.attachments() == null ? List.of() : command.attachments();
+
+        try {
+            for (CreateAnnouncementCommand.AttachmentUpload upload : uploads) {
+                if (upload == null || upload.content() == null) {
+                    rollbackUploadedAttachments(command.classroomId(), uploadedAttachmentIds);
+                    return Result.fail(CreateAnnouncementError.CANT_UPLOAD_FILE);
+                }
+
+            UUID attachmentId = UUID.randomUUID();
+
+                AttachmentType type = typeResolver.resolve(new ByteArrayInputStream(upload.content()), upload.filename());
+
+                String url = attachmentStorage.upload(upload.content(), command.classroomId(), attachmentId);
+                uploadedAttachmentIds.add(attachmentId);
+                AnnouncementAttachment attachment = new AnnouncementAttachment(attachmentId, url, type);
+                announcement.addAttachment(attachment);
+            }
+            announcementRepository.save(announcement);
+        } catch (UnsupportedAttachmentTypeException ex) {
+            rollbackUploadedAttachments(command.classroomId(), uploadedAttachmentIds);
+            return Result.fail(CreateAnnouncementError.UNSUPPORTED_FILE_TYPE);
+        } catch (IOException ex) {
+            rollbackUploadedAttachments(command.classroomId(), uploadedAttachmentIds);
+            return Result.fail(CreateAnnouncementError.CANT_UPLOAD_FILE);
+        } catch (RuntimeException ex) {
+            rollbackUploadedAttachments(command.classroomId(), uploadedAttachmentIds);
+            throw ex;
+        }
 
         return Result.ok(CreateAnnouncementResult.toResult(announcement));
     }
 
-    private void rollbackUploadedAttachments(UUID classroomId, List<AnnouncementAttachment> uploaded) {
-        for (AnnouncementAttachment attachment : uploaded) {
+    private void rollbackUploadedAttachments(UUID classroomId, List<UUID> uploadedAttachmentIds) {
+        for (UUID attachmentId : uploadedAttachmentIds) {
             try {
-                attachmentStorage.delete(classroomId, attachment.attachmentId());
+                attachmentStorage.delete(classroomId, attachmentId);
             } catch (IOException ex) {
-                log.warn("Failed to rollback attachment {} in classroom {}", attachment.attachmentId(), classroomId, ex);
+                log.warn("Failed to rollback attachment {} in classroom {}", attachmentId, classroomId, ex);
             }
         }
     }
