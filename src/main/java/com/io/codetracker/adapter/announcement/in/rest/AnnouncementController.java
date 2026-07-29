@@ -11,6 +11,7 @@ import com.io.codetracker.common.result.Result;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,7 +47,7 @@ public class AnnouncementController {
 
         if (result.success()) {
             var data = result.data();
-            return ResponseEntity.ok(new CreateAnnouncementResponse(
+            return ResponseEntity.status(HttpStatus.CREATED).body(new CreateAnnouncementResponse(
                     data.announcementId(),
                     data.message(),
                     data.attachments(),
