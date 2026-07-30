@@ -8,14 +8,18 @@ import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.application.announcement.command.CreateAnnouncementCommand;
 import com.io.codetracker.application.announcement.command.DeleteAnnouncementCommand;
 import com.io.codetracker.application.announcement.command.EditAnnouncementCommand;
+import com.io.codetracker.application.announcement.command.ViewAnnouncementsCommand;
 import com.io.codetracker.application.announcement.error.CreateAnnouncementError;
 import com.io.codetracker.application.announcement.error.DeleteAnnouncementError;
 import com.io.codetracker.application.announcement.error.EditAnnouncementError;
+import com.io.codetracker.application.announcement.error.ViewAnnouncementsError;
 import com.io.codetracker.application.announcement.port.in.CreateAnnouncementUseCase;
 import com.io.codetracker.application.announcement.port.in.DeleteAnnouncementUseCase;
 import com.io.codetracker.application.announcement.port.in.EditAnnouncementUseCase;
+import com.io.codetracker.application.announcement.port.in.ViewAnnouncementsUseCase;
 import com.io.codetracker.application.announcement.result.CreateAnnouncementResult;
 import com.io.codetracker.application.announcement.result.EditAnnouncementResult;
+import com.io.codetracker.application.announcement.result.AnnouncementViewData;
 import com.io.codetracker.common.result.Result;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +43,22 @@ public class AnnouncementController {
     private final CreateAnnouncementUseCase createAnnouncementUseCase;
     private final DeleteAnnouncementUseCase deleteAnnouncementUseCase;
     private final EditAnnouncementUseCase editAnnouncementUseCase;
+    private final ViewAnnouncementsUseCase viewAnnouncementsUseCase;
+
+    @GetMapping
+    public ResponseEntity<?> viewAnnouncements(
+            @PathVariable UUID classroomId,
+            @AuthenticationPrincipal AuthPrincipal authPrincipal
+    ) {
+        Result<List<AnnouncementViewData>, ViewAnnouncementsError> result =
+                viewAnnouncementsUseCase.viewAnnouncements(
+                        new ViewAnnouncementsCommand(classroomId, authPrincipal.getUserId()));
+
+        return result.success()
+                ? ResponseEntity.ok(result.data())
+                : ResponseEntity.status(AnnouncementHttpMapper.toStatus(result.error()))
+                    .body(Map.of("error", AnnouncementHttpMapper.toMessage(result.error())));
+    }
 
     @PostMapping
     public ResponseEntity<?> createAnnouncement(
