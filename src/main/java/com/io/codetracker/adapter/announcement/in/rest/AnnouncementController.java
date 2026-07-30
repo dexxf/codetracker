@@ -6,10 +6,13 @@ import com.io.codetracker.adapter.announcement.in.dto.response.CreateAnnouncemen
 import com.io.codetracker.adapter.announcement.in.mapper.AnnouncementHttpMapper;
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.application.announcement.command.CreateAnnouncementCommand;
+import com.io.codetracker.application.announcement.command.DeleteAnnouncementCommand;
 import com.io.codetracker.application.announcement.command.EditAnnouncementCommand;
 import com.io.codetracker.application.announcement.error.CreateAnnouncementError;
+import com.io.codetracker.application.announcement.error.DeleteAnnouncementError;
 import com.io.codetracker.application.announcement.error.EditAnnouncementError;
 import com.io.codetracker.application.announcement.port.in.CreateAnnouncementUseCase;
+import com.io.codetracker.application.announcement.port.in.DeleteAnnouncementUseCase;
 import com.io.codetracker.application.announcement.port.in.EditAnnouncementUseCase;
 import com.io.codetracker.application.announcement.result.CreateAnnouncementResult;
 import com.io.codetracker.application.announcement.result.EditAnnouncementResult;
@@ -34,6 +37,7 @@ import java.util.UUID;
 public class AnnouncementController {
 
     private final CreateAnnouncementUseCase createAnnouncementUseCase;
+    private final DeleteAnnouncementUseCase deleteAnnouncementUseCase;
     private final EditAnnouncementUseCase editAnnouncementUseCase;
 
     @PostMapping
@@ -91,6 +95,26 @@ public class AnnouncementController {
 
         return result.success()
                 ? ResponseEntity.ok(result.data())
+                : ResponseEntity.status(AnnouncementHttpMapper.toStatus(result.error()))
+                    .body(Map.of("error", AnnouncementHttpMapper.toMessage(result.error())));
+    }
+
+    @DeleteMapping("/{announcementId}")
+    public ResponseEntity<?> deleteAnnouncement(
+            @PathVariable UUID classroomId,
+            @PathVariable UUID announcementId,
+            @AuthenticationPrincipal AuthPrincipal authPrincipal
+    ) {
+        DeleteAnnouncementCommand command = new DeleteAnnouncementCommand(
+                announcementId,
+                classroomId,
+                authPrincipal.getUserId()
+        );
+
+        Result<Void, DeleteAnnouncementError> result = deleteAnnouncementUseCase.deleteAnnouncement(command);
+
+        return result.success()
+                ? ResponseEntity.noContent().build()
                 : ResponseEntity.status(AnnouncementHttpMapper.toStatus(result.error()))
                     .body(Map.of("error", AnnouncementHttpMapper.toMessage(result.error())));
     }
