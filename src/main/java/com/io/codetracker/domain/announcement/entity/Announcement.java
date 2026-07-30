@@ -3,11 +3,7 @@ package com.io.codetracker.domain.announcement.entity;
 import com.io.codetracker.domain.announcement.exception.AnnouncementMessageTooLongException;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public final class Announcement {
 
@@ -123,5 +119,15 @@ public final class Announcement {
 
     public Instant updatedAt() {
         return updatedAt;
+    }
+
+    public Optional<AnnouncementAttachment> findAttachment(UUID attachmentId) {
+        return attachments.stream().filter(a -> a.attachmentId().equals(attachmentId)).findFirst();
+    }
+
+    public void updateMessage(String message, Instant now) {
+        validateMessage(message);
+        this.message = Objects.isNull(message) ? null : message.trim();
+        this.updatedAt = now;
     }
 }
