@@ -9,4 +9,6 @@ public interface AnnouncementAppRepository {
     void save(Announcement announcement);
 
     Optional<Announcement> findById(UUID uuid);
+
+    void deleteById(UUID uuid);
 }

@@ -25,4 +25,9 @@ public class AnnouncementAppRepositoryImpl implements AnnouncementAppRepository 
     public Optional<Announcement> findById(UUID id) {
         return announcementRepository.findById(id).map(AnnouncementMapper::toDomain);
     }
+
+    @Override
+    public void deleteById(UUID id) {
+        announcementRepository.deleteById(id);
+    }
 }
