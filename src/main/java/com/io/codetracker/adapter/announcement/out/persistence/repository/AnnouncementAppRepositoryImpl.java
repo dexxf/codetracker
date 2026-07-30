@@ -7,6 +7,9 @@ import com.io.codetracker.infrastructure.announcement.persistence.repository.Jpa
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Repository
 @AllArgsConstructor
 public class AnnouncementAppRepositoryImpl implements AnnouncementAppRepository {
@@ -16,5 +19,10 @@ public class AnnouncementAppRepositoryImpl implements AnnouncementAppRepository 
     @Override
     public void save(Announcement announcement) {
         announcementRepository.save(AnnouncementMapper.toEntity(announcement));
+    }
+
+    @Override
+    public Optional<Announcement> findById(UUID id) {
+        return announcementRepository.findById(id).map(AnnouncementMapper::toDomain);
     }
 }
