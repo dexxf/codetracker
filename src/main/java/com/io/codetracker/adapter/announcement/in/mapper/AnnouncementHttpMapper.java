@@ -3,6 +3,7 @@ package com.io.codetracker.adapter.announcement.in.mapper;
 import com.io.codetracker.application.announcement.error.CreateAnnouncementError;
 import com.io.codetracker.application.announcement.error.DeleteAnnouncementError;
 import com.io.codetracker.application.announcement.error.EditAnnouncementError;
+import com.io.codetracker.application.announcement.error.ViewAnnouncementsError;
 import org.springframework.http.HttpStatus;
 
 public final class AnnouncementHttpMapper {
@@ -59,6 +60,20 @@ public final class AnnouncementHttpMapper {
             case CLASSROOM_NOT_FOUND -> "Classroom not found.";
             case ANNOUNCEMENT_NOT_FOUND -> "Announcement not found.";
             case NOT_CLASSROOM_INSTRUCTOR -> "User is not the owner of classroom.";
+        };
+    }
+
+    public static HttpStatus toStatus(ViewAnnouncementsError error) {
+        return switch (error) {
+            case CLASSROOM_NOT_FOUND -> HttpStatus.NOT_FOUND;
+            case USER_NOT_CLASSROOM_MEMBER -> HttpStatus.FORBIDDEN;
+        };
+    }
+
+    public static String toMessage(ViewAnnouncementsError error) {
+        return switch (error) {
+            case CLASSROOM_NOT_FOUND -> "Classroom not found.";
+            case USER_NOT_CLASSROOM_MEMBER -> "User is not a member of classroom.";
         };
     }
 }
