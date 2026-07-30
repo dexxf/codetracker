@@ -3,6 +3,7 @@ package com.io.codetracker.application.announcement.port.out;
 import com.io.codetracker.domain.announcement.entity.Announcement;
 
 import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 public interface AnnouncementAppRepository {
@@ -11,4 +12,6 @@ public interface AnnouncementAppRepository {
     Optional<Announcement> findById(UUID uuid);
 
     void deleteById(UUID uuid);
+
+    List<Announcement> findAllByClassroomId(UUID classroomId);
 }

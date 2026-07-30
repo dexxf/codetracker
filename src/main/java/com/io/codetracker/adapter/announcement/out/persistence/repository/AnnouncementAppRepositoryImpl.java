@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -29,5 +30,13 @@ public class AnnouncementAppRepositoryImpl implements AnnouncementAppRepository 
     @Override
     public void deleteById(UUID id) {
         announcementRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Announcement> findAllByClassroomId(UUID classroomId) {
+        return announcementRepository.findAllByClassroomIdOrderByCreatedAtDesc(classroomId)
+                .stream()
+                .map(AnnouncementMapper::toDomain)
+                .toList();
     }
 }
