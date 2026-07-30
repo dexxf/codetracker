@@ -12,6 +12,7 @@ import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.announcement.entity.Announcement;
 import com.io.codetracker.domain.announcement.entity.AnnouncementAttachment;
 import com.io.codetracker.domain.announcement.exception.UnsupportedAttachmentTypeException;
+import com.io.codetracker.domain.announcement.exception.AnnouncementMessageTooLongException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -99,6 +100,8 @@ public class EditAnnouncementService implements EditAnnouncementUseCase {
 
             if (command.message() != null) {
                 announcement.updateMessage(command.message(), command.now());
+            } else {
+                announcement.markUpdated(command.now());
             }
 
             attachmentsToRemove.forEach(attachment -> announcement.removeAttachment(attachment.attachmentId()));
@@ -119,6 +122,10 @@ public class EditAnnouncementService implements EditAnnouncementUseCase {
             AnnouncementAttachmentRollback.deleteUploaded(
                     attachmentStorage, command.classroomId(), uploadedAttachments);
             return Result.fail(EditAnnouncementError.UNSUPPORTED_FILE_TYPE);
+        } catch (AnnouncementMessageTooLongException ex) {
+            AnnouncementAttachmentRollback.deleteUploaded(
+                    attachmentStorage, command.classroomId(), uploadedAttachments);
+            return Result.fail(EditAnnouncementError.MESSAGE_TOO_LONG);
         } catch (IOException ex) {
             AnnouncementAttachmentRollback.deleteUploaded(
                     attachmentStorage, command.classroomId(), uploadedAttachments);

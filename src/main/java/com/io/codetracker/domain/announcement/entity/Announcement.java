@@ -130,4 +130,8 @@ public final class Announcement {
         this.message = Objects.isNull(message) ? null : message.trim();
         this.updatedAt = now;
     }
+
+    public void markUpdated(Instant now) {
+        this.updatedAt = Objects.requireNonNull(now);
+    }
 }

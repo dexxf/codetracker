@@ -42,6 +42,7 @@ public final class AnnouncementHttpMapper {
             case CANT_UPLOAD_FILE -> "Failed to upload announcement attachment.";
             case UNSUPPORTED_FILE_TYPE -> "Announcement attachment type is not supported.";
             case ATTACHMENT_NOT_FOUND -> "Announcement attachment not found.";
+            case MESSAGE_TOO_LONG -> "Announcement message is too long.";
         };
     }
 }
