@@ -14,7 +14,7 @@ public final class AnnouncementHttpMapper {
     public static HttpStatus toStatus(CreateAnnouncementError error) {
         return switch (error) {
             case CLASSROOM_NOT_FOUND -> HttpStatus.NOT_FOUND;
-            case NOT_CLASSROOM_INSTRUCTOR -> HttpStatus.UNAUTHORIZED;
+            case NOT_CLASSROOM_INSTRUCTOR -> HttpStatus.FORBIDDEN;
             default -> HttpStatus.BAD_REQUEST;
         };
     }
@@ -31,7 +31,7 @@ public final class AnnouncementHttpMapper {
     public static HttpStatus toStatus(EditAnnouncementError error) {
         return switch (error) {
             case CLASSROOM_NOT_FOUND, ANNOUNCEMENT_NOT_FOUND, ATTACHMENT_NOT_FOUND -> HttpStatus.NOT_FOUND;
-            case NOT_CLASSROOM_INSTRUCTOR -> HttpStatus.UNAUTHORIZED;
+            case NOT_CLASSROOM_INSTRUCTOR -> HttpStatus.FORBIDDEN;
             default -> HttpStatus.BAD_REQUEST;
         };
     }
@@ -51,7 +51,7 @@ public final class AnnouncementHttpMapper {
     public static HttpStatus toStatus(DeleteAnnouncementError error) {
         return switch (error) {
             case CLASSROOM_NOT_FOUND, ANNOUNCEMENT_NOT_FOUND -> HttpStatus.NOT_FOUND;
-            case NOT_CLASSROOM_INSTRUCTOR -> HttpStatus.UNAUTHORIZED;
+            case NOT_CLASSROOM_INSTRUCTOR -> HttpStatus.FORBIDDEN;
         };
     }
 
