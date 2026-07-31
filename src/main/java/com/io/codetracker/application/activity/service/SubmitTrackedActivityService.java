@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-public class SubmitTrackedTrackedActivityService implements SubmitTrackedActivityUseCase {
+public class SubmitTrackedActivityService implements SubmitTrackedActivityUseCase {
 
     private final StudentActivityAppRepository studentActivityAppRepository;
     private final ActivityClassroomAppPort activityClassroomAppPort;
