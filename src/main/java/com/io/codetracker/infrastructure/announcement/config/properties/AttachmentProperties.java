@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.Map;
 import java.util.Set;
 
-@ConfigurationProperties(prefix = "announcement.attachment")
+@ConfigurationProperties(prefix = "cloudinary.announcement.attachment")
 public record AttachmentProperties(
         Map<AttachmentType, AttachmentCategory> supportedTypes
 ) {

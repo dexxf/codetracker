@@ -18,7 +18,7 @@ public class AnnouncementAttachmentStorageAdapter implements AnnouncementAttachm
 
     public AnnouncementAttachmentStorageAdapter(
             Cloudinary cloudinary,
-            @Value("${announcement.attachment.folder-path}") String announcementFolderPath) {
+            @Value("${cloudinary.announcement.attachment.folder-path}") String announcementFolderPath) {
         this.cloudinary = cloudinary;
         this.announcementFolderPath = announcementFolderPath;
     }

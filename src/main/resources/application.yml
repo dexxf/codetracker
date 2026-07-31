@@ -88,53 +88,52 @@ device:
 
 cloudinary:
   url: ${CLOUDINARY_URL}
-
-announcement:
-  attachment:
-    folder-path: "announcement/"
-    supported-types:
-      IMAGE:
-        mime-types:
-          - image/jpeg
-          - image/png
-          - image/gif
-          - image/webp
-          - image/bmp
-          - image/svg+xml
-        extensions:
-          - jpg
-          - jpeg
-          - png
-          - gif
-          - webp
-          - bmp
-          - svg
-      VIDEO:
-        mime-types:
-          - video/mp4
-          - video/webm
-          - video/quicktime
-          - video/x-msvideo
-          - video/x-matroska
-        extensions:
-          - mp4
-          - webm
-          - mov
-          - avi
-          - mkv
-      AUDIO:
-        mime-types:
-          - audio/mpeg
-          - audio/wav
-          - audio/ogg
-          - audio/aac
-        extensions:
-          - mp3
-          - wav
-          - ogg
-          - aac
-      FILE:
-        mime-types:
-          - application/pdf
-        extensions:
-          - pdf
+  announcement:
+    attachment:
+      folder-path: "announcement/"
+      supported-types:
+        IMAGE:
+          mime-types:
+            - image/jpeg
+            - image/png
+            - image/gif
+            - image/webp
+            - image/bmp
+            - image/svg+xml
+          extensions:
+            - jpg
+            - jpeg
+            - png
+            - gif
+            - webp
+            - bmp
+            - svg
+        VIDEO:
+          mime-types:
+            - video/mp4
+            - video/webm
+            - video/quicktime
+            - video/x-msvideo
+            - video/x-matroska
+          extensions:
+            - mp4
+            - webm
+            - mov
+            - avi
+            - mkv
+        AUDIO:
+          mime-types:
+            - audio/mpeg
+            - audio/wav
+            - audio/ogg
+            - audio/aac
+          extensions:
+            - mp3
+            - wav
+            - ogg
+            - aac
+        FILE:
+          mime-types:
+            - application/pdf
+          extensions:
+            - pdf
