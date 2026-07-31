@@ -27,7 +27,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class SubmitRepositoryService implements SubmitNewRepositoryUseCase, SubmitExistingRepositoryUseCase {
+public class SubmitUntrackedRepositoryService implements SubmitNewRepositoryUseCase, SubmitExistingRepositoryUseCase {
 
     private final StudentActivityAppRepository studentActivityAppRepository;
     private final ActivityClassroomAppPort activityClassroomAppPort;
