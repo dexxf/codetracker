@@ -169,6 +169,7 @@ public class ActivityController {
     ) {
         Result<StudentActivitySubmissionData, SubmitActivityError> response =
                 submitTrackedActivityUseCase.submit(
+                        authPrincipal.getAuthId(),
                         authPrincipal.getUserId(),
                         classroomId,
                         activityId
