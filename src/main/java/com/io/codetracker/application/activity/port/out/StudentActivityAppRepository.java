@@ -10,6 +10,7 @@ public interface StudentActivityAppRepository {
     boolean existsSubmission(UUID userId, String activityId);
     boolean existsByUserId(UUID userId);
     Optional<StudentActivity> findByUserIdAndActivityId(UUID userId, String activityId);
+    Optional<String> findRepositoryUrlByUserIdAndActivityId(UUID userId, String activityId);
     StudentActivity save(StudentActivity studentActivity);
 }
 

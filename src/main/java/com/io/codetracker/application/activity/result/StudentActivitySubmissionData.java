@@ -9,7 +9,8 @@ public record StudentActivitySubmissionData(
         UUID userId,
         SubmissionStatus submissionStatus,
         String feedback,
-        Integer score
+        Integer score,
+        String submittedCommitSha
 ) {
     public static StudentActivitySubmissionData from(StudentActivity studentActivity) {
         return new StudentActivitySubmissionData(
@@ -17,7 +18,8 @@ public record StudentActivitySubmissionData(
                 studentActivity.getUserId(),
                 studentActivity.getSubmissionStatus(),
                 studentActivity.getFeedback(),
-                studentActivity.getScore()
+                studentActivity.getScore(),
+                studentActivity.getSubmittedCommitSha()
         );
     }
 }

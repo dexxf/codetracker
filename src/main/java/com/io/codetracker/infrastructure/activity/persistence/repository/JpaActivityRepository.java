@@ -30,6 +30,7 @@ public interface JpaActivityRepository extends JpaRepository<ActivityEntity, Str
         gs.repositoryUrl,
         gs.mode,
         gs.submittedAt,
+        sa.submittedCommitSha,
         sa.submissionStatus,
         sa.score,
         sa.feedback,

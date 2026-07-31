@@ -21,6 +21,7 @@ public record StudentSubmissionDetailsData(
         GithubSubmissionMode repositoryMode,
         String repositoryUrl,
         Instant submittedAt,
+        String submittedCommitSha,
         SubmissionStatus submissionStatus,
         String feedback,
         Integer score
@@ -40,6 +41,7 @@ public record StudentSubmissionDetailsData(
             GithubSubmissionMode repositoryMode,
             String repositoryUrl,
             Instant submittedAt,
+            String submittedCommitSha,
             SubmissionStatus submissionStatus,
             String feedback,
             Integer score
@@ -59,6 +61,7 @@ public record StudentSubmissionDetailsData(
                 repositoryMode,
                 repositoryUrl,
                 submittedAt,
+                submittedCommitSha,
                 submissionStatus,
                 feedback,
                 score

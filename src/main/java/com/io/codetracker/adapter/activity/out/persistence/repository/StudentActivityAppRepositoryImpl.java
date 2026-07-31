@@ -40,8 +40,16 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
                         savedEntity.getUserEntity().getUserId(),
                         savedEntity.getSubmissionStatus(),
                         savedEntity.getFeedback(),
-                        savedEntity.getScore()
+                        savedEntity.getScore(),
+                        savedEntity.getSubmittedCommitSha()
                 ));
+    }
+
+    @Override
+    public Optional<String> findRepositoryUrlByUserIdAndActivityId(UUID userId, String activityId) {
+        return jpaStudentActivityRepository.findByUserEntity_UserIdAndActivityEntity_ActivityId(userId, activityId)
+                .map(StudentActivityEntity::getGithubSubmission)
+                .map(entity -> entity.getRepositoryUrl());
     }
 
     @Override
@@ -65,6 +73,7 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
         entity.setSubmissionStatus(studentActivity.getSubmissionStatus());
         entity.setFeedback(studentActivity.getFeedback());
         entity.setScore(studentActivity.getScore());
+        entity.setSubmittedCommitSha(studentActivity.getSubmittedCommitSha());
 
         StudentActivityEntity savedEntity = jpaStudentActivityRepository.save(entity);
         return new StudentActivity(
@@ -73,7 +82,8 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
                 savedEntity.getUserEntity().getUserId(),
                 savedEntity.getSubmissionStatus(),
                 savedEntity.getFeedback(),
-                savedEntity.getScore()
+                savedEntity.getScore(),
+                savedEntity.getSubmittedCommitSha()
         );
     }
 }
