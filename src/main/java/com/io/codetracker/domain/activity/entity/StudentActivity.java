@@ -11,21 +11,26 @@ public final class StudentActivity {
     private SubmissionStatus submissionStatus;
     private String feedback;
     private Integer score;
+    private String submittedCommitSha;
 
     public StudentActivity(String studentActivityId, String activityId, UUID userId, SubmissionStatus submissionStatus, String feedback, Integer score) {
+        this(studentActivityId, activityId, userId, submissionStatus, feedback, score, null);
+    }
+
+    public StudentActivity(String studentActivityId, String activityId, UUID userId, SubmissionStatus submissionStatus, String feedback, Integer score, String submittedCommitSha) {
         this.studentActivityId = studentActivityId;
         this.activityId = activityId;
         this.userId = userId;
         this.submissionStatus = submissionStatus;
         this.feedback = normalizeFeedback(feedback);
         this.score = score;
+        this.submittedCommitSha = submittedCommitSha;
     }
 
     public StudentActivity(String activityId, UUID userId, SubmissionStatus submissionStatus, String feedback, Integer score) {
         this(null, activityId, userId, submissionStatus, feedback, score);
     }
 
-    // created createNew bc making factory or service is too much.. it only has 4 attributes
     public static StudentActivity createNew(String activityId, UUID userId) {
         return new StudentActivity(null, activityId, userId, SubmissionStatus.PENDING, null, null);
     }
@@ -54,6 +59,10 @@ public final class StudentActivity {
         return score;
     }
 
+    public String getSubmittedCommitSha() {
+        return submittedCommitSha;
+    }
+
     public void markPending() {
         if (submissionStatus == SubmissionStatus.PENDING) {
             throw new IllegalStateException("Submission is already pending.");
@@ -67,15 +76,19 @@ public final class StudentActivity {
         this.score = null;
     }
 
-    public void submit() {
+    public void submit(String commitSha) {
         if (submissionStatus == SubmissionStatus.SUBMITTED) {
             throw new IllegalStateException("Submission is already submitted.");
         }
         if (submissionStatus == SubmissionStatus.GRADED) {
             throw new IllegalStateException("Graded submission cannot be submitted again.");
         }
+        if (commitSha == null || commitSha.isBlank()) {
+            throw new IllegalArgumentException("A commit SHA is required to submit activity.");
+        }
 
         this.submissionStatus = SubmissionStatus.SUBMITTED;
+        this.submittedCommitSha = commitSha;
     }
 
     public void grade(String feedback, Integer score) {

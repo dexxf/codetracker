@@ -47,6 +47,9 @@ public class StudentActivityEntity {
     @Column(name = "score")
     private Integer score;
 
+    @Column(name = "submitted_commit_sha", length = 40)
+    private String submittedCommitSha;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
