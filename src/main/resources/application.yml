@@ -91,6 +91,7 @@ cloudinary:
 
 announcement:
   attachment:
+    folder-path: "announcement/"
     supported-types:
       IMAGE:
         mime-types:
