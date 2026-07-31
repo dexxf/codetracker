@@ -2,13 +2,13 @@ package com.io.codetracker.adapter.activity.in.dto.response;
 
 
 import java.util.UUID;
-import com.io.codetracker.application.activity.result.StudentActivityInfoUserData;
+import com.io.codetracker.application.activity.result.StudentActivitySummaryData;
 
 import java.util.Map;
 
-public record GetStudentActivityInfoResponse(Map<UUID, StudentActivityInfoUserData> data, String error) {
+public record GetStudentActivityInfoResponse(Map<UUID, StudentActivitySummaryData> data, String error) {
 
-    public static GetStudentActivityInfoResponse success(Map<UUID, StudentActivityInfoUserData> data) {
+    public static GetStudentActivityInfoResponse success(Map<UUID, StudentActivitySummaryData> data) {
         return new GetStudentActivityInfoResponse(data, null);
     }
 

@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.io.codetracker.application.activity.result.StudentActivityInfoStudentData;
+import com.io.codetracker.application.activity.result.StudentSummaryData;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +33,7 @@ public interface JpaClassroomStudentRepository extends JpaRepository<ClassroomSt
     List<ClassroomStudentEntity> findByClassroom_ClassroomIdAndStatusOrderByJoinedAtDesc(UUID classroomId, StudentStatus status);
 
     @Query("""
-            SELECT new com.io.codetracker.application.activity.result.StudentActivityInfoStudentData(
+            SELECT new com.io.codetracker.application.activity.result.StudentSummaryData(
                 cs.studentUserId,
                 u.firstName,
                 u.lastName,
@@ -45,7 +45,7 @@ public interface JpaClassroomStudentRepository extends JpaRepository<ClassroomSt
               AND cs.status = com.io.codetracker.domain.classroom.valueObject.StudentStatus.ACTIVE
             ORDER BY cs.joinedAt ASC
             """)
-    List<StudentActivityInfoStudentData> findStudentActivityInfoStudentsByClassroomId(@Param("classroomId") UUID classroomId);
+    List<StudentSummaryData> findStudentActivityInfoStudentsByClassroomId(@Param("classroomId") UUID classroomId);
 
     @Query("""
             SELECT new com.io.codetracker.application.classroom.result.ClassroomStudentJoinedData(

@@ -2,7 +2,7 @@ package com.io.codetracker.infrastructure.activity.persistence.repository;
 
 
 import java.util.UUID;
-import com.io.codetracker.application.activity.result.StudentActivityViewData;
+import com.io.codetracker.application.activity.result.StudentActivityOverviewData;
 import com.io.codetracker.application.classroom.result.ClassroomActivityCreatedData;
 import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
 import com.io.codetracker.infrastructure.activity.persistence.entity.ActivityEntity;
@@ -19,7 +19,7 @@ public interface JpaActivityRepository extends JpaRepository<ActivityEntity, Str
     List<ActivityEntity> findByClassroomEntity_ClassroomIdAndClassroomEntity_InstructorUserId(UUID classroomId, UUID instructorUserId);
 
     @Query("""
-    SELECT new com.io.codetracker.application.activity.result.StudentActivityViewData(
+    SELECT new com.io.codetracker.application.activity.result.StudentActivityOverviewData(
         a.activityId,
         a.title,
         a.description,
@@ -41,7 +41,7 @@ public interface JpaActivityRepository extends JpaRepository<ActivityEntity, Str
     WHERE a.classroomEntity.classroomId = :classroomId
       AND sa.userEntity.userId = :userId
     """)
-    List<StudentActivityViewData> findStudentActivityViewsByClassroomIdAndUserId(
+    List<StudentActivityOverviewData> findStudentActivityViewsByClassroomIdAndUserId(
             @Param("classroomId") UUID classroomId,
             @Param("userId") UUID userId
     );

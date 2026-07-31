@@ -12,11 +12,11 @@ import com.io.codetracker.application.activity.command.GetActivityCommand;
 import com.io.codetracker.application.activity.port.out.ActivityAppRepository;
 import com.io.codetracker.application.activity.port.out.ActivityClassroomStudentAppPort;
 import com.io.codetracker.application.activity.port.out.StudentActivityInfoAppRepository;
-import com.io.codetracker.application.activity.result.ActivityData;
-import com.io.codetracker.application.activity.result.StudentActivityInfoData;
-import com.io.codetracker.application.activity.result.StudentActivityInfoStudentData;
-import com.io.codetracker.application.activity.result.StudentActivityInfoUserData;
-import com.io.codetracker.application.activity.result.StudentActivityViewData;
+import com.io.codetracker.application.activity.result.ActivityDetailsData;
+import com.io.codetracker.application.activity.result.StudentSubmissionDetailsData;
+import com.io.codetracker.application.activity.result.StudentSummaryData;
+import com.io.codetracker.application.activity.result.StudentActivitySummaryData;
+import com.io.codetracker.application.activity.result.StudentActivityOverviewData;
 import com.io.codetracker.common.result.Result;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class GetActivityService implements GetClassroomOwnerActivityUseCase, Get
     private final ActivityClassroomStudentAppPort activityClassroomStudentAppPort;
     private final StudentActivityInfoAppRepository studentActivityInfoAppRepository;
 
-    public Result<List<ActivityData>, GetClassroomOwnerActivityError> getOwnerClassroomActivity(GetActivityCommand command) {
+    public Result<List<ActivityDetailsData>, GetClassroomOwnerActivityError> getOwnerClassroomActivity(GetActivityCommand command) {
             if (!activityClassroomAppPort.existsByClassroomId(command.classroomId())) {
                 return Result.fail(GetClassroomOwnerActivityError.CLASSROOM_NOT_FOUND);
             }
@@ -45,14 +45,14 @@ public class GetActivityService implements GetClassroomOwnerActivityUseCase, Get
                 return Result.fail(GetClassroomOwnerActivityError.USER_NOT_CLASSROOM_INSTRUCTOR);
             }
 
-            List<ActivityData> activities =  activityAppRepository.findActivitiesByClassroomIdAndInstructorUserId(command.classroomId(), command.userId())
-                    .stream().map(ActivityData::from).toList();
+            List<ActivityDetailsData> activities =  activityAppRepository.findActivitiesByClassroomIdAndInstructorUserId(command.classroomId(), command.userId())
+                    .stream().map(ActivityDetailsData::from).toList();
 
             return Result.ok(activities);
     }
 
     @Override
-    public Result<List<StudentActivityViewData>, GetClassroomStudentActivityError> getStudentClassroomActivity(GetActivityCommand command) {
+    public Result<List<StudentActivityOverviewData>, GetClassroomStudentActivityError> getStudentClassroomActivity(GetActivityCommand command) {
         if (!activityClassroomAppPort.existsByClassroomId(command.classroomId())) {
             return Result.fail(GetClassroomStudentActivityError.CLASSROOM_NOT_FOUND);
         }
@@ -61,13 +61,13 @@ public class GetActivityService implements GetClassroomOwnerActivityUseCase, Get
             return Result.fail(GetClassroomStudentActivityError.USER_NOT_CLASSROOM_STUDENT);
         }
 
-        List<StudentActivityViewData> activities = activityAppRepository.findStudentActivities(command.classroomId(), command.userId());
+        List<StudentActivityOverviewData> activities = activityAppRepository.findStudentActivities(command.classroomId(), command.userId());
 
         return Result.ok(activities);
     }
 
     @Override
-    public Result<Map<UUID, StudentActivityInfoUserData>, GetClassroomOwnerActivityError> execute(GetActivityCommand command) {
+    public Result<Map<UUID, StudentActivitySummaryData>, GetClassroomOwnerActivityError> execute(GetActivityCommand command) {
         if (!activityClassroomAppPort.existsByClassroomId(command.classroomId())) {
             return Result.fail(GetClassroomOwnerActivityError.CLASSROOM_NOT_FOUND);
         }
@@ -76,12 +76,12 @@ public class GetActivityService implements GetClassroomOwnerActivityUseCase, Get
             return Result.fail(GetClassroomOwnerActivityError.USER_NOT_CLASSROOM_INSTRUCTOR);
         }
 
-        List<StudentActivityInfoStudentData> students = studentActivityInfoAppRepository.findClassroomStudents(command.classroomId());
-        List<StudentActivityInfoData> studentActivities = studentActivityInfoAppRepository.findStudentActivityInfos(command.classroomId());
+        List<StudentSummaryData> students = studentActivityInfoAppRepository.findClassroomStudents(command.classroomId());
+        List<StudentSubmissionDetailsData> studentActivities = studentActivityInfoAppRepository.findStudentActivityInfos(command.classroomId());
 
-        Map<UUID, StudentActivityInfoUserData> studentActivityInfoMap = new LinkedHashMap<>();
-        for (StudentActivityInfoStudentData student : students) {
-            studentActivityInfoMap.put(student.userId(), new StudentActivityInfoUserData(
+        Map<UUID, StudentActivitySummaryData> studentActivityInfoMap = new LinkedHashMap<>();
+        for (StudentSummaryData student : students) {
+            studentActivityInfoMap.put(student.userId(), new StudentActivitySummaryData(
                     student.userId(),
                     student.firstName(),
                     student.lastName(),
@@ -90,8 +90,8 @@ public class GetActivityService implements GetClassroomOwnerActivityUseCase, Get
             ));
         }
 
-        for (StudentActivityInfoData studentActivity : studentActivities) {
-            StudentActivityInfoUserData studentData = studentActivityInfoMap.get(studentActivity.userId());
+        for (StudentSubmissionDetailsData studentActivity : studentActivities) {
+            StudentActivitySummaryData studentData = studentActivityInfoMap.get(studentActivity.userId());
             if (studentData == null) {
                 continue;
             }

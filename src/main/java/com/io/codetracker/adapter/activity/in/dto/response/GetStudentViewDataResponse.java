@@ -1,14 +1,14 @@
 package com.io.codetracker.adapter.activity.in.dto.response;
 
-import com.io.codetracker.application.activity.result.StudentActivityViewData;
+import com.io.codetracker.application.activity.result.StudentActivityOverviewData;
 
 import java.util.List;
 
 public record GetStudentViewDataResponse(
-        List<StudentActivityViewData> data,
+        List<StudentActivityOverviewData> data,
         String error
 ) {
-    public static GetStudentViewDataResponse success(List<StudentActivityViewData> data) {
+    public static GetStudentViewDataResponse success(List<StudentActivityOverviewData> data) {
         return new GetStudentViewDataResponse(data, null);
     }
 

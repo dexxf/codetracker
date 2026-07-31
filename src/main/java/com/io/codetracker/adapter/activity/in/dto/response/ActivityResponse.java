@@ -1,10 +1,10 @@
 package com.io.codetracker.adapter.activity.in.dto.response;
 
-import com.io.codetracker.application.activity.result.ActivityData;
+import com.io.codetracker.application.activity.result.ActivityDetailsData;
 
-public record ActivityResponse(ActivityData data, String message) {
+public record ActivityResponse(ActivityDetailsData data, String message) {
 
-    public static ActivityResponse success(ActivityData data, String message) {
+    public static ActivityResponse success(ActivityDetailsData data, String message) {
         return new ActivityResponse(data , message);
     }
 

@@ -4,15 +4,15 @@ import com.io.codetracker.domain.activity.entity.StudentActivity;
 import java.util.UUID;
 import com.io.codetracker.domain.activity.valueObject.SubmissionStatus;
 
-public record StudentActivityData(
+public record StudentActivitySubmissionData(
         String activityId,
         UUID userId,
         SubmissionStatus submissionStatus,
         String feedback,
         Integer score
 ) {
-    public static StudentActivityData from(StudentActivity studentActivity) {
-        return new StudentActivityData(
+    public static StudentActivitySubmissionData from(StudentActivity studentActivity) {
+        return new StudentActivitySubmissionData(
                 studentActivity.getActivityId(),
                 studentActivity.getUserId(),
                 studentActivity.getSubmissionStatus(),

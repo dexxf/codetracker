@@ -21,11 +21,11 @@ import com.io.codetracker.adapter.activity.in.dto.request.EditActivityRequest;
 import com.io.codetracker.adapter.activity.in.dto.response.ActivityResponse;
 import com.io.codetracker.application.activity.error.*;
 import com.io.codetracker.application.activity.port.in.*;
-import com.io.codetracker.application.activity.result.ActivityData;
+import com.io.codetracker.application.activity.result.ActivityDetailsData;
 
-import com.io.codetracker.application.activity.result.StudentActivityData;
-import com.io.codetracker.application.activity.result.StudentActivityInfoUserData;
-import com.io.codetracker.application.activity.result.StudentActivityViewData;
+import com.io.codetracker.application.activity.result.StudentActivitySubmissionData;
+import com.io.codetracker.application.activity.result.StudentActivitySummaryData;
+import com.io.codetracker.application.activity.result.StudentActivityOverviewData;
 import com.io.codetracker.common.result.Result;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -59,7 +59,7 @@ public class ActivityController {
         public ResponseEntity<ActivityResponse> addActivity(@PathVariable UUID classroomId, @Valid @RequestBody AddActivityRequest request, @AuthenticationPrincipal AuthPrincipal principal) {
         AddActivityCommand command = new AddActivityCommand(classroomId, principal.getUserId(), request.title(),
                 request.description(), request.dueDate(), request.maxScore(), request.status());
-        Result<ActivityData, AddActivityError> response = addActivityUseCase.execute(command);
+        Result<ActivityDetailsData, AddActivityError> response = addActivityUseCase.execute(command);
         return response.success() ? ResponseEntity.status(HttpStatus.CREATED).body(ActivityResponse.success(response.data(), "Successfully added activity"))
                                   : ResponseEntity.status(AddActivityHttpMapper.toStatus(response.error()))
                 .body(ActivityResponse.fail(AddActivityHttpMapper.toMessage(response.error())));
@@ -67,7 +67,7 @@ public class ActivityController {
 
     @GetMapping("/owner")
     public ResponseEntity<GetActivityResponse> getClassroomOwnerActivities(@PathVariable UUID classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
-            Result<List<ActivityData>, GetClassroomOwnerActivityError> response =  getClassroomOwnerActivityUseCase.getOwnerClassroomActivity(new GetActivityCommand(classroomId,principal.getUserId()));
+            Result<List<ActivityDetailsData>, GetClassroomOwnerActivityError> response =  getClassroomOwnerActivityUseCase.getOwnerClassroomActivity(new GetActivityCommand(classroomId,principal.getUserId()));
             return response.success() ? ResponseEntity.ok(GetActivityResponse.success(response.data()))
                                       : ResponseEntity.status(GetActivityHttpMapper.ownerToStatus(response.error()))
                     .body(GetActivityResponse.fail(GetActivityHttpMapper.ownerToMessage(response.error())));
@@ -75,7 +75,7 @@ public class ActivityController {
 
     @GetMapping("/student")
     public ResponseEntity<GetStudentViewDataResponse> getClassroomStudentActivities(@PathVariable UUID classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
-        Result<List<StudentActivityViewData>, GetClassroomStudentActivityError> response =  getClassroomStudentActivityUseCase.getStudentClassroomActivity(new GetActivityCommand(classroomId,principal.getUserId()));
+        Result<List<StudentActivityOverviewData>, GetClassroomStudentActivityError> response =  getClassroomStudentActivityUseCase.getStudentClassroomActivity(new GetActivityCommand(classroomId,principal.getUserId()));
         return response.success() ? ResponseEntity.ok(GetStudentViewDataResponse.success(response.data()))
                 : ResponseEntity.status(GetActivityHttpMapper.studentToStatus(response.error()))
                   .body(GetStudentViewDataResponse.fail(GetActivityHttpMapper.studentToMessage(response.error())));
@@ -83,7 +83,7 @@ public class ActivityController {
 
     @GetMapping("/submitted")
     public ResponseEntity<GetStudentActivityInfoResponse> getSubmittedActivities(@PathVariable UUID classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
-        Result<Map<UUID, StudentActivityInfoUserData>, GetClassroomOwnerActivityError> response =
+        Result<Map<UUID, StudentActivitySummaryData>, GetClassroomOwnerActivityError> response =
                 getStudentActivityInfoUseCase.execute(new GetActivityCommand(classroomId, principal.getUserId()));
         return response.success() ? ResponseEntity.ok(GetStudentActivityInfoResponse.success(response.data()))
                 : ResponseEntity.status(GetActivityHttpMapper.ownerToStatus(response.error()))
@@ -92,7 +92,7 @@ public class ActivityController {
 
     @DeleteMapping("/{activityId}")
     public ResponseEntity<ActivityResponse> removeActivity(@PathVariable UUID classroomId, @PathVariable String activityId, @AuthenticationPrincipal AuthPrincipal authPrincipal) {
-        Result<ActivityData, RemoveActivityError> response = removeActivityUseCase.execute(classroomId,activityId,authPrincipal.getUserId());
+        Result<ActivityDetailsData, RemoveActivityError> response = removeActivityUseCase.execute(classroomId,activityId,authPrincipal.getUserId());
         return !response.success() ?  ResponseEntity.status(RemoveActivityHttpMapper.toStatus(response.error()))
                 .body(ActivityResponse.fail(RemoveActivityHttpMapper.toMessage(response.error())))
                 : ResponseEntity.ok(ActivityResponse.success(response.data(), "Successfully Removed Activity"));
@@ -100,7 +100,7 @@ public class ActivityController {
 
     @PutMapping("/{activityId}")
     public ResponseEntity<ActivityResponse> updateActivity(@PathVariable UUID classroomId, @PathVariable String activityId, @Valid @RequestBody EditActivityRequest request, @AuthenticationPrincipal AuthPrincipal authPrincipal) {
-        Result<ActivityData, EditActivityError> response =  editActivityUseCase.execute(new EditActivityCommand(authPrincipal.getUserId(),
+        Result<ActivityDetailsData, EditActivityError> response =  editActivityUseCase.execute(new EditActivityCommand(authPrincipal.getUserId(),
                 classroomId,activityId,request.title(),request.description(),request.dueDate(),request.status(),request.maxScore()));
 
         return !response.success() ?  ResponseEntity.status(EditActivityHttpMapper.toStatus(response.error()))
@@ -111,7 +111,7 @@ public class ActivityController {
 
     @GetMapping("/unsubmitted")
     public ResponseEntity<FindUnsubmittedRepositoryResponse> getStudentUnsubmittedRepository(@AuthenticationPrincipal AuthPrincipal authPrincipal, @PathVariable UUID classroomId) {
-        Result<List<ActivityData>, FindStudentUnsubmittedRepositoryError> result = findStudentUnsubmittedRepositoryUseCase.execute(new FindUnsubmittedRepositoryCommand(authPrincipal.getUserId(), classroomId));
+        Result<List<ActivityDetailsData>, FindStudentUnsubmittedRepositoryError> result = findStudentUnsubmittedRepositoryUseCase.execute(new FindUnsubmittedRepositoryCommand(authPrincipal.getUserId(), classroomId));
         return result.success() ? ResponseEntity.ok(FindUnsubmittedRepositoryResponse.ok(result.data()))
                 : ResponseEntity.status(FindUnsubmittedRepositoryHttpMapper.toStatus(result.error())).body(FindUnsubmittedRepositoryResponse.fail(FindUnsubmittedRepositoryHttpMapper.toMessage(result.error())));
     }
@@ -123,7 +123,7 @@ public class ActivityController {
             @Valid @RequestBody SubmitExistingRepositoryRequest request,
             @AuthenticationPrincipal AuthPrincipal authPrincipal
     ) {
-        Result<StudentActivityData, SubmitExistingRepositoryError> response =
+        Result<StudentActivitySubmissionData, SubmitExistingRepositoryError> response =
                 submitExistingRepositoryUseCase.submitExisting(
                         authPrincipal.getAuthId(),
                         authPrincipal.getUserId(),
@@ -145,7 +145,7 @@ public class ActivityController {
             @Valid @RequestBody SubmitNewRepositoryRequest request,
             @AuthenticationPrincipal AuthPrincipal authPrincipal
     ) {
-        Result<StudentActivityData, SubmitNewRepositoryError> response =
+        Result<StudentActivitySubmissionData, SubmitNewRepositoryError> response =
                 submitNewRepositoryUseCase.submitNew(
                         authPrincipal.getAuthId(),
                         authPrincipal.getUserId(),
@@ -167,7 +167,7 @@ public class ActivityController {
             @PathVariable String activityId,
             @AuthenticationPrincipal AuthPrincipal authPrincipal
     ) {
-        Result<StudentActivityData, SubmitActivityError> response =
+        Result<StudentActivitySubmissionData, SubmitActivityError> response =
                 submitTrackedActivityUseCase.submit(
                         authPrincipal.getUserId(),
                         classroomId,
@@ -188,7 +188,7 @@ public class ActivityController {
             @Valid @RequestBody(required = false) MarkStudentAsGradedRequest request,
             @AuthenticationPrincipal AuthPrincipal authPrincipal
     ) {
-        Result<StudentActivityData, MarkStudentAsGradedError> response =
+        Result<StudentActivitySubmissionData, MarkStudentAsGradedError> response =
                 markStudentAsGradedUseCase.grade(
                         authPrincipal.getUserId(),
                         classroomId,

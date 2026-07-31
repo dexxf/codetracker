@@ -3,7 +3,7 @@ package com.io.codetracker.infrastructure.activity.persistence.repository;
 
 import java.util.UUID;
 import com.io.codetracker.infrastructure.activity.persistence.entity.StudentActivityEntity;
-import com.io.codetracker.application.activity.result.StudentActivityInfoData;
+import com.io.codetracker.application.activity.result.StudentSubmissionDetailsData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,13 +20,13 @@ public interface JpaStudentActivityRepository extends JpaRepository<StudentActiv
     Set<String> findActivityIdsByClassroomIdAndUserId(@Param("classroomId") UUID classroomId,@Param("userId") UUID userId);
 
     @Query("""
-            SELECT new com.io.codetracker.application.activity.result.StudentActivityInfoData(
+            SELECT new com.io.codetracker.application.activity.result.StudentSubmissionDetailsData(
                 sa.userEntity.userId,sa.studentActivityId,sa.activityEntity.activityId,sa.activityEntity.title,sa.activityEntity.description,sa.activityEntity.maxScore,sa.createdAt,sa.updatedAt,
                 gs.repositoryOwnerUsername,gs.repositoryId, gs.repositoryName,gs.mode,gs.repositoryUrl, gs.submittedAt,
                 sa.submissionStatus, sa.feedback, sa.score)
             FROM StudentActivityEntity sa LEFT JOIN sa.githubSubmission gs WHERE sa.activityEntity.classroomEntity.classroomId = :classroomId
             ORDER BY sa.createdAt DESC
             """)
-    List<StudentActivityInfoData> findStudentActivityInfosByClassroomId(@Param("classroomId") UUID classroomId);
+    List<StudentSubmissionDetailsData> findStudentActivityInfosByClassroomId(@Param("classroomId") UUID classroomId);
 }
 

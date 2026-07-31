@@ -5,7 +5,7 @@ import com.io.codetracker.application.activity.error.EditActivityError;
 import com.io.codetracker.application.activity.port.in.EditActivityUseCase;
 import com.io.codetracker.application.activity.port.out.ActivityAppRepository;
 import com.io.codetracker.application.activity.port.out.ActivityClassroomAppPort;
-import com.io.codetracker.application.activity.result.ActivityData;
+import com.io.codetracker.application.activity.result.ActivityDetailsData;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.activity.entity.Activity;
 import com.io.codetracker.domain.activity.result.EditActivityResult;
@@ -21,9 +21,7 @@ public class EditActivityService implements EditActivityUseCase {
     private final ActivityClassroomAppPort activityClassroomAppPort;
     private final ActivityAppRepository activityAppRepository;
 
-
-
-    public Result<ActivityData, EditActivityError> execute (EditActivityCommand command) {
+    public Result<ActivityDetailsData, EditActivityError> execute (EditActivityCommand command) {
         boolean classroomExists = activityClassroomAppPort.existsByClassroomId(command.classroomId());
         if(!classroomExists) return Result.fail(EditActivityError.UNKNOWN_CLASSROOM);
 
@@ -40,7 +38,7 @@ public class EditActivityService implements EditActivityUseCase {
         Activity updatedActivity = result.data();
 
         activityAppRepository.update(updatedActivity);
-        return Result.ok(ActivityData.from(updatedActivity));
+        return Result.ok(ActivityDetailsData.from(updatedActivity));
     }
 
 

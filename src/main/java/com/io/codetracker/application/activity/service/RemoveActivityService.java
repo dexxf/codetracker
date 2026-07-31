@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import com.io.codetracker.application.activity.error.RemoveActivityError;
 import com.io.codetracker.application.activity.port.in.RemoveActivityUseCase;
-import com.io.codetracker.application.activity.result.ActivityData;
+import com.io.codetracker.application.activity.result.ActivityDetailsData;
 import com.io.codetracker.common.result.Result;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public final class RemoveActivityService implements RemoveActivityUseCase {
     private final ActivityAppRepository activityAppRepository;
     private final ActivityClassroomAppPort activityClassroomAppPort;
 
-    public Result<ActivityData, RemoveActivityError> execute(UUID classroomId, String activityId, UUID userId) {
+    public Result<ActivityDetailsData, RemoveActivityError> execute(UUID classroomId, String activityId, UUID userId) {
       boolean isInstructor = activityClassroomAppPort.existsByClassroomIdAndInstructorUserId(classroomId, userId);
 
       if(!isInstructor) return Result.fail(RemoveActivityError.USER_NOT_CLASSROOM_INSTRUCTOR);
@@ -32,7 +32,7 @@ public final class RemoveActivityService implements RemoveActivityUseCase {
       if (activity.isEmpty()) return Result.fail(RemoveActivityError.ACTIVITY_NOT_FOUND);
 
       activityAppRepository.deleteByActivityId(activityId);
-      return Result.ok(ActivityData.from(activity.get()));
+      return Result.ok(ActivityDetailsData.from(activity.get()));
     }
 }
 

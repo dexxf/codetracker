@@ -2,11 +2,14 @@ package com.io.codetracker.application.activity.result;
 
 
 import java.util.UUID;
-public record StudentActivityInfoStudentData(
+import java.util.List;
+
+public record StudentActivitySummaryData(
         UUID userId,
         String firstName,
         String lastName,
-        String profileUrl
+        String profileUrl,
+        List<StudentSubmissionDetailsData> studentActivities
 ) {
 }
 

@@ -11,7 +11,7 @@ import com.io.codetracker.application.activity.port.out.ActivityClassroomAppPort
 import com.io.codetracker.application.activity.port.out.ActivityGithubAccountAppPort;
 import com.io.codetracker.application.activity.port.out.GithubActivityIntegrationPort;
 import com.io.codetracker.application.activity.port.out.StudentActivityAppRepository;
-import com.io.codetracker.application.activity.result.StudentActivityData;
+import com.io.codetracker.application.activity.result.StudentActivitySubmissionData;
 import com.io.codetracker.application.github.command.CreateGithubSubmissionCommand;
 import com.io.codetracker.application.github.error.CreateGithubSubmissionError;
 import com.io.codetracker.application.github.port.in.CreateGithubSubmissionUseCase;
@@ -36,7 +36,7 @@ public class SubmitUntrackedRepositoryService implements SubmitNewRepositoryUseC
     private final CreateGithubSubmissionUseCase createGithubSubmissionUseCase;
 
     @Override
-    public Result<StudentActivityData, SubmitExistingRepositoryError> submitExisting(UUID authId, UUID userId, UUID classroomId, String activityId, String repositoryUrl) {
+    public Result<StudentActivitySubmissionData, SubmitExistingRepositoryError> submitExisting(UUID authId, UUID userId, UUID classroomId, String activityId, String repositoryUrl) {
         if (!activityClassroomAppPort.existsByClassroomId(classroomId))
             return Result.fail(SubmitExistingRepositoryError.CLASSROOM_NOT_FOUND);
 
@@ -79,14 +79,14 @@ public class SubmitUntrackedRepositoryService implements SubmitNewRepositoryUseC
                 return Result.fail(SubmitExistingRepositoryError.SAVE_FAILED);
             }
 
-            return Result.ok(StudentActivityData.from(savedStudentActivity));
+            return Result.ok(StudentActivitySubmissionData.from(savedStudentActivity));
         } catch (RuntimeException e) {
             return Result.fail(SubmitExistingRepositoryError.SAVE_FAILED);
         }
     }
 
     @Override
-    public Result<StudentActivityData, SubmitNewRepositoryError> submitNew(UUID authId, UUID userId, UUID classroomId, String activityId, String repositoryName) {
+    public Result<StudentActivitySubmissionData, SubmitNewRepositoryError> submitNew(UUID authId, UUID userId, UUID classroomId, String activityId, String repositoryName) {
         if (!activityClassroomAppPort.existsByClassroomId(classroomId))
             return Result.fail(SubmitNewRepositoryError.CLASSROOM_NOT_FOUND);
 
@@ -132,7 +132,7 @@ public class SubmitUntrackedRepositoryService implements SubmitNewRepositoryUseC
                 return Result.fail(SubmitNewRepositoryError.SAVE_FAILED);
             }
 
-            return Result.ok(StudentActivityData.from(savedStudentActivity));
+            return Result.ok(StudentActivitySubmissionData.from(savedStudentActivity));
         } catch (RuntimeException e) {
             return Result.fail(SubmitNewRepositoryError.SAVE_FAILED);
         }

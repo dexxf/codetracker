@@ -4,7 +4,7 @@ import com.io.codetracker.application.activity.error.SubmitActivityError;
 import com.io.codetracker.application.activity.port.in.SubmitTrackedActivityUseCase;
 import com.io.codetracker.application.activity.port.out.ActivityClassroomAppPort;
 import com.io.codetracker.application.activity.port.out.StudentActivityAppRepository;
-import com.io.codetracker.application.activity.result.StudentActivityData;
+import com.io.codetracker.application.activity.result.StudentActivitySubmissionData;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.activity.entity.StudentActivity;
 import lombok.AllArgsConstructor;
@@ -21,7 +21,7 @@ public class SubmitTrackedTrackedActivityService implements SubmitTrackedActivit
     private final ActivityClassroomAppPort activityClassroomAppPort;
 
     @Override
-    public Result<StudentActivityData, SubmitActivityError> submit(UUID userId, UUID classroomId, String activityId) {
+    public Result<StudentActivitySubmissionData, SubmitActivityError> submit(UUID userId, UUID classroomId, String activityId) {
         if (!activityClassroomAppPort.existsByClassroomId(classroomId))
             return Result.fail(SubmitActivityError.CLASSROOM_NOT_FOUND);
 
@@ -48,7 +48,7 @@ public class SubmitTrackedTrackedActivityService implements SubmitTrackedActivit
 
         try {
             StudentActivity savedStudentActivity = studentActivityAppRepository.save(studentActivity);
-            return Result.ok(StudentActivityData.from(savedStudentActivity));
+            return Result.ok(StudentActivitySubmissionData.from(savedStudentActivity));
         } catch (RuntimeException e) {
             return Result.fail(SubmitActivityError.SAVE_FAILED);
         }

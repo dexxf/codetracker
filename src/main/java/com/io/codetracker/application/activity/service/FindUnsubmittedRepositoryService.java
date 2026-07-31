@@ -6,7 +6,7 @@ import com.io.codetracker.application.activity.port.in.FindStudentUnsubmittedRep
 import com.io.codetracker.application.activity.port.out.ActivityClassroomAppPort;
 import com.io.codetracker.application.activity.port.out.ActivityClassroomStudentAppPort;
 import com.io.codetracker.application.activity.port.out.ActivityGithubSubmissionAppPort;
-import com.io.codetracker.application.activity.result.ActivityData;
+import com.io.codetracker.application.activity.result.ActivityDetailsData;
 import com.io.codetracker.common.result.Result;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class FindUnsubmittedRepositoryService implements  FindStudentUnsubmitted
     private final ActivityClassroomAppPort activityClassroomAppPort;
     private final ActivityClassroomStudentAppPort activityClassroomStudentAppPort;
 
-    public Result<List<ActivityData>, FindStudentUnsubmittedRepositoryError> execute(FindUnsubmittedRepositoryCommand command) {
+    public Result<List<ActivityDetailsData>, FindStudentUnsubmittedRepositoryError> execute(FindUnsubmittedRepositoryCommand command) {
         if (!activityClassroomAppPort.existsByClassroomId(command.classroomId())) {
             return Result.fail(FindStudentUnsubmittedRepositoryError.CLASSROOM_NOT_FOUND);
         }
@@ -30,7 +30,7 @@ public class FindUnsubmittedRepositoryService implements  FindStudentUnsubmitted
             return Result.fail(FindStudentUnsubmittedRepositoryError.USER_NOT_CLASSROOM_STUDENT);
         }
 
-        List<ActivityData> listOfSubmittedUser = activityGithubSubmissionAppPort.getUnsubmittedRepositoryActivity(command.classroomId(), command.userId());
+        List<ActivityDetailsData> listOfSubmittedUser = activityGithubSubmissionAppPort.getUnsubmittedRepositoryActivity(command.classroomId(), command.userId());
         return Result.ok(listOfSubmittedUser);
     }
 

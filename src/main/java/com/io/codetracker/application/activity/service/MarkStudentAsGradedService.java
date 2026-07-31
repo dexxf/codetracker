@@ -4,7 +4,7 @@ import com.io.codetracker.application.activity.error.MarkStudentAsGradedError;
 import com.io.codetracker.application.activity.port.in.MarkStudentAsGradedUseCase;
 import com.io.codetracker.application.activity.port.out.ActivityClassroomAppPort;
 import com.io.codetracker.application.activity.port.out.StudentActivityAppRepository;
-import com.io.codetracker.application.activity.result.StudentActivityData;
+import com.io.codetracker.application.activity.result.StudentActivitySubmissionData;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.activity.entity.StudentActivity;
 import com.io.codetracker.domain.activity.valueObject.SubmissionStatus;
@@ -22,7 +22,7 @@ public class MarkStudentAsGradedService implements MarkStudentAsGradedUseCase {
     private final ActivityClassroomAppPort activityClassroomAppPort;
 
     @Override
-    public Result<StudentActivityData, MarkStudentAsGradedError> grade(UUID instructorUserId, UUID classroomId, String activityId, UUID studentUserId, String feedback, Integer score) {
+    public Result<StudentActivitySubmissionData, MarkStudentAsGradedError> grade(UUID instructorUserId, UUID classroomId, String activityId, UUID studentUserId, String feedback, Integer score) {
         if (!activityClassroomAppPort.existsByClassroomId(classroomId))
             return Result.fail(MarkStudentAsGradedError.CLASSROOM_NOT_FOUND);
 
@@ -64,7 +64,7 @@ public class MarkStudentAsGradedService implements MarkStudentAsGradedUseCase {
 
         try {
             StudentActivity savedStudentActivity = studentActivityAppRepository.save(studentActivity);
-            return Result.ok(StudentActivityData.from(savedStudentActivity));
+            return Result.ok(StudentActivitySubmissionData.from(savedStudentActivity));
         } catch (RuntimeException e) {
             return Result.fail(MarkStudentAsGradedError.SAVE_FAILED);
         }

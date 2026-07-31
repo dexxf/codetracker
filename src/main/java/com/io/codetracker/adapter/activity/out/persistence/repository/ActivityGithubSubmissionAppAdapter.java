@@ -4,7 +4,7 @@ package com.io.codetracker.adapter.activity.out.persistence.repository;
 import java.util.UUID;
 import com.io.codetracker.adapter.activity.out.persistence.mapper.ActivityMapper;
 import com.io.codetracker.application.activity.port.out.ActivityGithubSubmissionAppPort;
-import com.io.codetracker.application.activity.result.ActivityData;
+import com.io.codetracker.application.activity.result.ActivityDetailsData;
 import com.io.codetracker.infrastructure.activity.persistence.entity.ActivityEntity;
 import com.io.codetracker.infrastructure.activity.persistence.repository.JpaActivityRepository;
 import com.io.codetracker.infrastructure.activity.persistence.repository.JpaStudentActivityRepository;
@@ -22,7 +22,7 @@ public class ActivityGithubSubmissionAppAdapter implements ActivityGithubSubmiss
     private final JpaActivityRepository jpaActivityRepository;
 
     @Override
-    public List<ActivityData> getUnsubmittedRepositoryActivity(UUID classroomId, UUID userId) {
+    public List<ActivityDetailsData> getUnsubmittedRepositoryActivity(UUID classroomId, UUID userId) {
         Set<String> submittedActivityIds = jpaStudentActivityRepository.findActivityIdsByClassroomIdAndUserId(classroomId,userId);
 
         List<ActivityEntity> activityEntityList = jpaActivityRepository.findActivitiesByClassroomId(classroomId);
@@ -33,7 +33,7 @@ public class ActivityGithubSubmissionAppAdapter implements ActivityGithubSubmiss
         return activityEntityList.stream()
                 .filter(activity -> !submittedActivityIds.contains(activity.getActivityId()))
                 .map(ActivityMapper::toDomain)
-                .map(ActivityData::from)
+                .map(ActivityDetailsData::from)
                 .toList();
     }
 }

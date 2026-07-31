@@ -5,7 +5,7 @@ import com.io.codetracker.application.activity.error.AddActivityError;
 import com.io.codetracker.application.activity.port.in.AddActivityUseCase;
 import com.io.codetracker.application.activity.port.out.ActivityAppRepository;
 import com.io.codetracker.application.activity.port.out.ActivityClassroomAppPort;
-import com.io.codetracker.application.activity.result.ActivityData;
+import com.io.codetracker.application.activity.result.ActivityDetailsData;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.activity.entity.Activity;
 import com.io.codetracker.domain.activity.result.ActivityCreationResult;
@@ -21,7 +21,7 @@ public class AddActivityService implements AddActivityUseCase {
     private final ActivityCreationService activityCreationService;
     private final ActivityClassroomAppPort activityClassroomAppPort;
 
-    public Result<ActivityData, AddActivityError> execute(AddActivityCommand command) {
+    public Result<ActivityDetailsData, AddActivityError> execute(AddActivityCommand command) {
             boolean classroomExists = activityClassroomAppPort.existsByClassroomId(command.classroomId());
             if(!classroomExists)
                 return Result.fail(AddActivityError.UNKNOWN_CLASSROOM);
@@ -42,7 +42,7 @@ public class AddActivityService implements AddActivityUseCase {
 
         if(saveRes == null) return Result.fail(AddActivityError.SAVE_FAILED);
 
-        return Result.ok(ActivityData.from(saveRes));
+        return Result.ok(ActivityDetailsData.from(saveRes));
     }
 
 }
