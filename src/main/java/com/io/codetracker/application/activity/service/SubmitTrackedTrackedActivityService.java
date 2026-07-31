@@ -3,10 +3,13 @@ package com.io.codetracker.application.activity.service;
 import com.io.codetracker.application.activity.error.SubmitActivityError;
 import com.io.codetracker.application.activity.port.in.SubmitTrackedActivityUseCase;
 import com.io.codetracker.application.activity.port.out.ActivityClassroomAppPort;
+import com.io.codetracker.application.activity.port.out.ActivityGithubAccountAppPort;
+import com.io.codetracker.application.activity.port.out.GithubActivityIntegrationPort;
 import com.io.codetracker.application.activity.port.out.StudentActivityAppRepository;
 import com.io.codetracker.application.activity.result.StudentActivitySubmissionData;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.activity.entity.StudentActivity;
+import com.io.codetracker.domain.auth.entity.GithubAccount;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +22,11 @@ public class SubmitTrackedTrackedActivityService implements SubmitTrackedActivit
 
     private final StudentActivityAppRepository studentActivityAppRepository;
     private final ActivityClassroomAppPort activityClassroomAppPort;
+    private final ActivityGithubAccountAppPort activityGithubAccountAppPort;
+    private final GithubActivityIntegrationPort githubActivityIntegrationPort;
 
     @Override
-    public Result<StudentActivitySubmissionData, SubmitActivityError> submit(UUID userId, UUID classroomId, String activityId) {
+    public Result<StudentActivitySubmissionData, SubmitActivityError> submit(UUID authId, UUID userId, UUID classroomId, String activityId) {
         if (!activityClassroomAppPort.existsByClassroomId(classroomId))
             return Result.fail(SubmitActivityError.CLASSROOM_NOT_FOUND);
 
@@ -40,8 +45,21 @@ public class SubmitTrackedTrackedActivityService implements SubmitTrackedActivit
 
         StudentActivity studentActivity = studentActivityOptional.get();
 
+        Optional<String> repositoryUrl = studentActivityAppRepository.findRepositoryUrlByUserIdAndActivityId(userId, activityId);
+        if (repositoryUrl.isEmpty())
+            return Result.fail(SubmitActivityError.REPOSITORY_SUBMISSION_NOT_FOUND);
+
+        Optional<GithubAccount> githubAccount = activityGithubAccountAppPort.findByAuthId(authId);
+        if (githubAccount.isEmpty())
+            return Result.fail(SubmitActivityError.COMMIT_NOT_FOUND);
+
+        Optional<String> commitSha = githubActivityIntegrationPort.findLatestCommitSha(
+                githubAccount.get().getAccessToken(), repositoryUrl.get());
+        if (commitSha.isEmpty())
+            return Result.fail(SubmitActivityError.COMMIT_NOT_FOUND);
+
         try {
-            studentActivity.submit();
+            studentActivity.submit(commitSha.get());
         } catch (IllegalStateException e) {
             return Result.fail(SubmitActivityError.ALREADY_SUBMITTED);
         }
