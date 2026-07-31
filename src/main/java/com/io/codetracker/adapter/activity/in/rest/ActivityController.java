@@ -51,7 +51,7 @@ public class ActivityController {
     private final EditActivityUseCase editActivityUseCase;
     private final SubmitExistingRepositoryUseCase submitExistingRepositoryUseCase;
     private final SubmitNewRepositoryUseCase submitNewRepositoryUseCase;
-    private final SubmitActivityUseCase submitActivityUseCase;
+    private final SubmitTrackedActivityUseCase submitTrackedActivityUseCase;
     private final MarkStudentAsGradedUseCase markStudentAsGradedUseCase;
     private final FindStudentUnsubmittedRepositoryUseCase findStudentUnsubmittedRepositoryUseCase;
 
@@ -168,7 +168,7 @@ public class ActivityController {
             @AuthenticationPrincipal AuthPrincipal authPrincipal
     ) {
         Result<StudentActivityData, SubmitActivityError> response =
-                submitActivityUseCase.submit(
+                submitTrackedActivityUseCase.submit(
                         authPrincipal.getUserId(),
                         classroomId,
                         activityId

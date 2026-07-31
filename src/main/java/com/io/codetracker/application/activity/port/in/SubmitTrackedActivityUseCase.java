@@ -6,6 +6,6 @@ import com.io.codetracker.application.activity.error.SubmitActivityError;
 import com.io.codetracker.application.activity.result.StudentActivityData;
 import com.io.codetracker.common.result.Result;
 
-public interface SubmitActivityUseCase {
+public interface SubmitTrackedActivityUseCase {
     Result<StudentActivityData, SubmitActivityError> submit(UUID userId, UUID classroomId, String activityId);
 }
