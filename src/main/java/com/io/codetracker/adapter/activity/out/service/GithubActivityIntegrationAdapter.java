@@ -7,6 +7,7 @@ import org.kohsuke.github.GitHub;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 public class GithubActivityIntegrationAdapter implements GithubActivityIntegrationPort {
@@ -63,6 +64,22 @@ public class GithubActivityIntegrationAdapter implements GithubActivityIntegrati
             return repository.getHtmlUrl().toString();
         } catch (IOException | IllegalArgumentException e) {
             return null;
+        }
+    }
+
+    @Override
+    public Optional<String> findLatestCommitSha(String accessToken, String repositoryUrl) {
+        try {
+            GitHub gitHub = GitHub.connectUsingOAuth(accessToken);
+            String repositoryFullName = normalizeRepositoryFullName(gitHub, repositoryUrl);
+            GHRepository repository = gitHub.getRepository(repositoryFullName);
+            String defaultBranch = repository.getDefaultBranch();
+            if (defaultBranch == null || defaultBranch.isBlank()) {
+                return Optional.empty();
+            }
+            return Optional.ofNullable(repository.getBranch(defaultBranch).getSHA1());
+        } catch (IOException | IllegalArgumentException e) {
+            return Optional.empty();
         }
     }
 
