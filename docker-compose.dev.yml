@@ -21,9 +21,19 @@ services:
     networks:
       - code_tracker_network
 
+  redis-cache:
+    image: redis:8.0-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - code_tracker_network
+
 networks:
   code_tracker_network:
 
 
 volumes:
   db_data:
+  redis_data:
