@@ -3,7 +3,7 @@ spring:
     name: codetracker
   data:
     redis:
-      host: ${REDIS_HOST:localhost}
+      host: ${REDIS_HOST:redis-cache}
       port: ${REDIS_PORT:6379}
       username: ${REDIS_USERNAME:}
       password: ${REDIS_PASSWORD:}
