@@ -1,7 +1,12 @@
 spring:
   application:
     name: codetracker
-
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      username: ${REDIS_USERNAME:}
+      password: ${REDIS_PASSWORD:}
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
