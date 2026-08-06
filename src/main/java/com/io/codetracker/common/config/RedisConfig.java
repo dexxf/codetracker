@@ -1,5 +1,6 @@
 package com.io.codetracker.common.config;
 
+import com.io.codetracker.Application;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -20,7 +21,7 @@ public class RedisConfig {
         GenericJacksonJsonRedisSerializer serializer =
                 GenericJacksonJsonRedisSerializer.builder()
                         .enableDefaultTyping(BasicPolymorphicTypeValidator.builder()
-                                        .allowIfSubType("com.io.codetracker")
+                                        .allowIfSubType(Application.class.getPackageName())
                                         .build()
                         )
                         .build();
