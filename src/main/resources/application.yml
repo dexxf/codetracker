@@ -7,6 +7,8 @@ spring:
       port: ${REDIS_PORT:6379}
       username: ${REDIS_USERNAME:}
       password: ${REDIS_PASSWORD:}
+      ssl:
+        enabled: ${REDIS_SSL:false}
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
