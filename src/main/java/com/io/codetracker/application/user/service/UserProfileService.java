@@ -10,6 +10,7 @@ import com.io.codetracker.application.user.port.out.UserAppRepository;
 import com.io.codetracker.application.user.result.UserData;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.user.entity.User;
+import com.io.codetracker.domain.user.exception.UserNotFoundException;
 import com.io.codetracker.domain.user.result.UserProfileUpdateResult;
 import com.io.codetracker.domain.user.service.UserProfileUpdater;
 import lombok.AllArgsConstructor;
@@ -26,12 +27,12 @@ public final class UserProfileService implements UpdateUserProfileUseCase, GetUs
        private final UserProfileUpdater userProfileUpdater;
 
        public Result<UserData, List<UserProfileError>> updateProfile(UUID userId, UserProfileCommand command) {
-           Optional<User> userOpt = repository.findByUserId(userId);
-
-           if(userOpt.isEmpty())
+           User user;
+           try {
+               user = repository.findByUserId(userId);
+           } catch (UserNotFoundException e) {
                return Result.fail(List.of(UserProfileError.USER_NOT_FOUND));
-
-           User user = userOpt.get();
+           }
 
            List<UserProfileUpdateResult> userProfileUpdaterResult = userProfileUpdater.update(user, command.firstName(), command.lastName(),
                    command.gender());
@@ -43,9 +44,14 @@ public final class UserProfileService implements UpdateUserProfileUseCase, GetUs
            return Result.ok(UserData.from(user));
        }
 
+       @Override
        public Optional<UserData> getProfileData(UUID userId) {
-            Optional<User> userOpt = repository.findByUserId(userId);
-           return userOpt.map(UserData::from);
+           try {
+               User user = repository.findByUserId(userId);
+               return Optional.of(UserData.from(user));
+           } catch (UserNotFoundException e) {
+               return Optional.empty();
+           }
        }
 }
 

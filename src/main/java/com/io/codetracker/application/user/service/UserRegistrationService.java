@@ -10,12 +10,12 @@ import com.io.codetracker.application.user.port.out.UserAppRepository;
 import com.io.codetracker.application.user.result.UserData;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.user.entity.User;
+import com.io.codetracker.domain.user.exception.UserNotFoundException;
 import com.io.codetracker.domain.user.valueobject.Gender;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,13 +33,12 @@ public final class UserRegistrationService implements UserShallowRegistrationUse
     }
 
     public Result<UserData, UserRegistrationError> completeInitialization(UUID userId, UserRegistrationCommand command) {
-        Optional<User> userOpt = repository.findByUserId(userId);
-
-        if (userOpt.isEmpty()) {
+        User user;
+        try {
+            user = repository.findByUserId(userId);
+        } catch (UserNotFoundException e) {
             return Result.fail(UserRegistrationError.USER_NOT_FOUND);
         }
-
-        User user = userOpt.get();
 
         if (user.getHasFullyInitialized()) {
             return Result.fail(UserRegistrationError.USER_ALREADY_INITIALIZED);
