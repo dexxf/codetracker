@@ -1,6 +1,8 @@
 package com.io.codetracker.common.config;
 
 import com.io.codetracker.Application;
+import com.io.codetracker.adapter.user.out.persistence.mapper.UserJacksonMixIn;
+import com.io.codetracker.domain.user.entity.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -20,7 +22,13 @@ public class RedisConfig {
 
         GenericJacksonJsonRedisSerializer serializer =
                 GenericJacksonJsonRedisSerializer.builder()
-                        .enableDefaultTyping(BasicPolymorphicTypeValidator.builder()
+                        .customize(
+                                builder -> builder
+                                        .addMixIn(User.class, UserJacksonMixIn.class)
+
+                        )
+                        .enableDefaultTyping(
+                                BasicPolymorphicTypeValidator.builder()
                                         .allowIfSubType(Application.class.getPackageName())
                                         .build()
                         )
