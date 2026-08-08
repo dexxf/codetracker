@@ -33,6 +33,8 @@ public class RedisConfig {
                         .enableDefaultTyping(
                                 BasicPolymorphicTypeValidator.builder()
                                         .allowIfSubType(Application.class.getPackageName())
+                                        .allowIfSubType("java.util")
+                                        .allowIfSubType("java.time")
                                         .build()
                         )
                         .build();
