@@ -17,6 +17,8 @@ public final class CacheNames {
     public static final String CLASSROOM_SETTINGS = "classroomSettings";
     public static final String CLASSROOM_ACTIVITY_COUNTS = "classroomActivityCounts";
     public static final String CLASSROOM_RECENT_ACTIVITIES = "classroomRecentActivities";
+    public static final String CLASSROOM_STUDENTS = "classroomStudents";
+    public static final String CLASSROOM_STUDENT_MEMBERSHIP = "classroomStudentMembership";
 
     private CacheNames() {}
 }

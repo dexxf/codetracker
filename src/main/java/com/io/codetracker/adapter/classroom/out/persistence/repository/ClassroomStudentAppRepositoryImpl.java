@@ -1,8 +1,11 @@
 package com.io.codetracker.adapter.classroom.out.persistence.repository;
 
 
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import com.io.codetracker.adapter.classroom.out.persistence.mapper.ClassroomStudentMapper;
+import com.io.codetracker.common.cache.CacheNames;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentAppRepository;
 import com.io.codetracker.domain.classroom.entity.ClassroomStudent;
 import com.io.codetracker.domain.classroom.valueObject.ClassroomStatus;
@@ -13,11 +16,9 @@ import com.io.codetracker.infrastructure.classroom.persistence.repository.JpaCla
 import com.io.codetracker.infrastructure.classroom.persistence.repository.JpaClassroomStudentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 
 
 @Repository
@@ -28,6 +29,11 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     private final JpaClassroomRepository jpaClassroomRepository;
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = CacheNames.CLASSROOM_STUDENTS, allEntries = true),
+            @CacheEvict(value = CacheNames.CLASSROOM_STUDENT_MEMBERSHIP, allEntries = true),
+            @CacheEvict(value = CacheNames.CLASSROOM_RECENT_ACTIVITIES, allEntries = true)
+    })
     public boolean save(ClassroomStudent classroomStudent) {
 
         Optional<ClassroomEntity> classroomEntityOpt = jpaClassroomRepository.findByClassroomId((classroomStudent.getClassroomId()));
@@ -61,15 +67,17 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
+    @Cacheable(value = CacheNames.CLASSROOM_STUDENTS, key = "#studentUserId", unless = "#result.isEmpty()")
     public List<ClassroomStudent> findActiveEnrollmentsWithActiveClassroom(UUID studentUserId) {
         List<ClassroomStudentEntity> entities = jpaClassroomStudentRepository
                 .findEnrollmentsByStatus(studentUserId, StudentStatus.ACTIVE, ClassroomStatus.ACTIVE);
         return entities.stream()
                 .map(ClassroomStudentMapper::toDomain)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
+    @Cacheable(value = CacheNames.CLASSROOM_STUDENTS, key = "#classroomIds")
     public Map<UUID, Long> countActiveClassroomStudentByClassroomIds(List<UUID> classroomIds) {
         Map<UUID, Long> countMap = new HashMap<>();
         for (UUID classroomId : classroomIds) {
@@ -80,6 +88,7 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
+    @Cacheable(value = CacheNames.CLASSROOM_STUDENTS, key = "{#classroomId, #status, #ascending}", unless = "#result.isEmpty()")
     public List<ClassroomStudent> findClassroomStudents(UUID classroomId, StudentStatus status, boolean ascending) {
         return ascending
                 ? mapToDomain(jpaClassroomStudentRepository.findByClassroom_ClassroomIdAndStatusOrderByJoinedAt(classroomId, status))
@@ -87,15 +96,17 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     private List<ClassroomStudent> mapToDomain(List<ClassroomStudentEntity> entities) {
-        return entities.stream().map(ClassroomStudentMapper::toDomain).toList();
+        return entities.stream().map(ClassroomStudentMapper::toDomain).collect(Collectors.toList());
     }
 
     @Override
+    @Cacheable(value = CacheNames.CLASSROOM_STUDENTS, key = "#classroomId")
     public long countActiveClassroomStudentByClassroomId(UUID classroomId) {
         return jpaClassroomStudentRepository.countByStatus_ActiveAndClassroom_ClassroomId(classroomId);
     }
 
     @Override
+    @Cacheable(value = CacheNames.CLASSROOM_STUDENTS, key = "{#classroomId, #studentUserId}", unless = "#result == null")
     public Optional<ClassroomStudent> findByClassroomIdAndStudentUserId(UUID classroomId, UUID studentUserId) {
         return jpaClassroomStudentRepository.findByClassroom_ClassroomIdAndStudentUserId(classroomId, studentUserId)
                 .map(ClassroomStudentMapper::toDomain);
