@@ -35,6 +35,7 @@ public class RedisConfig {
                                         .allowIfSubType(Application.class.getPackageName())
                                         .allowIfSubType("java.util")
                                         .allowIfSubType("java.time")
+                                        .allowIfSubType("java.lang")
                                         .build()
                         )
                         .build();
