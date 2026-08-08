@@ -1,5 +1,6 @@
 package com.io.codetracker.adapter.classroom.out.persistence.repository;
 
+import com.io.codetracker.common.cache.CacheNames;
 import com.io.codetracker.application.classroom.port.out.ClassroomRecentActivityAppRepository;
 import com.io.codetracker.application.classroom.result.ClassroomActivityCreatedData;
 import com.io.codetracker.application.classroom.result.ClassroomRecentActivityData;
@@ -12,11 +13,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 @AllArgsConstructor
@@ -27,6 +30,11 @@ public class ClassroomRecentActivityAppRepositoryImpl implements ClassroomRecent
     private final JpaActivityRepository jpaActivityRepository;
 
     @Override
+    @Cacheable(
+            value = CacheNames.CLASSROOM_RECENT_ACTIVITIES,
+            key = "{#classroomId, #limit}",
+            unless = "#result.isEmpty()"
+    )
     public List<ClassroomRecentActivityData> findRecentActivities(UUID classroomId, int limit) {
         Pageable pageable = PageRequest.of(0, limit);
 
@@ -48,6 +56,6 @@ public class ClassroomRecentActivityAppRepositoryImpl implements ClassroomRecent
                 .filter(activity -> activity.occurredAt() != null)
                 .sorted(Comparator.comparing(ClassroomRecentActivityData::occurredAt).reversed())
                 .limit(limit)
-                .toList();
+                .collect(Collectors.toList());
     }
 }
