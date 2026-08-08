@@ -36,15 +36,9 @@ public class UserAppRepositoryImpl implements UserAppRepository,ClassroomUserDom
             value = CacheNames.USER_PROFILE,
             key = "#userId"
     )
-    public User findByUserId(UUID userId) throws UserNotFoundException {
-        Optional<UserEntity> userEntityOpt = jpa.findById(userId);
-
-        if (userEntityOpt.isEmpty()) {
-            throw new UserNotFoundException(userId.toString());
-        }
-
-        UserEntity user = userEntityOpt.get();
-        return UserMapper.toDomain(user);
+    public Optional<User> findByUserId(UUID userId) {
+        return jpa.findById(userId)
+                .map(UserMapper::toDomain);
     }
 
 

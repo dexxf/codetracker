@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -32,13 +33,15 @@ public final class UserRegistrationService implements UserShallowRegistrationUse
         return user.getUserId();
     }
 
+    @Override
     public Result<UserData, UserRegistrationError> completeInitialization(UUID userId, UserRegistrationCommand command) {
-        User user;
-        try {
-            user = repository.findByUserId(userId);
-        } catch (UserNotFoundException e) {
+        Optional<User> userOpt = repository.findByUserId(userId);
+
+        if (userOpt.isEmpty()) {
             return Result.fail(UserRegistrationError.USER_NOT_FOUND);
         }
+
+        User user = userOpt.get();
 
         if (user.getHasFullyInitialized()) {
             return Result.fail(UserRegistrationError.USER_ALREADY_INITIALIZED);

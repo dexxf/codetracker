@@ -26,13 +26,15 @@ public final class UserProfileService implements UpdateUserProfileUseCase, GetUs
        private final UserAppRepository repository;
        private final UserProfileUpdater userProfileUpdater;
 
+       @Override
        public Result<UserData, List<UserProfileError>> updateProfile(UUID userId, UserProfileCommand command) {
-           User user;
-           try {
-               user = repository.findByUserId(userId);
-           } catch (UserNotFoundException e) {
+           Optional<User> userOpt = repository.findByUserId(userId);
+
+           if (userOpt.isEmpty()) {
                return Result.fail(List.of(UserProfileError.USER_NOT_FOUND));
            }
+
+           User user = userOpt.get();
 
            List<UserProfileUpdateResult> userProfileUpdaterResult = userProfileUpdater.update(user, command.firstName(), command.lastName(),
                    command.gender());
@@ -44,14 +46,10 @@ public final class UserProfileService implements UpdateUserProfileUseCase, GetUs
            return Result.ok(UserData.from(user));
        }
 
-       @Override
-       public Optional<UserData> getProfileData(UUID userId) {
-           try {
-               User user = repository.findByUserId(userId);
-               return Optional.of(UserData.from(user));
-           } catch (UserNotFoundException e) {
-               return Optional.empty();
-           }
-       }
+    @Override
+    public Optional<UserData> getProfileData(UUID userId) {
+        return repository.findByUserId(userId)
+                .map(UserData::from);
+    }
 }
 
