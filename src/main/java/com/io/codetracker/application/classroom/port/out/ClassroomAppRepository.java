@@ -18,5 +18,4 @@ public interface ClassroomAppRepository {
     Optional<ClassroomSettings> findSettingsByClassroomId(UUID classroomId);
     boolean existsByClassroomId(UUID classroomId);
     boolean existsByClassroomIdAndInstructorUserId(UUID classroomId, UUID instructorUserId);
-    Integer findMaxStudentByClassroomId(UUID classroomId);
 }

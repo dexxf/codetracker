@@ -121,9 +121,4 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
     public boolean existsByClassroomIdAndInstructorUserId(UUID classroomId, UUID instructorUserId) {
         return jpaClassroomRepository.existsByClassroomIdAndInstructorUserId(classroomId, instructorUserId);
     }
-
-    @Override
-    public Integer findMaxStudentByClassroomId(UUID classroomId) {
-        return jpaClassroomSettingsRepository.findMaxStudentByClassroomId(classroomId);
-    }
 }

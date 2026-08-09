@@ -11,7 +11,4 @@ import org.springframework.data.repository.query.Param;
 
 public interface JpaClassroomSettingsRepository extends JpaRepository<ClassroomSettingsEntity, UUID> {
     Optional<ClassroomSettingsEntity> findByClassroomId(UUID classroomId);
-
-    @Query("SELECT c.maxStudents FROM ClassroomSettingsEntity c WHERE c.classroomId = :classroomId")
-    Integer findMaxStudentByClassroomId(@Param("classroomId") UUID classroomId);
 }
