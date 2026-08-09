@@ -30,24 +30,22 @@ public class CloseClassroomService implements CloseClassroomUseCase {
             return Result.fail(CloseClassroomError.NOT_INSTRUCTOR);
         }
 
-        Optional<Classroom> classroomOptional = classroomAppRepository.findByClassroomId(command.classroomId());
+        Optional<ClassroomAggregate> classroomOptional = classroomAppRepository.findByClassroomId(command.classroomId());
         if (classroomOptional.isEmpty()) {
             return Result.fail(CloseClassroomError.CLASSROOM_NOT_FOUND);
         }
 
-        Classroom classroom = classroomOptional.get();
+        ClassroomAggregate aggregate = classroomOptional.get();
+        Classroom classroom = aggregate.classroom();
         if (classroom.getStatus() == ClassroomStatus.CLOSED) {
             return Result.fail(CloseClassroomError.ALREADY_CLOSED);
         }
 
         classroom.close();
 
-        Optional<ClassroomSettings> settings = classroomAppRepository.findSettingsByClassroomId(classroom.getClassroomId());
-        if(settings.isEmpty()) {
-            return Result.fail(CloseClassroomError.CLASSROOM_SETTINGS_NOT_FOUND);
-        }
+        ClassroomSettings settings = aggregate.settings();
 
-        classroomAppRepository.update(new ClassroomAggregate(classroom, settings.get()));
+        classroomAppRepository.update(new ClassroomAggregate(classroom, settings));
         return Result.ok(ClassroomData.from(classroom));
     }
 }

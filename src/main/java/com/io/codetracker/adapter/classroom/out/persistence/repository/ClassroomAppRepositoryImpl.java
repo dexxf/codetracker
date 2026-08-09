@@ -101,8 +101,8 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
 
     @Override
     @Cacheable(value = CacheNames.CLASSROOM_BY_ID, key = "#classroomId", unless = "#result.isEmpty()")
-    public Optional<Classroom> findByClassroomId(UUID classroomId) {
-        return jpaClassroomRepository.findById(classroomId).map(ClassroomMapper::toDomain);
+    public Optional<ClassroomAggregate> findByClassroomId(UUID classroomId) {
+        return jpaClassroomRepository.findById(classroomId).map(ClassroomAggregateMapper::toDomain);
     }
 
     @Override
