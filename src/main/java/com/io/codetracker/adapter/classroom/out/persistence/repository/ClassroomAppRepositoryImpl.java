@@ -86,10 +86,10 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
             key = "#instructorUserId",
             unless = "#result.isEmpty()"
     )
-    public List<Classroom> findByInstructorUserId(UUID instructorUserId) {
+    public List<ClassroomAggregate> findByInstructorUserId(UUID instructorUserId) {
         return jpaClassroomRepository.findByInstructorUserId(instructorUserId)
             .stream()
-            .map(ClassroomMapper::toDomain)
+            .map(ClassroomAggregateMapper::toDomain)
                 .collect(Collectors.toList());
     }
 

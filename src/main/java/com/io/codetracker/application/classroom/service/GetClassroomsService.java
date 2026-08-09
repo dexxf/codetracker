@@ -11,7 +11,7 @@ import com.io.codetracker.application.classroom.port.out.ClassroomAppRepository;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentAppRepository;
 import com.io.codetracker.application.classroom.result.GetClassroomsProfessorData;
 import com.io.codetracker.common.result.Result;
-import com.io.codetracker.domain.classroom.entity.Classroom;
+import com.io.codetracker.domain.classroom.aggregate.ClassroomAggregate;
 import org.springframework.stereotype.Service;
 
 
@@ -27,20 +27,21 @@ public class GetClassroomsService implements GetClassroomUseCase {
     }
 
     public Result<List<GetClassroomsProfessorData>, SimpleClassroomError> execute(UUID userId) {
-        List<Classroom> classroomList = classroomAppRepository.findByInstructorUserId(userId);
+        List<ClassroomAggregate> classroomList = classroomAppRepository.findByInstructorUserId(userId);
         if (classroomList.isEmpty()) {
             return Result.fail(SimpleClassroomError.NO_CLASSROOM_FOUND);
         }
 
         Map<UUID, Long> classroomWithCount = classroomStudentAppRepository
-                .countActiveClassroomStudentByClassroomIds(classroomList.stream().map(Classroom::getClassroomId).toList());
+                .countActiveClassroomStudentByClassroomIds(classroomList.stream().map(
+                        aggregate -> aggregate.classroom().getClassroomId()).toList());
+
 
         List<GetClassroomsProfessorData> dataList = classroomList.stream()
-                .map(classroom -> GetClassroomsProfessorData.from(
-                        classroom,
-                        classroomWithCount.getOrDefault(classroom.getClassroomId(), 0L),
-                        classroomAppRepository.findMaxStudentByClassroomId(classroom.getClassroomId()) //TODO: fix this if i see any performance issue
-                ))
+                .map(aggregate -> GetClassroomsProfessorData.from(
+                        aggregate,
+                        classroomWithCount.getOrDefault(aggregate.classroom().getClassroomId(), 0L)
+                    ))
                 .toList();
 
         return Result.ok(dataList);
