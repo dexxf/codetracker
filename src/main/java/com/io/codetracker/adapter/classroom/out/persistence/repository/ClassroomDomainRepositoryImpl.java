@@ -39,7 +39,7 @@ public class ClassroomDomainRepositoryImpl implements ClassroomDomainRepository 
     }
 
     @Override
-    @Cacheable(value = CacheNames.CLASSROOM_BY_CODE, key = "#classCode", unless = "#result.isEmpty()")
+    @Cacheable(value = CacheNames.CLASSROOM_BY_CODE, key = "#classCode", unless = "#result == null")
     public Optional<Classroom> findByClassCode(String classCode) {
         Optional<ClassroomEntity> classroomEntity = jpaClassroomRepository.findByClassCode(classCode);
         return classroomEntity.map(ClassroomMapper::toDomain);
