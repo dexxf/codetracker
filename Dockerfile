@@ -8,4 +8,4 @@ RUN mvn clean package -DskipTests
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "target/ctjar.jar"]
+ENTRYPOINT ["java", "-jar", "target/proj-kira.jar"]

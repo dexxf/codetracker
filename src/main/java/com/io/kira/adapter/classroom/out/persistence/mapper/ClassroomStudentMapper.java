@@ -1,0 +1,37 @@
+package com.io.kira.adapter.classroom.out.persistence.mapper;
+
+import com.io.kira.domain.classroom.entity.ClassroomStudent;
+import com.io.kira.infrastructure.classroom.persistence.entity.ClassroomStudentEntity;
+
+import java.util.Objects;
+
+public final class ClassroomStudentMapper {
+
+    private ClassroomStudentMapper() {
+    }
+
+    public static ClassroomStudentEntity toEntity(ClassroomStudent domain) {
+        if (Objects.isNull(domain)) return null;
+
+        ClassroomStudentEntity entity = new ClassroomStudentEntity();
+        entity.setStudentUserId(domain.getStudentUserId());
+        entity.setStatus(domain.getStatus());
+        entity.setJoinedAt(domain.getJoinedAt());
+        entity.setLastActiveAt(domain.getLastActiveAt());
+        entity.setLeftAt(domain.getLeftAt());
+        return entity;
+    }
+
+    public static ClassroomStudent toDomain(ClassroomStudentEntity entity) {
+        if (Objects.isNull(entity)) return null;
+
+        return ClassroomStudent.reconstitute(
+                entity.getClassroom() != null ? entity.getClassroom().getClassroomId() : null,
+                entity.getStudentUserId(),
+                entity.getStatus(),
+                entity.getLastActiveAt(),
+                entity.getJoinedAt(),
+                entity.getLeftAt()
+        );
+    }
+}

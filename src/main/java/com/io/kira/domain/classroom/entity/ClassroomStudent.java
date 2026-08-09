@@ -1,0 +1,131 @@
+package com.io.kira.domain.classroom.entity;
+
+import java.util.UUID;
+import com.io.kira.domain.classroom.valueObject.StudentStatus;
+
+import java.time.Instant;
+
+public final class ClassroomStudent {
+
+    private final UUID classroomId;
+    private final UUID studentUserId;
+    private StudentStatus status;
+    private Instant lastActiveAt;
+    private final Instant joinedAt;
+    private Instant leftAt;
+
+    private ClassroomStudent(UUID classroomId, UUID studentUserId, StudentStatus status, Instant lastActiveAt, Instant joinedAt, Instant leftAt) {
+        this.classroomId = classroomId;
+        this.studentUserId = studentUserId;
+        this.status = status;
+        this.lastActiveAt = lastActiveAt;
+        this.joinedAt = joinedAt;
+        this.leftAt = leftAt;
+    }
+
+    public static ClassroomStudent createPendingStudent(UUID classroomId, UUID studentUserId) {
+        return new ClassroomStudent(
+                classroomId,
+                studentUserId,
+                StudentStatus.PENDING,
+                null,
+                Instant.now(),
+                null
+        );
+    }
+
+    public static ClassroomStudent createActiveStudent(UUID classroomId, UUID studentUserId) {
+        return new ClassroomStudent(
+                classroomId,
+                studentUserId,
+                StudentStatus.ACTIVE,
+                Instant.now(),
+                Instant.now(),
+                null
+        );
+    }
+
+    public static ClassroomStudent reconstitute(UUID classroomId, UUID studentUserId, StudentStatus status, Instant lastActiveAt, Instant joinedAt, Instant leftAt) {
+        return new ClassroomStudent(classroomId, studentUserId, status, lastActiveAt, joinedAt, leftAt);
+    }
+
+    public UUID getClassroomId() {
+        return classroomId;
+    }
+
+    public UUID getStudentUserId() {
+        return studentUserId;
+    }
+
+    public StudentStatus getStatus() {
+        return status;
+    }
+
+    public Instant getLastActiveAt() {
+        return lastActiveAt;
+    }
+
+    public Instant getJoinedAt() {
+        return joinedAt;
+    }
+
+    public Instant getLeftAt() {
+        return leftAt;
+    }
+
+    public void kick() {
+        if (status == StudentStatus.DROPPED || status == StudentStatus.KICKED) {
+            throw new IllegalStateException("Cannot kick a student who has already left or been kicked.");
+        }
+        this.status = StudentStatus.KICKED;
+        this.leftAt = Instant.now();
+    }
+
+    public void drop() {
+        if (status == StudentStatus.KICKED || status == StudentStatus.DROPPED) {
+            throw new IllegalStateException("Student has already left or been kicked.");
+        }
+        this.status = StudentStatus.DROPPED;
+        this.leftAt = Instant.now();
+    }
+
+    public void markActive() {
+        if (status != StudentStatus.ACTIVE) {
+            throw new IllegalStateException("Only active students can be marked active.");
+        }
+        this.lastActiveAt = Instant.now();
+    }
+
+    public void activate() {
+        if (status != StudentStatus.PENDING) {
+            throw new IllegalStateException("Only pending students can be activated.");
+        }
+        this.status = StudentStatus.ACTIVE;
+        this.lastActiveAt = Instant.now();
+    }
+
+    public void leave() {
+        if (status != StudentStatus.ACTIVE) {
+            throw new IllegalStateException("Only active students can leave classroom.");
+        }
+        this.status = StudentStatus.DROPPED;
+        this.leftAt = Instant.now();
+    }
+
+    public void rejoinWithoutApproval() {
+        if (status != StudentStatus.DROPPED) {
+            throw new IllegalStateException("Only dropped students can rejoin classroom.");
+        }
+        this.status = StudentStatus.ACTIVE;
+        this.lastActiveAt = Instant.now();
+        this.leftAt = null;
+    }
+
+    public void rejoinWithApproval() {
+        if (status != StudentStatus.DROPPED) {
+            throw new IllegalStateException("Only dropped students can rejoin classroom.");
+        }
+        this.status = StudentStatus.PENDING;
+        this.leftAt = null;
+    }
+}

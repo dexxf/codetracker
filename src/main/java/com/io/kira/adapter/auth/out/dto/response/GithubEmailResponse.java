@@ -1,0 +1,8 @@
+package com.io.kira.adapter.auth.out.dto.response;
+
+public record GithubEmailResponse(
+    String email,
+    boolean primary,
+    boolean verified,
+    String visibility
+) {}

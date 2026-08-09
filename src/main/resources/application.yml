@@ -1,6 +1,6 @@
 spring:
   application:
-    name: codetracker
+    name: kira
   data:
     redis:
       host: ${REDIS_HOST:redis-cache}

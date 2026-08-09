@@ -6,12 +6,12 @@ services:
     env_file:
       - .env.dev
     networks:
-      - code_tracker_network
+      - kira_network
 
   db:
     image: postgres:16
     environment:
-      POSTGRES_DB: cd_tracker_db
+      POSTGRES_DB: kira_db
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
@@ -19,7 +19,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     networks:
-      - code_tracker_network
+      - kira_network
 
   redis-cache:
     image: redis:8.0-alpine
@@ -28,10 +28,10 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - code_tracker_network
+      - kira_network
 
 networks:
-  code_tracker_network:
+  kira_network:
 
 
 volumes:
