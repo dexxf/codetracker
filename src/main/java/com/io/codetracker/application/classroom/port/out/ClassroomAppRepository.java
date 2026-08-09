@@ -13,7 +13,7 @@ public interface ClassroomAppRepository {
     void update(ClassroomAggregate aggregate);
     void deleteByClassroomId(UUID classroomId);
     List<ClassroomAggregate> findByInstructorUserId(UUID instructorUserId);
-    List<Classroom> findAllById(List<UUID> classroomIds);
+    List<ClassroomAggregate> findAllById(List<UUID> classroomIds);
     Optional<Classroom> findByClassroomId(UUID classroomId);
     Optional<ClassroomSettings> findSettingsByClassroomId(UUID classroomId);
     boolean existsByClassroomId(UUID classroomId);

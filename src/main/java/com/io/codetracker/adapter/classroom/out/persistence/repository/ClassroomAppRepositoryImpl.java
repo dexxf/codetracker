@@ -94,9 +94,9 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
     }
 
     @Override
-    public List<Classroom> findAllById(List<UUID> classroomIds) {
+    public List<ClassroomAggregate> findAllById(List<UUID> classroomIds) {
         List<ClassroomEntity> entities = jpaClassroomRepository.findAllById(classroomIds);
-        return entities.stream().map(ClassroomMapper::toDomain).collect(Collectors.toList());
+        return entities.stream().map(ClassroomAggregateMapper::toDomain).collect(Collectors.toList());
     }
 
     @Override

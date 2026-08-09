@@ -7,7 +7,7 @@ import com.io.codetracker.application.classroom.port.out.ClassroomAppRepository;
 import com.io.codetracker.application.classroom.port.out.ClassroomStudentAppRepository;
 import com.io.codetracker.application.classroom.result.ClassroomData;
 import com.io.codetracker.application.classroom.result.GetJoinClassroomDataResult;
-import com.io.codetracker.domain.classroom.entity.Classroom;
+import com.io.codetracker.domain.classroom.aggregate.ClassroomAggregate;
 import com.io.codetracker.domain.classroom.entity.ClassroomStudent;
 import org.springframework.stereotype.Service;
 
@@ -36,14 +36,14 @@ public class GetJoinClassroomService implements GetJoinClassroomUseCase {
                 .distinct()
                 .toList();
 
-        List<Classroom> classrooms = classroomRepository.findAllById(classroomIds);        
+        List<ClassroomAggregate> classrooms = classroomRepository.findAllById(classroomIds);
         Map<UUID, Long> counts = classroomStudentRepository.countActiveClassroomStudentByClassroomIds(classroomIds);
 
         return classrooms.stream()
-                .map(classroom -> new GetJoinClassroomDataResult(
-                        ClassroomData.from(classroom),
-                        counts.getOrDefault(classroom.getClassroomId(), 0L),
-                        classroomRepository.findMaxStudentByClassroomId(classroom.getClassroomId())
+                .map(aggregate -> new GetJoinClassroomDataResult(
+                        ClassroomData.from(aggregate.classroom()),
+                        counts.getOrDefault(aggregate.classroom().getClassroomId(), 0L),
+                        aggregate.settings().getMaxStudents()
                 ))
                 .toList();
     }
