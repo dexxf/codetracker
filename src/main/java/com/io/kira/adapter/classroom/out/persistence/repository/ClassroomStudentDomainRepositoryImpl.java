@@ -2,7 +2,8 @@ package com.io.kira.adapter.classroom.out.persistence.repository;
 
 
 import java.util.UUID;
-import com.io.kira.common.cache.CacheNames;
+
+import com.io.kira.adapter.classroom.out.cache.ClassroomCacheNames;
 import com.io.kira.domain.classroom.repository.ClassroomStudentDomainRepository;
 import com.io.kira.domain.classroom.valueObject.StudentStatus;
 import com.io.kira.infrastructure.classroom.persistence.repository.JpaClassroomStudentRepository;
@@ -17,13 +18,13 @@ public class ClassroomStudentDomainRepositoryImpl implements ClassroomStudentDom
     private final JpaClassroomStudentRepository classroomStudentRepository;
 
     @Override
-    @Cacheable(value = CacheNames.CLASSROOM_STUDENT_MEMBERSHIP, key = "{#classroomId, #studentUserId}")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENT_MEMBERSHIP, key = "{#classroomId, #studentUserId}")
     public boolean existsByClassroomIdAndStudentUserId(UUID classroomId, UUID studentUserId) {
         return classroomStudentRepository.existsByClassroom_ClassroomIdAndStudentUserIdAndStatus(classroomId, studentUserId, StudentStatus.ACTIVE);
     }
 
     @Override
-    @Cacheable(value = CacheNames.CLASSROOM_STUDENT_MEMBERSHIP, key = "#classroomId")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENT_MEMBERSHIP, key = "#classroomId")
     public int countByClassroomId(UUID classroomId) {
         return classroomStudentRepository.countByClassroom_ClassroomIdAndStatus(classroomId, StudentStatus.ACTIVE);
     }

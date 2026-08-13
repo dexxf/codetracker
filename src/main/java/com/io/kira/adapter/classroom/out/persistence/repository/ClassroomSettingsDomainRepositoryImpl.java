@@ -1,7 +1,7 @@
 package com.io.kira.adapter.classroom.out.persistence.repository;
 
+import com.io.kira.adapter.classroom.out.cache.ClassroomCacheNames;
 import com.io.kira.adapter.classroom.out.persistence.mapper.ClassroomSettingsMapper;
-import com.io.kira.common.cache.CacheNames;
 import com.io.kira.domain.classroom.entity.ClassroomSettings;
 import com.io.kira.domain.classroom.repository.ClassroomSettingsDomainRepository;
 import com.io.kira.infrastructure.classroom.persistence.entity.ClassroomSettingsEntity;
@@ -20,7 +20,7 @@ public class ClassroomSettingsDomainRepositoryImpl implements ClassroomSettingsD
     private final JpaClassroomSettingsRepository jpaClassroomSettingsRepository;
 
     @Override
-    @Cacheable(value = CacheNames.CLASSROOM_SETTINGS, key = "#classroomId", unless = "#result == null")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "#classroomId", unless = "#result == null")
     public Optional<ClassroomSettings> findByClassroomId(UUID classroomId) {
         Optional<ClassroomSettingsEntity> classroomSettingsEntity = jpaClassroomSettingsRepository.findByClassroomId(classroomId);
         return classroomSettingsEntity.map(ClassroomSettingsMapper::toDomain);

@@ -4,8 +4,8 @@ package com.io.kira.adapter.classroom.out.persistence.repository;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.io.kira.adapter.classroom.out.cache.ClassroomCacheNames;
 import com.io.kira.adapter.classroom.out.persistence.mapper.ClassroomStudentMapper;
-import com.io.kira.common.cache.CacheNames;
 import com.io.kira.application.classroom.port.out.ClassroomStudentAppRepository;
 import com.io.kira.domain.classroom.entity.ClassroomStudent;
 import com.io.kira.domain.classroom.valueObject.ClassroomStatus;
@@ -30,9 +30,9 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
 
     @Override
     @Caching(evict = {
-            @CacheEvict(value = CacheNames.CLASSROOM_STUDENTS, allEntries = true),
-            @CacheEvict(value = CacheNames.CLASSROOM_STUDENT_MEMBERSHIP, allEntries = true),
-            @CacheEvict(value = CacheNames.CLASSROOM_RECENT_ACTIVITIES, allEntries = true)
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENTS, allEntries = true),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT_MEMBERSHIP, allEntries = true),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_RECENT_ACTIVITIES, allEntries = true)
     })
     public boolean save(ClassroomStudent classroomStudent) {
 
@@ -67,7 +67,7 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    @Cacheable(value = CacheNames.CLASSROOM_STUDENTS, key = "#studentUserId", unless = "#result.isEmpty()")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENTS, key = "#studentUserId", unless = "#result.isEmpty()")
     public List<ClassroomStudent> findActiveEnrollmentsWithActiveClassroom(UUID studentUserId) {
         List<ClassroomStudentEntity> entities = jpaClassroomStudentRepository
                 .findEnrollmentsByStatus(studentUserId, StudentStatus.ACTIVE, ClassroomStatus.ACTIVE);
@@ -77,7 +77,7 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    @Cacheable(value = CacheNames.CLASSROOM_STUDENTS, key = "#classroomIds")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENTS, key = "#classroomIds")
     public Map<UUID, Long> countActiveClassroomStudentByClassroomIds(List<UUID> classroomIds) {
         Map<UUID, Long> countMap = new HashMap<>();
         for (UUID classroomId : classroomIds) {
@@ -88,7 +88,7 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    @Cacheable(value = CacheNames.CLASSROOM_STUDENTS, key = "{#classroomId, #status, #ascending}", unless = "#result.isEmpty()")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENTS, key = "{#classroomId, #status, #ascending}", unless = "#result.isEmpty()")
     public List<ClassroomStudent> findClassroomStudents(UUID classroomId, StudentStatus status, boolean ascending) {
         return ascending
                 ? mapToDomain(jpaClassroomStudentRepository.findByClassroom_ClassroomIdAndStatusOrderByJoinedAt(classroomId, status))
@@ -100,13 +100,13 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    @Cacheable(value = CacheNames.CLASSROOM_STUDENTS, key = "#classroomId")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENTS, key = "#classroomId")
     public long countActiveClassroomStudentByClassroomId(UUID classroomId) {
         return jpaClassroomStudentRepository.countByStatus_ActiveAndClassroom_ClassroomId(classroomId);
     }
 
     @Override
-    @Cacheable(value = CacheNames.CLASSROOM_STUDENTS, key = "{#classroomId, #studentUserId}", unless = "#result == null")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENTS, key = "{#classroomId, #studentUserId}", unless = "#result == null")
     public Optional<ClassroomStudent> findByClassroomIdAndStudentUserId(UUID classroomId, UUID studentUserId) {
         return jpaClassroomStudentRepository.findByClassroom_ClassroomIdAndStudentUserId(classroomId, studentUserId)
                 .map(ClassroomStudentMapper::toDomain);

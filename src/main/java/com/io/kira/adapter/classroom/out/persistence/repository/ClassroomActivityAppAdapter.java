@@ -1,7 +1,7 @@
 package com.io.kira.adapter.classroom.out.persistence.repository;
 
+import com.io.kira.adapter.classroom.out.cache.ClassroomCacheNames;
 import com.io.kira.domain.activity.valueObject.ActivityStatus;
-import com.io.kira.common.cache.CacheNames;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
@@ -19,13 +19,13 @@ public class ClassroomActivityAppAdapter implements ClassroomActivityAppPort {
    private final JpaActivityRepository jpaActivityRepository;
 
     @Override
-   @Cacheable(value = CacheNames.CLASSROOM_ACTIVITY_COUNTS, key = "#classroomId")
+   @Cacheable(value = ClassroomCacheNames.CLASSROOM_ACTIVITY_COUNTS, key = "#classroomId")
    public long countByClassroomId(UUID classroomId) {
         return jpaActivityRepository.countByClassroomEntity_ClassroomId(classroomId);
     }
 
     @Override
-    @Cacheable(value = CacheNames.CLASSROOM_ACTIVITY_COUNTS, key = "{#classroomId, 'active'}")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_ACTIVITY_COUNTS, key = "{#classroomId, 'active'}")
     public long countActiveActivitiesByClassroomId(UUID classroomId) {
         return jpaActivityRepository.countByClassroomEntity_ClassroomIdAndStatus(classroomId, ActivityStatus.PUBLISHED);
     }

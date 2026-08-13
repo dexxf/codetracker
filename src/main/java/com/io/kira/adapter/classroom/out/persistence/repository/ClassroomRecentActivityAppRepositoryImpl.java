@@ -1,6 +1,6 @@
 package com.io.kira.adapter.classroom.out.persistence.repository;
 
-import com.io.kira.common.cache.CacheNames;
+import com.io.kira.adapter.classroom.out.cache.ClassroomCacheNames;
 import com.io.kira.application.classroom.port.out.ClassroomRecentActivityAppRepository;
 import com.io.kira.application.classroom.result.ClassroomActivityCreatedData;
 import com.io.kira.application.classroom.result.ClassroomRecentActivityData;
@@ -31,7 +31,7 @@ public class ClassroomRecentActivityAppRepositoryImpl implements ClassroomRecent
 
     @Override
     @Cacheable(
-            value = CacheNames.CLASSROOM_RECENT_ACTIVITIES,
+            value = ClassroomCacheNames.CLASSROOM_RECENT_ACTIVITIES,
             key = "{#classroomId, #limit}",
             unless = "#result.isEmpty()"
     )

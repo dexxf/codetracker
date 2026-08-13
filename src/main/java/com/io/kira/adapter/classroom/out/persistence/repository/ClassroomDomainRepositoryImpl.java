@@ -1,7 +1,7 @@
 package com.io.kira.adapter.classroom.out.persistence.repository;
 
+import com.io.kira.adapter.classroom.out.cache.ClassroomCacheNames;
 import com.io.kira.adapter.classroom.out.persistence.mapper.ClassroomMapper;
-import com.io.kira.common.cache.CacheNames;
 import com.io.kira.domain.classroom.entity.Classroom;
 import com.io.kira.infrastructure.classroom.persistence.entity.ClassroomEntity;
 import com.io.kira.infrastructure.classroom.persistence.repository.JpaClassroomRepository;
@@ -33,13 +33,13 @@ public class ClassroomDomainRepositoryImpl implements ClassroomDomainRepository 
     }
 
     @Override
-    @Cacheable(value = CacheNames.CLASSROOM_BY_ID, key = "#classroomId", unless = "#result == null")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_BY_ID, key = "#classroomId", unless = "#result == null")
     public Optional<Classroom> findByClassroomId(UUID classroomId) {
         return jpaClassroomRepository.findById(classroomId).map(ClassroomMapper::toDomain);
     }
 
     @Override
-    @Cacheable(value = CacheNames.CLASSROOM_BY_CODE, key = "#classCode", unless = "#result == null")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_BY_CODE, key = "#classCode", unless = "#result == null")
     public Optional<Classroom> findByClassCode(String classCode) {
         Optional<ClassroomEntity> classroomEntity = jpaClassroomRepository.findByClassCode(classCode);
         return classroomEntity.map(ClassroomMapper::toDomain);

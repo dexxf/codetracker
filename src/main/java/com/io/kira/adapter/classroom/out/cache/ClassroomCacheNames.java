@@ -1,6 +1,8 @@
-package com.io.kira.common.cache;
+package com.io.kira.adapter.classroom.out.cache;
 
-public final class CacheNames {
+public final class ClassroomCacheNames {
+
+    private ClassroomCacheNames() {}
 
     public static final String CLASSROOM = "classroom";
     public static final String CLASSROOM_BY_ID = "classroomById";
@@ -10,6 +12,4 @@ public final class CacheNames {
     public static final String CLASSROOM_RECENT_ACTIVITIES = "classroomRecentActivities";
     public static final String CLASSROOM_STUDENTS = "classroomStudents";
     public static final String CLASSROOM_STUDENT_MEMBERSHIP = "classroomStudentMembership";
-
-    private CacheNames() {}
 }
