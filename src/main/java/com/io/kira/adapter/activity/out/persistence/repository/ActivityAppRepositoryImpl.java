@@ -2,6 +2,8 @@ package com.io.kira.adapter.activity.out.persistence.repository;
 
 
 import java.util.UUID;
+import com.io.kira.adapter.activity.out.cache.ActivityCacheNames;
+import com.io.kira.adapter.classroom.out.cache.ClassroomCacheNames;
 import com.io.kira.adapter.activity.out.persistence.mapper.ActivityMapper;
 import com.io.kira.application.activity.port.out.ActivityAppRepository;
 import com.io.kira.application.activity.result.StudentActivityOverviewData;
@@ -12,6 +14,9 @@ import com.io.kira.infrastructure.classroom.persistence.entity.ClassroomEntity;
 import com.io.kira.infrastructure.classroom.persistence.repository.JpaClassroomRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +29,11 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
     private final JpaClassroomRepository classroomJpa;
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = ActivityCacheNames.ACTIVITY, allEntries = true),
+            @CacheEvict(value = ActivityCacheNames.ACTIVITY_INFO, allEntries = true),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, allEntries = true)
+    })
     public Activity save(Activity data) {
         ClassroomEntity classroomEntity = classroomJpa.findById(data.getClassroomId())
                 .orElseThrow(() -> new RuntimeException("Classroom not found"));
@@ -36,6 +46,9 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
     }
 
     @Override
+    @Cacheable(value = ActivityCacheNames.ACTIVITY,
+            key = "@activityCacheKey.byClassroomIdAndInstructorUserId(#classroomId, #instructorId)",
+            unless = "#result.isEmpty()")
     public List<Activity> findActivitiesByClassroomIdAndInstructorUserId(UUID classroomId, UUID instructorId) {
         return jpa.findByClassroomEntity_ClassroomIdAndClassroomEntity_InstructorUserId(classroomId, instructorId).stream().map(
                 ActivityMapper::toDomain
@@ -43,17 +56,29 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
     }
 
     @Override
+    @Cacheable(value = ActivityCacheNames.ACTIVITY,
+            key = "@activityCacheKey.byId(#activityId)", unless = "#result == null")
     public Optional<Activity> findById(String activityId) {
         Optional<ActivityEntity> acOptional = jpa.findById(activityId);
         return acOptional.map(ActivityMapper::toDomain);
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = ActivityCacheNames.ACTIVITY, allEntries = true),
+            @CacheEvict(value = ActivityCacheNames.ACTIVITY_INFO, allEntries = true),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, allEntries = true)
+    })
     public void deleteByActivityId(String activityId) {
         jpa.deleteById(activityId);
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = ActivityCacheNames.ACTIVITY, allEntries = true),
+            @CacheEvict(value = ActivityCacheNames.ACTIVITY_INFO, allEntries = true),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, allEntries = true)
+    })
     public void update(Activity updatedActivity) {
         ActivityEntity entity = jpa.findById(updatedActivity.getActivityId())
                 .orElseThrow(() -> new RuntimeException("Activity not found"));
@@ -62,6 +87,9 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
     }
 
     @Override
+    @Cacheable(value = ActivityCacheNames.ACTIVITY,
+            key = "@activityCacheKey.studentActivitiesByClassroomIdAndUserId(#classroomId, #userId)",
+            unless = "#result.isEmpty()")
     public List<StudentActivityOverviewData> findStudentActivities(UUID classroomId, UUID userId) {
         return jpa.findStudentActivityViewsByClassroomIdAndUserId(classroomId, userId);
     }

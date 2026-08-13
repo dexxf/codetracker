@@ -1,5 +1,6 @@
 package com.io.kira.adapter.activity.out.persistence.repository;
 
+import com.io.kira.adapter.activity.out.cache.ActivityCacheNames;
 import com.io.kira.application.activity.port.out.StudentActivityAppRepository;
 import com.io.kira.domain.activity.entity.StudentActivity;
 import com.io.kira.infrastructure.activity.persistence.entity.ActivityEntity;
@@ -10,6 +11,9 @@ import com.io.kira.infrastructure.user.persistence.entity.UserEntity;
 import com.io.kira.infrastructure.user.persistence.repository.JpaUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -32,6 +36,9 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
     }
 
     @Override
+    @Cacheable(value = ActivityCacheNames.STUDENT_ACTIVITY,
+            key = "@studentActivityCacheKey.byUserIdAndActivityId(#userId, #activityId)",
+            unless = "#result == null")
     public Optional<StudentActivity> findByUserIdAndActivityId(UUID userId, String activityId) {
         return jpaStudentActivityRepository.findByUserEntity_UserIdAndActivityEntity_ActivityId(userId, activityId)
                 .map(savedEntity -> new StudentActivity(
@@ -46,6 +53,9 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
     }
 
     @Override
+    @Cacheable(value = ActivityCacheNames.STUDENT_ACTIVITY,
+            key = "@studentActivityCacheKey.repositoryUrlByUserIdAndActivityId(#userId, #activityId)",
+            unless = "#result == null")
     public Optional<String> findRepositoryUrlByUserIdAndActivityId(UUID userId, String activityId) {
         return jpaStudentActivityRepository.findByUserEntity_UserIdAndActivityEntity_ActivityId(userId, activityId)
                 .map(StudentActivityEntity::getGithubSubmission)
@@ -53,6 +63,11 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = ActivityCacheNames.STUDENT_ACTIVITY, allEntries = true),
+            @CacheEvict(value = ActivityCacheNames.ACTIVITY, allEntries = true),
+            @CacheEvict(value = ActivityCacheNames.ACTIVITY_INFO, allEntries = true)
+    })
     public StudentActivity save(StudentActivity studentActivity) {
         ActivityEntity activityEntity = jpaActivityRepository.findById(studentActivity.getActivityId())
                 .orElseThrow(() -> new IllegalArgumentException("Activity not found: " + studentActivity.getActivityId()));
