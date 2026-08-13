@@ -20,6 +20,7 @@ import org.springframework.cache.annotation.Caching;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @AllArgsConstructor
@@ -52,7 +53,7 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
     public List<Activity> findActivitiesByClassroomIdAndInstructorUserId(UUID classroomId, UUID instructorId) {
         return jpa.findByClassroomEntity_ClassroomIdAndClassroomEntity_InstructorUserId(classroomId, instructorId).stream().map(
                 ActivityMapper::toDomain
-        ).toList();
+        ).collect(Collectors.toList());
     }
 
     @Override
