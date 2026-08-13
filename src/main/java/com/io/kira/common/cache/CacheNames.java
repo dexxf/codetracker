@@ -1,16 +1,7 @@
 package com.io.kira.common.cache;
 
-/**
- * Constants for application cache names.
- */
 public final class CacheNames {
 
-    // ORGANIZED BY MODULES
-
-    // user
-    public static final String USER_PROFILE = "userProfiles";
-
-    // classroom
     public static final String CLASSROOM = "classroom";
     public static final String CLASSROOM_BY_ID = "classroomById";
     public static final String CLASSROOM_BY_CODE = "classroomByCode";

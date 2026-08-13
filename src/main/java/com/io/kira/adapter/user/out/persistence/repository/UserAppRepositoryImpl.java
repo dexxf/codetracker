@@ -2,9 +2,10 @@ package com.io.kira.adapter.user.out.persistence.repository;
 
 
 import java.util.UUID;
+
+import com.io.kira.adapter.user.out.cache.UserCacheNames;
 import com.io.kira.adapter.user.out.persistence.mapper.UserMapper;
 import com.io.kira.application.user.port.out.UserAppRepository;
-import com.io.kira.common.cache.CacheNames;
 import com.io.kira.domain.classroom.repository.ClassroomUserDomainPort;
 import com.io.kira.domain.user.entity.User;
 import com.io.kira.infrastructure.user.persistence.repository.JpaUserRepository;
@@ -24,14 +25,14 @@ public class UserAppRepositoryImpl implements UserAppRepository,ClassroomUserDom
     }
 
     @Override
-    @CacheEvict(value = CacheNames.USER_PROFILE, key = "#user.userId")
+    @CacheEvict(value = UserCacheNames.USER_PROFILE, key = "#user.userId")
     public void save(User user) {
         jpa.save(UserMapper.toEntity(user));
     }
 
     @Override
     @Cacheable(
-            value = CacheNames.USER_PROFILE,
+            value = UserCacheNames.USER_PROFILE,
             key = "#userId"
     )
     public Optional<User> findByUserId(UUID userId) {
@@ -41,7 +42,7 @@ public class UserAppRepositoryImpl implements UserAppRepository,ClassroomUserDom
 
 
     @Override
-    @CacheEvict(value = CacheNames.USER_PROFILE, key = "#userId")
+    @CacheEvict(value = UserCacheNames.USER_PROFILE, key = "#userId")
     public int updateProfileUrlByUserId(UUID userId, String newProfileUrl) {
         return jpa.updateProfileUrlByUserId(userId,newProfileUrl);
     }
