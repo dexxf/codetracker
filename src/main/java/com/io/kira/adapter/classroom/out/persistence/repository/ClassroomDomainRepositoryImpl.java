@@ -33,13 +33,13 @@ public class ClassroomDomainRepositoryImpl implements ClassroomDomainRepository 
     }
 
     @Override
-    @Cacheable(value = ClassroomCacheNames.CLASSROOM_BY_ID, key = "#classroomId", unless = "#result == null")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byId(#classroomId)", unless = "#result == null")
     public Optional<Classroom> findByClassroomId(UUID classroomId) {
         return jpaClassroomRepository.findById(classroomId).map(ClassroomMapper::toDomain);
     }
 
     @Override
-    @Cacheable(value = ClassroomCacheNames.CLASSROOM_BY_CODE, key = "#classCode", unless = "#result == null")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byCode(#classCode)", unless = "#result == null")
     public Optional<Classroom> findByClassCode(String classCode) {
         Optional<ClassroomEntity> classroomEntity = jpaClassroomRepository.findByClassCode(classCode);
         return classroomEntity.map(ClassroomMapper::toDomain);

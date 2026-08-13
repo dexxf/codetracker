@@ -25,7 +25,7 @@ public class UserAppRepositoryImpl implements UserAppRepository,ClassroomUserDom
     }
 
     @Override
-    @CacheEvict(value = UserCacheNames.USER_PROFILE, key = "#user.userId")
+    @CacheEvict(value = UserCacheNames.USER_PROFILE, key = "@userCacheKey.profileByUserId(#user.userId)")
     public void save(User user) {
         jpa.save(UserMapper.toEntity(user));
     }
@@ -33,7 +33,7 @@ public class UserAppRepositoryImpl implements UserAppRepository,ClassroomUserDom
     @Override
     @Cacheable(
             value = UserCacheNames.USER_PROFILE,
-            key = "#userId"
+            key = "@userCacheKey.profileByUserId(#userId)"
     )
     public Optional<User> findByUserId(UUID userId) {
         return jpa.findById(userId)
@@ -42,7 +42,7 @@ public class UserAppRepositoryImpl implements UserAppRepository,ClassroomUserDom
 
 
     @Override
-    @CacheEvict(value = UserCacheNames.USER_PROFILE, key = "#userId")
+    @CacheEvict(value = UserCacheNames.USER_PROFILE, key = "@userCacheKey.profileByUserId(#userId)")
     public int updateProfileUrlByUserId(UUID userId, String newProfileUrl) {
         return jpa.updateProfileUrlByUserId(userId,newProfileUrl);
     }

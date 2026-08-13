@@ -30,9 +30,8 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
 
     @Override
     @Caching(evict = {
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENTS, allEntries = true),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT_MEMBERSHIP, allEntries = true),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_RECENT_ACTIVITIES, allEntries = true)
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT, allEntries = true),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, allEntries = true)
     })
     public boolean save(ClassroomStudent classroomStudent) {
 
@@ -67,7 +66,7 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENTS, key = "#studentUserId", unless = "#result.isEmpty()")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENT, key = "@classroomStudentCacheKey.activeEnrollmentsByUserId(#studentUserId)", unless = "#result.isEmpty()")
     public List<ClassroomStudent> findActiveEnrollmentsWithActiveClassroom(UUID studentUserId) {
         List<ClassroomStudentEntity> entities = jpaClassroomStudentRepository
                 .findEnrollmentsByStatus(studentUserId, StudentStatus.ACTIVE, ClassroomStatus.ACTIVE);
@@ -77,7 +76,7 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENTS, key = "#classroomIds")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENT, key = "@classroomStudentCacheKey.activeCountsByClassroomIds(#classroomIds)")
     public Map<UUID, Long> countActiveClassroomStudentByClassroomIds(List<UUID> classroomIds) {
         Map<UUID, Long> countMap = new HashMap<>();
         for (UUID classroomId : classroomIds) {
@@ -88,7 +87,7 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENTS, key = "{#classroomId, #status, #ascending}", unless = "#result.isEmpty()")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENT, key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomId, #status, #ascending)", unless = "#result.isEmpty()")
     public List<ClassroomStudent> findClassroomStudents(UUID classroomId, StudentStatus status, boolean ascending) {
         return ascending
                 ? mapToDomain(jpaClassroomStudentRepository.findByClassroom_ClassroomIdAndStatusOrderByJoinedAt(classroomId, status))
@@ -100,13 +99,13 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENTS, key = "#classroomId")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENT, key = "@classroomStudentCacheKey.activeCountByClassroomId(#classroomId)")
     public long countActiveClassroomStudentByClassroomId(UUID classroomId) {
         return jpaClassroomStudentRepository.countByStatus_ActiveAndClassroom_ClassroomId(classroomId);
     }
 
     @Override
-    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENTS, key = "{#classroomId, #studentUserId}", unless = "#result == null")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENT, key = "@classroomStudentCacheKey.byClassroomIdAndUserId(#classroomId, #studentUserId)", unless = "#result == null")
     public Optional<ClassroomStudent> findByClassroomIdAndStudentUserId(UUID classroomId, UUID studentUserId) {
         return jpaClassroomStudentRepository.findByClassroom_ClassroomIdAndStudentUserId(classroomId, studentUserId)
                 .map(ClassroomStudentMapper::toDomain);

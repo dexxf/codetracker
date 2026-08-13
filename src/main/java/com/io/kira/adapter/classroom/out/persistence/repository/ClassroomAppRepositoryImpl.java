@@ -40,9 +40,9 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
     @Override
     @Caching(evict = {
             @CacheEvict(value = ClassroomCacheNames.CLASSROOM, allEntries = true),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_BY_ID, key = "#aggregate.classroom.classroomId"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_BY_CODE, key = "#aggregate.classroom.classCode"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "#aggregate.classroom.classroomId")
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byId(#aggregate.classroom.classroomId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byCode(#aggregate.classroom.classCode)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "@classroomSettingsCacheKey.byClassroomId(#aggregate.classroom.classroomId)")
     })
     public void save(ClassroomAggregate aggregate) {
         jpaClassroomRepository.save(ClassroomAggregateMapper.toEntity(aggregate));
@@ -51,9 +51,9 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
     @Override
     @Caching(evict = {
             @CacheEvict(value = ClassroomCacheNames.CLASSROOM, allEntries = true),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_BY_ID, key = "#aggregate.classroom.classroomId"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_BY_CODE, key = "#aggregate.classroom.classCode"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "#aggregate.classroom.classroomId")
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byId(#aggregate.classroom.classroomId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byCode(#aggregate.classroom.classCode)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "@classroomSettingsCacheKey.byClassroomId(#aggregate.classroom.classroomId)")
     })
     public void update(ClassroomAggregate aggregate) {
         ClassroomEntity entity = jpaClassroomRepository.findById(aggregate.classroom().getClassroomId())
@@ -71,9 +71,9 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
     @Override
     @Caching(evict = {
             @CacheEvict(value = ClassroomCacheNames.CLASSROOM, allEntries = true),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_BY_ID, key = "#classroomId"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_BY_CODE, allEntries = true),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "#classroomId")
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byId(#classroomId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, allEntries = true),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "@classroomSettingsCacheKey.byClassroomId(#classroomId)")
     })
     public void deleteByClassroomId(UUID classroomId) {
         jpaClassroomRepository.deleteById(classroomId);
@@ -82,7 +82,7 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
     @Override
     @Cacheable(
             value = ClassroomCacheNames.CLASSROOM,
-            key = "#instructorUserId",
+            key = "@classroomCacheKey.byInstructorUserId(#instructorUserId)",
             unless = "#result.isEmpty()"
     )
     public List<ClassroomAggregate> findByInstructorUserId(UUID instructorUserId) {
@@ -99,13 +99,13 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
     }
 
     @Override
-    @Cacheable(value = ClassroomCacheNames.CLASSROOM_BY_ID, key = "#classroomId", unless = "#result == null")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byId(#classroomId)", unless = "#result == null")
     public Optional<ClassroomAggregate> findByClassroomId(UUID classroomId) {
         return jpaClassroomRepository.findById(classroomId).map(ClassroomAggregateMapper::toDomain);
     }
 
     @Override
-    @Cacheable(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "#classroomId", unless = "#result == null")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "@classroomSettingsCacheKey.byClassroomId(#classroomId)", unless = "#result == null")
     public Optional<ClassroomSettings> findSettingsByClassroomId(UUID classroomId) {
         return jpaClassroomSettingsRepository.findByClassroomId(classroomId)
             .map(ClassroomSettingsMapper::toDomain);

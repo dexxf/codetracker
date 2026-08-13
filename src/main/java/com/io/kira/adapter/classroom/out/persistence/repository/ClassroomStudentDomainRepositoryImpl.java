@@ -18,13 +18,13 @@ public class ClassroomStudentDomainRepositoryImpl implements ClassroomStudentDom
     private final JpaClassroomStudentRepository classroomStudentRepository;
 
     @Override
-    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENT_MEMBERSHIP, key = "{#classroomId, #studentUserId}")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENT, key = "@classroomStudentCacheKey.existsByClassroomIdAndUserId(#classroomId, #studentUserId)")
     public boolean existsByClassroomIdAndStudentUserId(UUID classroomId, UUID studentUserId) {
         return classroomStudentRepository.existsByClassroom_ClassroomIdAndStudentUserIdAndStatus(classroomId, studentUserId, StudentStatus.ACTIVE);
     }
 
     @Override
-    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENT_MEMBERSHIP, key = "#classroomId")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENT, key = "@classroomStudentCacheKey.countByClassroomId(#classroomId)")
     public int countByClassroomId(UUID classroomId) {
         return classroomStudentRepository.countByClassroom_ClassroomIdAndStatus(classroomId, StudentStatus.ACTIVE);
     }
