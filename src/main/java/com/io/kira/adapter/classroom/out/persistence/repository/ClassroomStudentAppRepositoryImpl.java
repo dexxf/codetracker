@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.io.kira.adapter.classroom.out.cache.ClassroomCacheNames;
+import com.io.kira.adapter.classroom.out.cache.ClassroomStudentCacheEvictor;
 import com.io.kira.adapter.classroom.out.persistence.mapper.ClassroomStudentMapper;
 import com.io.kira.application.classroom.port.out.ClassroomStudentAppRepository;
 import com.io.kira.domain.classroom.entity.ClassroomStudent;
@@ -18,7 +19,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 
 
 @Repository
@@ -27,37 +27,10 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
 
     private final JpaClassroomStudentRepository jpaClassroomStudentRepository;
     private final JpaClassroomRepository jpaClassroomRepository;
+    private final ClassroomStudentCacheEvictor cacheEvictor;
 
     @Override
-    @Caching(evict = {
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
-                    key = "@classroomStudentCacheKey.existsByClassroomIdAndUserId(#classroomStudent.classroomId, #classroomStudent.studentUserId)"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
-                    key = "@classroomStudentCacheKey.countByClassroomId(#classroomStudent.classroomId)"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
-                    key = "@classroomStudentCacheKey.activeEnrollmentsByUserId(#classroomStudent.studentUserId)"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
-                    key = "@classroomStudentCacheKey.activeCountByClassroomId(#classroomStudent.classroomId)"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
-                    key = "@classroomStudentCacheKey.byClassroomIdAndUserId(#classroomStudent.classroomId, #classroomStudent.studentUserId)"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
-                    key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomStudent.classroomId, 'ACTIVE', true)"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
-                    key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomStudent.classroomId, 'ACTIVE', false)"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
-                    key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomStudent.classroomId, 'PENDING', true)"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
-                    key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomStudent.classroomId, 'PENDING', false)"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
-                    key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomStudent.classroomId, 'DROPPED', true)"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
-                    key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomStudent.classroomId, 'DROPPED', false)"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
-                    key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomStudent.classroomId, 'KICKED', true)"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
-                    key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomStudent.classroomId, 'KICKED', false)"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_RECENT_ACTIVITY, allEntries = true)
-    })
+    @CacheEvict(value = ClassroomCacheNames.CLASSROOM_RECENT_ACTIVITY, allEntries = true)
     public boolean save(ClassroomStudent classroomStudent) {
 
         Optional<ClassroomEntity> classroomEntityOpt = jpaClassroomRepository.findByClassroomId((classroomStudent.getClassroomId()));
@@ -78,6 +51,7 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
 
         classroomEntity.addStudent(entity);
         jpaClassroomStudentRepository.save(entity);
+        cacheEvictor.evictFor(classroomStudent.getClassroomId(), classroomStudent.getStudentUserId());
         return true;
     }
 

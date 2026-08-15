@@ -21,10 +21,6 @@ public final class ClassroomStudentCacheKey {
         return "by-classroom-id-and-status-and-order:" + classroomId + ":" + status + ":" + ascending;
     }
 
-    public String byClassroomIdAndStatusAndOrder(UUID classroomId, String status, boolean ascending) {
-        return "by-classroom-id-and-status-and-order:" + classroomId + ":" + status + ":" + ascending;
-    }
-
     public String activeCountByClassroomId(UUID classroomId) {
         return "active-count-by-classroom-id:" + classroomId;
     }
