@@ -30,7 +30,32 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
 
     @Override
     @Caching(evict = {
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT, allEntries = true),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
+                    key = "@classroomStudentCacheKey.existsByClassroomIdAndUserId(#classroomStudent.classroomId, #classroomStudent.studentUserId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
+                    key = "@classroomStudentCacheKey.countByClassroomId(#classroomStudent.classroomId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
+                    key = "@classroomStudentCacheKey.activeEnrollmentsByUserId(#classroomStudent.studentUserId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
+                    key = "@classroomStudentCacheKey.activeCountByClassroomId(#classroomStudent.classroomId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
+                    key = "@classroomStudentCacheKey.byClassroomIdAndUserId(#classroomStudent.classroomId, #classroomStudent.studentUserId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
+                    key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomStudent.classroomId, 'ACTIVE', true)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
+                    key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomStudent.classroomId, 'ACTIVE', false)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
+                    key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomStudent.classroomId, 'PENDING', true)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
+                    key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomStudent.classroomId, 'PENDING', false)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
+                    key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomStudent.classroomId, 'DROPPED', true)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
+                    key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomStudent.classroomId, 'DROPPED', false)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
+                    key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomStudent.classroomId, 'KICKED', true)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT,
+                    key = "@classroomStudentCacheKey.byClassroomIdAndStatusAndOrder(#classroomStudent.classroomId, 'KICKED', false)"),
             @CacheEvict(value = ClassroomCacheNames.CLASSROOM_RECENT_ACTIVITY, allEntries = true)
     })
     public boolean save(ClassroomStudent classroomStudent) {
@@ -76,7 +101,6 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     }
 
     @Override
-    @Cacheable(value = ClassroomCacheNames.CLASSROOM_STUDENT, key = "@classroomStudentCacheKey.activeCountsByClassroomIds(#classroomIds)")
     public Map<UUID, Long> countActiveClassroomStudentByClassroomIds(List<UUID> classroomIds) {
         Map<UUID, Long> countMap = new HashMap<>();
         for (UUID classroomId : classroomIds) {
