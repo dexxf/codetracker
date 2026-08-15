@@ -11,7 +11,7 @@ public interface AnnouncementAppRepository {
 
     Optional<Announcement> findById(UUID uuid);
 
-    void deleteById(UUID uuid);
+     void deleteById(Announcement announcement);
 
     List<Announcement> findAllByClassroomId(UUID classroomId);
 }

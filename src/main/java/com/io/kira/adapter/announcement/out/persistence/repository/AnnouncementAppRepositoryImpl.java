@@ -46,11 +46,12 @@ public class AnnouncementAppRepositoryImpl implements AnnouncementAppRepository 
     @Override
     @Caching(evict = {
             @CacheEvict(value = AnnouncementCacheNames.ANNOUNCEMENT,
-                    key = "@announcementCacheKey.byId(#id)"),
-            @CacheEvict(value = AnnouncementCacheNames.ANNOUNCEMENT_LIST, allEntries = true)
+                    key = "@announcementCacheKey.byId(#announcement.announcementId)"),
+            @CacheEvict(value = AnnouncementCacheNames.ANNOUNCEMENT_LIST,
+            key = "@announcementCacheKey.byClassroomId(#announcement.classroomId)")
     })
-    public void deleteById(UUID id) {
-        announcementRepository.deleteById(id);
+    public void deleteById(Announcement announcement) {
+        announcementRepository.deleteById(announcement.announcementId());
     }
 
     @Override

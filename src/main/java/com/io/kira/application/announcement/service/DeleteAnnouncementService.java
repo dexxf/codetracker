@@ -43,7 +43,7 @@ public class DeleteAnnouncementService implements DeleteAnnouncementUseCase {
             return Result.fail(DeleteAnnouncementError.ANNOUNCEMENT_NOT_FOUND);
         }
 
-        announcementRepository.deleteById(announcement.announcementId());
+         announcementRepository.deleteById(announcement);
 
         for (AnnouncementAttachment attachment : announcement.attachments()) {
             try {
