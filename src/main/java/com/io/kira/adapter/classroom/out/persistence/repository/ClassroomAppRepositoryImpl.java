@@ -39,9 +39,9 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
 
     @Override
     @Caching(evict = {
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, allEntries = true),
             @CacheEvict(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byId(#aggregate.classroom.classroomId)"),
             @CacheEvict(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byCode(#aggregate.classroom.classCode)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byInstructorUserId(#aggregate.classroom.instructorUserId)"),
             @CacheEvict(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "@classroomSettingsCacheKey.byClassroomId(#aggregate.classroom.classroomId)")
     })
     public void save(ClassroomAggregate aggregate) {
@@ -50,9 +50,9 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
 
     @Override
     @Caching(evict = {
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, allEntries = true),
             @CacheEvict(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byId(#aggregate.classroom.classroomId)"),
             @CacheEvict(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byCode(#aggregate.classroom.classCode)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byInstructorUserId(#aggregate.classroom.instructorUserId)"),
             @CacheEvict(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "@classroomSettingsCacheKey.byClassroomId(#aggregate.classroom.classroomId)")
     })
     public void update(ClassroomAggregate aggregate) {
@@ -71,8 +71,7 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
     @Override
     @Caching(evict = {
             @CacheEvict(value = ClassroomCacheNames.CLASSROOM, allEntries = true),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byId(#classroomId)"),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, allEntries = true),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT, allEntries = true),
             @CacheEvict(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "@classroomSettingsCacheKey.byClassroomId(#classroomId)")
     })
     public void deleteByClassroomId(UUID classroomId) {
