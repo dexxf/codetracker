@@ -62,7 +62,10 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
 
     @Override
     @Caching(evict = {
-            @CacheEvict(value = ActivityCacheNames.STUDENT_ACTIVITY, allEntries = true),
+            @CacheEvict(value = ActivityCacheNames.STUDENT_ACTIVITY,
+                    key = "@studentActivityCacheKey.byUserIdAndActivityId(#studentActivity.userId, #studentActivity.activityId)"),
+            @CacheEvict(value = ActivityCacheNames.STUDENT_ACTIVITY,
+                    key = "@studentActivityCacheKey.repositoryUrlByUserIdAndActivityId(#studentActivity.userId, #studentActivity.activityId)"),
             @CacheEvict(value = ActivityCacheNames.ACTIVITY, allEntries = true),
             @CacheEvict(value = ActivityCacheNames.ACTIVITY_INFO, allEntries = true)
     })
