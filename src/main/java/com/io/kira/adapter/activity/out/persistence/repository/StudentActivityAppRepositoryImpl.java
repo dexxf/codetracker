@@ -37,8 +37,7 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
 
     @Override
     @Cacheable(value = ActivityCacheNames.STUDENT_ACTIVITY,
-            key = "@studentActivityCacheKey.byUserIdAndActivityId(#userId, #activityId)",
-            unless = "#result == null")
+            key = "@studentActivityCacheKey.byUserIdAndActivityId(#userId, #activityId)")
     public Optional<StudentActivity> findByUserIdAndActivityId(UUID userId, String activityId) {
         return jpaStudentActivityRepository.findByUserEntity_UserIdAndActivityEntity_ActivityId(userId, activityId)
                 .map(savedEntity -> new StudentActivity(
@@ -54,8 +53,7 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
 
     @Override
     @Cacheable(value = ActivityCacheNames.STUDENT_ACTIVITY,
-            key = "@studentActivityCacheKey.repositoryUrlByUserIdAndActivityId(#userId, #activityId)",
-            unless = "#result == null")
+            key = "@studentActivityCacheKey.repositoryUrlByUserIdAndActivityId(#userId, #activityId)")
     public Optional<String> findRepositoryUrlByUserIdAndActivityId(UUID userId, String activityId) {
         return jpaStudentActivityRepository.findByUserEntity_UserIdAndActivityEntity_ActivityId(userId, activityId)
                 .map(StudentActivityEntity::getGithubSubmission)

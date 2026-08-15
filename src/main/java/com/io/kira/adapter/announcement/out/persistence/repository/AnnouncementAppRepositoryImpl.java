@@ -36,8 +36,7 @@ public class AnnouncementAppRepositoryImpl implements AnnouncementAppRepository 
     @Override
     @Cacheable(
             value = AnnouncementCacheNames.ANNOUNCEMENT,
-            key = "@announcementCacheKey.byId(#id)",
-            unless = "#result == null"
+            key = "@announcementCacheKey.byId(#id)"
     )
     public Optional<Announcement> findById(UUID id) {
         return announcementRepository.findById(id).map(AnnouncementMapper::toDomain);

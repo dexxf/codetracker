@@ -99,13 +99,13 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
     }
 
     @Override
-    @Cacheable(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byId(#classroomId)", unless = "#result == null")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byId(#classroomId)")
     public Optional<ClassroomAggregate> findByClassroomId(UUID classroomId) {
         return jpaClassroomRepository.findById(classroomId).map(ClassroomAggregateMapper::toDomain);
     }
 
     @Override
-    @Cacheable(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "@classroomSettingsCacheKey.byClassroomId(#classroomId)", unless = "#result == null")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "@classroomSettingsCacheKey.byClassroomId(#classroomId)")
     public Optional<ClassroomSettings> findSettingsByClassroomId(UUID classroomId) {
         return jpaClassroomSettingsRepository.findByClassroomId(classroomId)
             .map(ClassroomSettingsMapper::toDomain);

@@ -58,7 +58,7 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
 
     @Override
     @Cacheable(value = ActivityCacheNames.ACTIVITY,
-            key = "@activityCacheKey.byId(#activityId)", unless = "#result == null")
+            key = "@activityCacheKey.byId(#activityId)")
     public Optional<Activity> findById(String activityId) {
         Optional<ActivityEntity> acOptional = jpa.findById(activityId);
         return acOptional.map(ActivityMapper::toDomain);

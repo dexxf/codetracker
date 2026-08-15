@@ -20,7 +20,7 @@ public class ClassroomSettingsDomainRepositoryImpl implements ClassroomSettingsD
     private final JpaClassroomSettingsRepository jpaClassroomSettingsRepository;
 
     @Override
-    @Cacheable(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "@classroomSettingsCacheKey.byClassroomId(#classroomId)", unless = "#result == null")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "@classroomSettingsCacheKey.byClassroomId(#classroomId)")
     public Optional<ClassroomSettings> findByClassroomId(UUID classroomId) {
         Optional<ClassroomSettingsEntity> classroomSettingsEntity = jpaClassroomSettingsRepository.findByClassroomId(classroomId);
         return classroomSettingsEntity.map(ClassroomSettingsMapper::toDomain);
