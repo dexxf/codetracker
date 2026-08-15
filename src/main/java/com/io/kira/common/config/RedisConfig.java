@@ -1,8 +1,10 @@
 package com.io.kira.common.config;
 
 import com.io.kira.Application;
+import com.io.kira.adapter.announcement.out.persistence.mapper.AnnouncementJacksonMixIn;
 import com.io.kira.adapter.classroom.out.persistence.mapper.ClassroomStudentJacksonMixIn;
 import com.io.kira.adapter.user.out.persistence.mapper.UserJacksonMixIn;
+import com.io.kira.domain.announcement.entity.Announcement;
 import com.io.kira.domain.classroom.entity.ClassroomStudent;
 import com.io.kira.domain.user.entity.User;
 import org.springframework.context.annotation.Bean;
@@ -62,6 +64,7 @@ public class RedisConfig {
 
         mixIns.put(User.class, UserJacksonMixIn.class);
         mixIns.put(ClassroomStudent.class, ClassroomStudentJacksonMixIn.class);
+        mixIns.put(Announcement.class, AnnouncementJacksonMixIn.class);
 
         return mixIns;
 
