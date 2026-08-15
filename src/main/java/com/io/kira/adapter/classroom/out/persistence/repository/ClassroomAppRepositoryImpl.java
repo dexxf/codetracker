@@ -70,12 +70,21 @@ public class ClassroomAppRepositoryImpl implements ClassroomAppRepository {
 
     @Override
     @Caching(evict = {
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, allEntries = true),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byId(#result.classroom.classroomId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byCode(#result.classroom.classCode)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.byInstructorUserId(#result.classroom.instructorUserId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_ACTIVITY, key = "@classroomCacheKey.activityCounts(#result.classroom.classroomId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_ACTIVITY, key = "@classroomCacheKey.activeActivityCounts(#result.classroom.classroomId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_RECENT_ACTIVITY, allEntries = true),
             @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT, allEntries = true),
             @CacheEvict(value = ClassroomCacheNames.CLASSROOM_SETTINGS, key = "@classroomSettingsCacheKey.byClassroomId(#classroomId)")
     })
-    public void deleteByClassroomId(UUID classroomId) {
-        jpaClassroomRepository.deleteById(classroomId);
+    public ClassroomAggregate deleteByClassroomId(UUID classroomId) {
+        ClassroomEntity entity = jpaClassroomRepository.findById(classroomId)
+                .orElseThrow(() -> new RuntimeException("Classroom not found"));
+        ClassroomAggregate aggregate = ClassroomAggregateMapper.toDomain(entity);
+        jpaClassroomRepository.delete(entity);
+        return aggregate;
     }
 
     @Override

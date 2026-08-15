@@ -10,7 +10,7 @@ import com.io.kira.domain.classroom.entity.ClassroomSettings;
 public interface ClassroomAppRepository {
     void save(ClassroomAggregate aggregate);
     void update(ClassroomAggregate aggregate);
-    void deleteByClassroomId(UUID classroomId);
+    ClassroomAggregate deleteByClassroomId(UUID classroomId);
     List<ClassroomAggregate> findByInstructorUserId(UUID instructorUserId);
     List<ClassroomAggregate> findAllById(List<UUID> classroomIds);
     Optional<ClassroomAggregate> findByClassroomId(UUID classroomId);

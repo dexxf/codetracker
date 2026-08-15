@@ -33,7 +33,11 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
     @Caching(evict = {
             @CacheEvict(value = ActivityCacheNames.ACTIVITY, allEntries = true),
             @CacheEvict(value = ActivityCacheNames.ACTIVITY_INFO, allEntries = true),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, allEntries = true)
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_ACTIVITY,
+                    key = "@classroomCacheKey.activityCounts(#data.classroomId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_ACTIVITY,
+                    key = "@classroomCacheKey.activeActivityCounts(#data.classroomId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_RECENT_ACTIVITY, allEntries = true)
     })
     public Activity save(Activity data) {
         ClassroomEntity classroomEntity = classroomJpa.findById(data.getClassroomId())
@@ -68,17 +72,29 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
     @Caching(evict = {
             @CacheEvict(value = ActivityCacheNames.ACTIVITY, allEntries = true),
             @CacheEvict(value = ActivityCacheNames.ACTIVITY_INFO, allEntries = true),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, allEntries = true)
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_ACTIVITY,
+                    key = "@classroomCacheKey.activityCounts(#result.classroomId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_ACTIVITY,
+                    key = "@classroomCacheKey.activeActivityCounts(#result.classroomId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_RECENT_ACTIVITY, allEntries = true)
     })
-    public void deleteByActivityId(String activityId) {
-        jpa.deleteById(activityId);
+    public Activity deleteByActivityId(String activityId) {
+        ActivityEntity entity = jpa.findById(activityId)
+                .orElseThrow(() -> new RuntimeException("Activity not found"));
+        Activity activity = ActivityMapper.toDomain(entity);
+        jpa.delete(entity);
+        return activity;
     }
 
     @Override
     @Caching(evict = {
             @CacheEvict(value = ActivityCacheNames.ACTIVITY, allEntries = true),
             @CacheEvict(value = ActivityCacheNames.ACTIVITY_INFO, allEntries = true),
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM, allEntries = true)
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_ACTIVITY,
+                    key = "@classroomCacheKey.activityCounts(#updatedActivity.classroomId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_ACTIVITY,
+                    key = "@classroomCacheKey.activeActivityCounts(#updatedActivity.classroomId)"),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_RECENT_ACTIVITY, allEntries = true)
     })
     public void update(Activity updatedActivity) {
         ActivityEntity entity = jpa.findById(updatedActivity.getActivityId())

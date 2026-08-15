@@ -19,13 +19,13 @@ public class ClassroomActivityAppAdapter implements ClassroomActivityAppPort {
    private final JpaActivityRepository jpaActivityRepository;
 
     @Override
-   @Cacheable(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.activityCounts(#classroomId)")
+   @Cacheable(value = ClassroomCacheNames.CLASSROOM_ACTIVITY, key = "@classroomCacheKey.activityCounts(#classroomId)")
    public long countByClassroomId(UUID classroomId) {
         return jpaActivityRepository.countByClassroomEntity_ClassroomId(classroomId);
     }
 
     @Override
-    @Cacheable(value = ClassroomCacheNames.CLASSROOM, key = "@classroomCacheKey.activeActivityCounts(#classroomId)")
+    @Cacheable(value = ClassroomCacheNames.CLASSROOM_ACTIVITY, key = "@classroomCacheKey.activeActivityCounts(#classroomId)")
     public long countActiveActivitiesByClassroomId(UUID classroomId) {
         return jpaActivityRepository.countByClassroomEntity_ClassroomIdAndStatus(classroomId, ActivityStatus.PUBLISHED);
     }

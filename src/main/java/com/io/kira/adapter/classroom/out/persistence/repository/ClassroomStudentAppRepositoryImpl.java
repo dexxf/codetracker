@@ -30,7 +30,8 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
 
     @Override
     @Caching(evict = {
-            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT, allEntries = true)
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_STUDENT, allEntries = true),
+            @CacheEvict(value = ClassroomCacheNames.CLASSROOM_RECENT_ACTIVITY, allEntries = true)
     })
     public boolean save(ClassroomStudent classroomStudent) {
 

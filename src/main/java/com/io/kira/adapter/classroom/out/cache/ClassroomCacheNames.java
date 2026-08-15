@@ -5,6 +5,8 @@ public final class ClassroomCacheNames {
     private ClassroomCacheNames() {}
 
     public static final String CLASSROOM = "classroom";
+    public static final String CLASSROOM_ACTIVITY = "classroomActivity";
+    public static final String CLASSROOM_RECENT_ACTIVITY = "classroomRecentActivity";
     public static final String CLASSROOM_SETTINGS = "classroomSettings";
     public static final String CLASSROOM_STUDENT = "classroomStudent";
 }
