@@ -17,7 +17,6 @@ import com.io.kira.infrastructure.classroom.persistence.repository.JpaClassroomR
 import com.io.kira.infrastructure.classroom.persistence.repository.JpaClassroomStudentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 
 
@@ -30,7 +29,6 @@ public class ClassroomStudentAppRepositoryImpl implements ClassroomStudentAppRep
     private final ClassroomStudentCacheEvictor cacheEvictor;
 
     @Override
-    @CacheEvict(value = ClassroomCacheNames.CLASSROOM_RECENT_ACTIVITY, allEntries = true)
     public boolean save(ClassroomStudent classroomStudent) {
 
         Optional<ClassroomEntity> classroomEntityOpt = jpaClassroomRepository.findByClassroomId((classroomStudent.getClassroomId()));

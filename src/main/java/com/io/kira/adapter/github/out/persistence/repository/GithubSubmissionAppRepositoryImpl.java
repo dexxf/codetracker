@@ -1,5 +1,6 @@
 package com.io.kira.adapter.github.out.persistence.repository;
 
+import com.io.kira.adapter.classroom.out.cache.ClassroomRecentActivityCacheVersion;
 import com.io.kira.adapter.github.out.persistence.mapper.GithubSubmissionMapper;
 import com.io.kira.application.github.port.out.GithubSubmissionAppRepository;
 import com.io.kira.domain.github.entity.GithubSubmission;
@@ -18,6 +19,7 @@ public class GithubSubmissionAppRepositoryImpl implements GithubSubmissionAppRep
 
     private final JpaGithubSubmissionRepository jpaGithubSubmissionRepository;
     private final JpaStudentActivityRepository jpaStudentActivityRepository;
+    private final ClassroomRecentActivityCacheVersion recentActivityCacheVersion;
 
     @Override
     public GithubSubmission save(GithubSubmission githubSubmission) {
@@ -28,6 +30,9 @@ public class GithubSubmissionAppRepositoryImpl implements GithubSubmissionAppRep
         entity.setStudentActivity(studentActivityEntity);
 
         GithubSubmissionEntity savedEntity = jpaGithubSubmissionRepository.save(entity);
+        recentActivityCacheVersion.invalidate(
+                studentActivityEntity.getActivityEntity().getClassroomEntity().getClassroomId()
+        );
         return GithubSubmissionMapper.toDomain(savedEntity);
     }
 }

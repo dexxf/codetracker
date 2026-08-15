@@ -12,10 +12,16 @@ public final class ClassroomStudentCacheEvictor {
 
     private final Cache cache;
     private final ClassroomStudentCacheKey cacheKey;
+    private final ClassroomRecentActivityCacheVersion recentActivityCacheVersion;
 
-    public ClassroomStudentCacheEvictor(CacheManager cacheManager, ClassroomStudentCacheKey cacheKey) {
+    public ClassroomStudentCacheEvictor(
+            CacheManager cacheManager,
+            ClassroomStudentCacheKey cacheKey,
+            ClassroomRecentActivityCacheVersion recentActivityCacheVersion
+    ) {
         this.cache = cacheManager.getCache(ClassroomCacheNames.CLASSROOM_STUDENT);
         this.cacheKey = cacheKey;
+        this.recentActivityCacheVersion = recentActivityCacheVersion;
     }
 
     public void evictFor(UUID classroomId, UUID studentUserId) {
@@ -29,6 +35,8 @@ public final class ClassroomStudentCacheEvictor {
             evict(cacheKey.byClassroomIdAndStatusAndOrder(classroomId, status, true));
             evict(cacheKey.byClassroomIdAndStatusAndOrder(classroomId, status, false));
         }
+
+        recentActivityCacheVersion.invalidate(classroomId);
     }
 
     private void evict(Object key) {
@@ -36,4 +44,5 @@ public final class ClassroomStudentCacheEvictor {
             cache.evict(key);
         }
     }
+
 }

@@ -35,7 +35,8 @@ public class GetClassroomRecentActivitiesService implements GetClassroomRecentAc
         }
 
         int limit = Math.max(1, Math.min(command.limit(), 100));
-        List<ClassroomRecentActivityData> recentActivities = classroomRecentActivityAppRepository.findRecentActivities(command.classroomId(), limit);
+        List<ClassroomRecentActivityData> recentActivities = classroomRecentActivityAppRepository
+                .findRecentActivities(command.classroomId(), limit);
         return Result.ok(recentActivities);
     }
 }

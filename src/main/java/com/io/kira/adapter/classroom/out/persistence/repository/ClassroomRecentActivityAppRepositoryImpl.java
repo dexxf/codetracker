@@ -32,7 +32,7 @@ public class ClassroomRecentActivityAppRepositoryImpl implements ClassroomRecent
     @Override
     @Cacheable(
             value = ClassroomCacheNames.CLASSROOM_RECENT_ACTIVITY,
-            key = "@classroomCacheKey.recentActivities(#classroomId, #limit)",
+            key = "@classroomCacheKey.recentActivities(#classroomId, @classroomRecentActivityCacheVersion.get(#classroomId), #limit)",
             unless = "#result.isEmpty()"
     )
     public List<ClassroomRecentActivityData> findRecentActivities(UUID classroomId, int limit) {

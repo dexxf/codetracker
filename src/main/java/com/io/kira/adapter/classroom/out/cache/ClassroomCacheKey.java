@@ -18,8 +18,8 @@ public final class ClassroomCacheKey {
         return "by-instructor-user-id:" + instructorUserId;
     }
 
-    public String recentActivities(UUID classroomId, int limit) {
-        return "recent-activities:" + classroomId + ":" + limit;
+    public String recentActivities(UUID classroomId, long version, int limit) {
+        return "recent-activities:" + classroomId + ":" + version + ":" + limit;
     }
 
     public String activityCounts(UUID classroomId) {

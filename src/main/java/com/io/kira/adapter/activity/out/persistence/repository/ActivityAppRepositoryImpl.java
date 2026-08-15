@@ -4,6 +4,7 @@ package com.io.kira.adapter.activity.out.persistence.repository;
 import java.util.UUID;
 import com.io.kira.adapter.activity.out.cache.ActivityCacheNames;
 import com.io.kira.adapter.classroom.out.cache.ClassroomCacheNames;
+import com.io.kira.adapter.classroom.out.cache.ClassroomRecentActivityCacheVersion;
 import com.io.kira.adapter.activity.out.persistence.mapper.ActivityMapper;
 import com.io.kira.application.activity.port.out.ActivityAppRepository;
 import com.io.kira.application.activity.result.StudentActivityOverviewData;
@@ -28,6 +29,7 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
 
     private final JpaActivityRepository jpa;
     private final JpaClassroomRepository classroomJpa;
+    private final ClassroomRecentActivityCacheVersion recentActivityCacheVersion;
 
     @Override
     @Caching(evict = {
@@ -47,6 +49,7 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
         ActivityEntity entity = ActivityMapper.toEntity(data);
         classroomEntity.addActivity(entity);
         jpa.save(entity);
+        recentActivityCacheVersion.invalidate(data.getClassroomId());
         return ActivityMapper.toDomain(entity);
     }
 
@@ -83,6 +86,7 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
                 .orElseThrow(() -> new RuntimeException("Activity not found"));
         Activity activity = ActivityMapper.toDomain(entity);
         jpa.delete(entity);
+        recentActivityCacheVersion.invalidate(activity.getClassroomId());
         return activity;
     }
 
@@ -101,6 +105,7 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
                 .orElseThrow(() -> new RuntimeException("Activity not found"));
         ActivityMapper.updateEntity(updatedActivity, entity);
         jpa.save(entity);
+        recentActivityCacheVersion.invalidate(updatedActivity.getClassroomId());
     }
 
     @Override
