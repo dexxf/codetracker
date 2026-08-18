@@ -19,10 +19,10 @@ public record AnnouncementViewData(
         List<AttachmentData> attachmentData = announcement.getAttachments()
                 .stream()
                 .map(attachment -> new AttachmentData(
-                        attachment.attachmentId(),
-                        attachment.url(),
-                        attachment.type(),
-                        attachment.resourceType()
+                        attachment.getAttachmentId(),
+                        attachment.getUrl(),
+                        attachment.getType(),
+                        attachment.getResourceType()
                 ))
                 .toList();
 

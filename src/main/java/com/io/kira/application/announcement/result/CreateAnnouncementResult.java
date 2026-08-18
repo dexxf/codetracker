@@ -15,7 +15,7 @@ public record CreateAnnouncementResult(
     public static CreateAnnouncementResult toResult(Announcement announcement) {
         List<AttachmentData> attachmentData = announcement.getAttachments()
                 .stream()
-                .map(a -> new AttachmentData(a.attachmentId(), a.url(), a.type(), a.resourceType()))
+                .map(a -> new AttachmentData(a.getAttachmentId(), a.getUrl(), a.getType(), a.getResourceType()))
                 .toList();
 
         return new CreateAnnouncementResult(

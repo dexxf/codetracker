@@ -84,7 +84,7 @@ public final class Announcement {
     }
 
     public void removeAttachment(UUID attachmentId) {
-        attachments.removeIf(attachment -> attachment.attachmentId().equals(attachmentId));
+        attachments.removeIf(attachment -> attachment.getAttachmentId().equals(attachmentId));
     }
 
     private static void validateMessage(String message) {
@@ -122,7 +122,7 @@ public final class Announcement {
     }
 
     public Optional<AnnouncementAttachment> findAttachment(UUID attachmentId) {
-        return attachments.stream().filter(a -> a.attachmentId().equals(attachmentId)).findFirst();
+        return attachments.stream().filter(a -> a.getAttachmentId().equals(attachmentId)).findFirst();
     }
 
     public void updateMessage(String message, Instant now) {

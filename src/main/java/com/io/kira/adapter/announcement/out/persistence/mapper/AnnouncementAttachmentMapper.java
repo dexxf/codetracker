@@ -16,10 +16,10 @@ public class AnnouncementAttachmentMapper {
 
     public static AnnouncementAttachmentEntity toEntity(AnnouncementAttachment attachment) {
         return AnnouncementAttachmentEntity.builder()
-                .attachmentId(attachment.attachmentId())
-                .url(attachment.url())
-                .type(attachment.type())
-                .resourceType(attachment.resourceType())
+                .attachmentId(attachment.getAttachmentId())
+                .url(attachment.getUrl())
+                .type(attachment.getType())
+                .resourceType(attachment.getResourceType())
                 .build();
     }
 

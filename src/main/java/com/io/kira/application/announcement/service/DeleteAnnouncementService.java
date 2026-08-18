@@ -49,12 +49,12 @@ public class DeleteAnnouncementService implements DeleteAnnouncementUseCase {
             try {
                 attachmentStorage.delete(
                         command.classroomId(),
-                        attachment.attachmentId(),
-                        attachment.resourceType()
+                        attachment.getAttachmentId(),
+                        attachment.getResourceType()
                 );
             } catch (IOException ex) {
                 log.warn("Failed to delete attachment {} after deleting announcement {}",
-                        attachment.attachmentId(), announcement.getAnnouncementId(), ex);
+                        attachment.getAttachmentId(), announcement.getAnnouncementId(), ex);
             }
         }
 

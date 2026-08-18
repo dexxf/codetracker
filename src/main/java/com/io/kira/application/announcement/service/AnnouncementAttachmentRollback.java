@@ -21,9 +21,9 @@ public final class AnnouncementAttachmentRollback {
     ) {
         for (AnnouncementAttachment attachment : uploadedAttachments) {
             try {
-                attachmentStorage.delete(classroomId, attachment.attachmentId(), attachment.resourceType());
+                attachmentStorage.delete(classroomId, attachment.getAttachmentId(), attachment.getResourceType());
             } catch (IOException ex) {
-                log.warn("Failed to rollback attachment {} in classroom {}", attachment.attachmentId(), classroomId, ex);
+                log.warn("Failed to rollback attachment {} in classroom {}", attachment.getAttachmentId(), classroomId, ex);
             }
         }
     }

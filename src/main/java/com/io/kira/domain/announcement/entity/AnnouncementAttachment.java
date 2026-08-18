@@ -34,19 +34,19 @@ public final class AnnouncementAttachment {
         }
     }
 
-    public UUID attachmentId() {
+    public UUID getAttachmentId() {
         return attachmentId;
     }
 
-    public String url() {
+    public String getUrl() {
         return url;
     }
 
-    public AttachmentType type() {
+    public AttachmentType getType() {
         return type;
     }
 
-    public String resourceType() {
+    public String getResourceType() {
         return resourceType;
     }
 
