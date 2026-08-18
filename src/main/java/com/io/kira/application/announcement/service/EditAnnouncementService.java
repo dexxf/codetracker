@@ -55,7 +55,7 @@ public class EditAnnouncementService implements EditAnnouncementUseCase {
 
         Announcement announcement = maybeAnnouncement.get();
 
-        if (!announcement.classroomId().equals(command.classroomId())) {
+        if (!announcement.getClassroomId().equals(command.classroomId())) {
             return Result.fail(EditAnnouncementError.ANNOUNCEMENT_NOT_FOUND);
         }
 

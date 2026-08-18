@@ -27,15 +27,15 @@ public class AnnouncementMapper {
 
     public static AnnouncementEntity toEntity(Announcement announcement) {
         AnnouncementEntity entity = AnnouncementEntity.builder()
-                .announcementId(announcement.announcementId())
-                .classroomId(announcement.classroomId())
-                .authorId(announcement.authorId())
-                .message(announcement.message())
-                .createdAt(announcement.createdAt())
-                .updatedAt(announcement.updatedAt())
+                .announcementId(announcement.getAnnouncementId())
+                .classroomId(announcement.getClassroomId())
+                .authorId(announcement.getAuthorId())
+                .message(announcement.getMessage())
+                .createdAt(announcement.getCreatedAt())
+                .updatedAt(announcement.getUpdatedAt())
                 .build();
 
-        announcement.attachments()
+        announcement.getAttachments()
                 .stream()
                 .map(AnnouncementAttachmentMapper::toEntity)
                 .forEach(entity::addAttachment);

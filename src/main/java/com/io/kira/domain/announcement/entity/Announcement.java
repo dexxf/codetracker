@@ -93,31 +93,31 @@ public final class Announcement {
         }
     }
 
-    public UUID announcementId() {
+    public UUID getAnnouncementId() {
         return announcementId;
     }
 
-    public UUID classroomId() {
+    public UUID getClassroomId() {
         return classroomId;
     }
 
-    public UUID authorId() {
+    public UUID getAuthorId() {
         return authorId;
     }
 
-    public String message() {
+    public String getMessage() {
         return message;
     }
 
-    public List<AnnouncementAttachment> attachments() {
+    public List<AnnouncementAttachment> getAttachments() {
         return Collections.unmodifiableList(attachments);
     }
 
-    public Instant createdAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public Instant updatedAt() {
+    public Instant getUpdatedAt() {
         return updatedAt;
     }
 

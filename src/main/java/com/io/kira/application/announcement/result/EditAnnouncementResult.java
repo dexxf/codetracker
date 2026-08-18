@@ -17,12 +17,12 @@ public record EditAnnouncementResult(
 ) {
     public static EditAnnouncementResult toResult(Announcement announcement) {
         return new EditAnnouncementResult(
-                announcement.announcementId(),
-                announcement.classroomId(),
-                announcement.authorId(),
-                announcement.message(),
-                announcement.attachments(),
-                announcement.updatedAt()
+                announcement.getAnnouncementId(),
+                announcement.getClassroomId(),
+                announcement.getAuthorId(),
+                announcement.getMessage(),
+                announcement.getAttachments(),
+                announcement.getUpdatedAt()
         );
     }
 }

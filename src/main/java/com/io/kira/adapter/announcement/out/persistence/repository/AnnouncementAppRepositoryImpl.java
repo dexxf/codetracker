@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 @AllArgsConstructor
@@ -50,7 +51,7 @@ public class AnnouncementAppRepositoryImpl implements AnnouncementAppRepository 
             key = "@announcementCacheKey.byClassroomId(#announcement.classroomId)")
     })
     public void deleteById(Announcement announcement) {
-        announcementRepository.deleteById(announcement.announcementId());
+        announcementRepository.deleteById(announcement.getAnnouncementId());
     }
 
     @Override
@@ -63,6 +64,6 @@ public class AnnouncementAppRepositoryImpl implements AnnouncementAppRepository 
         return announcementRepository.findAllByClassroomIdOrderByCreatedAtDesc(classroomId)
                 .stream()
                 .map(AnnouncementMapper::toDomain)
-                .toList();
+                .collect(Collectors.toList());
     }
 }

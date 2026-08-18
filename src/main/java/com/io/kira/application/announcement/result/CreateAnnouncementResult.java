@@ -13,16 +13,16 @@ public record CreateAnnouncementResult(
 ) {
 
     public static CreateAnnouncementResult toResult(Announcement announcement) {
-        List<AttachmentData> attachmentData = announcement.attachments()
+        List<AttachmentData> attachmentData = announcement.getAttachments()
                 .stream()
                 .map(a -> new AttachmentData(a.attachmentId(), a.url(), a.type(), a.resourceType()))
                 .toList();
 
         return new CreateAnnouncementResult(
-                announcement.announcementId(),
-                announcement.message(),
+                announcement.getAnnouncementId(),
+                announcement.getMessage(),
                 attachmentData,
-                announcement.createdAt()
+                announcement.getCreatedAt()
         );
     }
 }
