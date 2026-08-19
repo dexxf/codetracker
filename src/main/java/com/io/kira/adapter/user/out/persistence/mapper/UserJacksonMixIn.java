@@ -16,6 +16,6 @@ public abstract class UserJacksonMixIn {
             Gender gender,
             String profileUrl,
             boolean hasFullyInitialized) {
-        return User.reconstitute(userId, firstName, lastName, gender, profileUrl, hasFullyInitialized);
+        throw new UnsupportedOperationException();
     }
 }

@@ -19,13 +19,6 @@ public abstract class AnnouncementJacksonMixIn {
             List<AnnouncementAttachment> attachments,
             Instant createdAt,
             Instant updatedAt) {
-        return Announcement.reconstitute(
-                announcementId,
-                classroomId,
-                authorId,
-                message,
-                attachments,
-                createdAt,
-                updatedAt);
+        throw new UnsupportedOperationException();
     }
 }

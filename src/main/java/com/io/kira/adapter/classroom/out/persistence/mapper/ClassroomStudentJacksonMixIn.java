@@ -17,6 +17,6 @@ public abstract class ClassroomStudentJacksonMixIn {
              Instant lastActiveAt,
              Instant joinedAt,
              Instant leftAt) {
-        return ClassroomStudent.reconstitute(classroomId, studentUserId, status, lastActiveAt, joinedAt, leftAt);
+        throw new UnsupportedOperationException();
     }
 }
