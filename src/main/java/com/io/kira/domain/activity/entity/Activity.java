@@ -1,6 +1,5 @@
 package com.io.kira.domain.activity.entity;
 
-
 import java.util.UUID;
 import com.io.kira.domain.activity.valueObject.ActivityStatus;
 
@@ -19,7 +18,8 @@ public class Activity {
     private final Instant createdAt;
     private Instant updatedAt;
 
-    public Activity(String activityId ,UUID classroomId, UUID instructorUserId, String title, String description, Instant dueDate, ActivityStatus status, Integer maxScore, Instant createdAt, Instant updatedAt) {
+    private Activity(String activityId, UUID classroomId, UUID instructorUserId, String title, String description,
+                     Instant dueDate, ActivityStatus status, Integer maxScore, Instant createdAt, Instant updatedAt) {
         this.activityId = activityId;
         this.classroomId = classroomId;
         this.instructorUserId = instructorUserId;
@@ -30,6 +30,40 @@ public class Activity {
         this.maxScore = maxScore;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public static Activity createNew(UUID classroomId, UUID instructorUserId, String title, String description,
+                                     Instant dueDate, Integer maxScore, ActivityStatus activityStatus) {
+        Instant now = Instant.now();
+        return new Activity(
+                UUID.randomUUID().toString(),
+                classroomId,
+                instructorUserId,
+                title,
+                description,
+                dueDate,
+                activityStatus,
+                maxScore,
+                now,
+                now
+        );
+    }
+
+    public static Activity reconstitute(String activityId, UUID classroomId, UUID instructorUserId, String title,
+                                        String description, Instant dueDate, ActivityStatus status,
+                                        Integer maxScore, Instant createdAt, Instant updatedAt) {
+        return new Activity(
+                activityId,
+                classroomId,
+                instructorUserId,
+                title,
+                description,
+                dueDate,
+                status,
+                maxScore,
+                createdAt,
+                updatedAt
+        );
     }
 
     public String getActivityId() {
@@ -111,4 +145,3 @@ public class Activity {
         this.updatedAt = Instant.now();
     }
 }
-

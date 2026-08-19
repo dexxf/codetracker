@@ -4,7 +4,6 @@ package com.io.kira.domain.activity.service;
 import java.util.UUID;
 import com.io.kira.common.result.Result;
 import com.io.kira.domain.activity.entity.Activity;
-import com.io.kira.domain.activity.factory.ActivityFactory;
 import com.io.kira.domain.activity.repository.ActivityDomainRepository;
 import com.io.kira.domain.activity.repository.ActivityUserDomainPort;
 import com.io.kira.domain.activity.result.ActivityCreationResult;
@@ -21,12 +20,10 @@ public final class ActivityCreationService {
     private static final int MAX_MAX_SCORE = 1000;
 
     private final ActivityDomainRepository activityDomainRepository;
-    private final ActivityFactory factory;
     private final ActivityUserDomainPort activityUserDomainPort;
 
-    public ActivityCreationService(ActivityDomainRepository activityDomainRepository, ActivityFactory factory, ActivityUserDomainPort activityUserDomainPort) {
+    public ActivityCreationService(ActivityDomainRepository activityDomainRepository, ActivityUserDomainPort activityUserDomainPort) {
         this.activityDomainRepository = activityDomainRepository;
-        this.factory = factory;
         this.activityUserDomainPort = activityUserDomainPort;
     }
 
@@ -64,7 +61,7 @@ public final class ActivityCreationService {
         if(!activityUserDomainPort.existsByUserId(instructorUserId))
             return Result.fail(ActivityCreationResult.INSTRUCTOR_NOT_FOUND);
 
-        Activity activity = factory.create(classroomId, instructorUserId, title, description, dueDate, maxScore, status);
+        Activity activity = Activity.createNew(classroomId, instructorUserId, title, description, dueDate, maxScore, status);
 
         if (activityDomainRepository.existsByClassroomIdAndActivityId(classroomId, activity.getActivityId())) {
             return Result.fail(ActivityCreationResult.ACTIVITY_ALREADY_EXISTS);

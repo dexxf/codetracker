@@ -21,7 +21,7 @@ public class ActivityMapper {
     }
 
     public static Activity toDomain(ActivityEntity entity) {
-        return new Activity(
+        return Activity.reconstitute(
                 entity.getActivityId(),
                 entity.getClassroomEntity().getClassroomId(),
                 entity.getClassroomEntity().getInstructorUserId(),
