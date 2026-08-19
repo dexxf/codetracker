@@ -27,10 +27,6 @@ public final class StudentActivity {
         this.submittedCommitSha = submittedCommitSha;
     }
 
-    public StudentActivity(String activityId, UUID userId, SubmissionStatus submissionStatus, String feedback, Integer score) {
-        this(null, activityId, userId, submissionStatus, feedback, score);
-    }
-
     public static StudentActivity createNew(String activityId, UUID userId) {
         return new StudentActivity(null, activityId, userId, SubmissionStatus.PENDING, null, null);
     }
