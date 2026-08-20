@@ -7,8 +7,8 @@ import java.util.UUID;
 
 public record GithubSubmissionData(
 		UUID classroomId,
-		String studentActivityId,
-		String activityId,
+		UUID studentActivityId,
+		UUID activityId,
 		String repositoryOwnerUsername,
 		String repositoryId,
 		String repositoryName,

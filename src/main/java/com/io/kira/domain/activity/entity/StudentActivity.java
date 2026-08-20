@@ -5,15 +5,15 @@ import java.util.UUID;
 
 public final class StudentActivity {
 
-    private final String studentActivityId;
-    private final String activityId;
+    private final UUID studentActivityId;
+    private final UUID activityId;
     private final UUID userId;
     private SubmissionStatus submissionStatus;
     private String feedback;
     private Integer score;
     private String submittedCommitSha;
 
-    private StudentActivity(String studentActivityId, String activityId, UUID userId, SubmissionStatus submissionStatus, String feedback, Integer score, String submittedCommitSha) {
+    private StudentActivity(UUID studentActivityId, UUID activityId, UUID userId, SubmissionStatus submissionStatus, String feedback, Integer score, String submittedCommitSha) {
         this.studentActivityId = studentActivityId;
         this.activityId = activityId;
         this.userId = userId;
@@ -23,19 +23,19 @@ public final class StudentActivity {
         this.submittedCommitSha = submittedCommitSha;
     }
 
-    public static StudentActivity createNew(String activityId, UUID userId) {
-        return new StudentActivity(null, activityId, userId, SubmissionStatus.PENDING, null, null, null);
+    public static StudentActivity createNew(UUID activityId, UUID userId) {
+        return new StudentActivity(UUID.randomUUID(), activityId, userId, SubmissionStatus.PENDING, null, null, null);
     }
 
-    public static StudentActivity reconstitute(String studentActivityId, String activityId, UUID userId, SubmissionStatus submissionStatus, String feedback, Integer score, String submittedCommitSha) {
+    public static StudentActivity reconstitute(UUID studentActivityId, UUID activityId, UUID userId, SubmissionStatus submissionStatus, String feedback, Integer score, String submittedCommitSha) {
         return new StudentActivity(studentActivityId, activityId, userId, submissionStatus, feedback, score, submittedCommitSha);
     }
 
-    public String getStudentActivityId() {
+    public UUID getStudentActivityId() {
         return studentActivityId;
     }
 
-    public String getActivityId() {
+    public UUID getActivityId() {
         return activityId;
     }
 

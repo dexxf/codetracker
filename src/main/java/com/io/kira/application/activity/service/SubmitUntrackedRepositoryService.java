@@ -36,7 +36,7 @@ public class SubmitUntrackedRepositoryService implements SubmitNewRepositoryUseC
     private final CreateGithubSubmissionUseCase createGithubSubmissionUseCase;
 
     @Override
-    public Result<StudentActivitySubmissionData, SubmitExistingRepositoryError> submitExisting(UUID authId, UUID userId, UUID classroomId, String activityId, String repositoryUrl) {
+    public Result<StudentActivitySubmissionData, SubmitExistingRepositoryError> submitExisting(UUID authId, UUID userId, UUID classroomId, UUID activityId, String repositoryUrl) {
         if (!activityClassroomAppPort.existsByClassroomId(classroomId))
             return Result.fail(SubmitExistingRepositoryError.CLASSROOM_NOT_FOUND);
 
@@ -86,7 +86,7 @@ public class SubmitUntrackedRepositoryService implements SubmitNewRepositoryUseC
     }
 
     @Override
-    public Result<StudentActivitySubmissionData, SubmitNewRepositoryError> submitNew(UUID authId, UUID userId, UUID classroomId, String activityId, String repositoryName) {
+    public Result<StudentActivitySubmissionData, SubmitNewRepositoryError> submitNew(UUID authId, UUID userId, UUID classroomId, UUID activityId, String repositoryName) {
         if (!activityClassroomAppPort.existsByClassroomId(classroomId))
             return Result.fail(SubmitNewRepositoryError.CLASSROOM_NOT_FOUND);
 

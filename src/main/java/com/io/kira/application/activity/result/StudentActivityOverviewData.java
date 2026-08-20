@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 public record StudentActivityOverviewData(
-        String activityId,
+        UUID activityId,
         String title,
         String description,
         Integer maxScore,
@@ -25,7 +25,7 @@ public record StudentActivityOverviewData(
         String activityStatus
 ) {
     public StudentActivityOverviewData(
-            String activityId,
+            UUID activityId,
             String title,
             String description,
             Integer maxScore,
@@ -61,7 +61,7 @@ public record StudentActivityOverviewData(
     }
 
     public StudentActivityOverviewData(
-            String activityId,
+            UUID activityId,
             String title,
             String description,
             Integer maxScore,

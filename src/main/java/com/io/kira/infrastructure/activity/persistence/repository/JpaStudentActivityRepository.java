@@ -13,8 +13,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface JpaStudentActivityRepository extends JpaRepository<StudentActivityEntity, UUID> {
-    boolean existsByUserEntity_UserIdAndActivityEntity_ActivityId(UUID userId, String activityId);
-    Optional<StudentActivityEntity> findByUserEntity_UserIdAndActivityEntity_ActivityId(UUID userId, String activityId);
+    boolean existsByUserEntity_UserIdAndActivityEntity_ActivityId(UUID userId, UUID activityId);
+    Optional<StudentActivityEntity> findByUserEntity_UserIdAndActivityEntity_ActivityId(UUID userId, UUID activityId);
 
     @Query("SELECT sa.activityEntity.activityId FROM StudentActivityEntity sa WHERE sa.activityEntity.classroomEntity.classroomId = :classroomId AND sa.userEntity.userId = :userId")
     Set<String> findActivityIdsByClassroomIdAndUserId(@Param("classroomId") UUID classroomId,@Param("userId") UUID userId);

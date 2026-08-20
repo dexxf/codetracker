@@ -66,7 +66,7 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
     @Override
     @Cacheable(value = ActivityCacheNames.ACTIVITY,
             key = "@activityCacheKey.byId(#activityId)")
-    public Optional<Activity> findById(String activityId) {
+    public Optional<Activity> findById(UUID activityId) {
         Optional<ActivityEntity> acOptional = jpa.findById(activityId);
         return acOptional.map(ActivityMapper::toDomain);
     }
@@ -81,7 +81,7 @@ public class ActivityAppRepositoryImpl implements ActivityAppRepository {
                     key = "@classroomCacheKey.activeActivityCounts(#result.classroomId)"),
             @CacheEvict(value = ClassroomCacheNames.CLASSROOM_RECENT_ACTIVITY, allEntries = true)
     })
-    public Activity deleteByActivityId(String activityId) {
+    public Activity deleteByActivityId(UUID activityId) {
         ActivityEntity entity = jpa.findById(activityId)
                 .orElseThrow(() -> new RuntimeException("Activity not found"));
         Activity activity = ActivityMapper.toDomain(entity);

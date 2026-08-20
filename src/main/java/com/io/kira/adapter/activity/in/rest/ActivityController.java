@@ -91,7 +91,7 @@ public class ActivityController {
     }
 
     @DeleteMapping("/{activityId}")
-    public ResponseEntity<ActivityResponse> removeActivity(@PathVariable UUID classroomId, @PathVariable String activityId, @AuthenticationPrincipal AuthPrincipal authPrincipal) {
+    public ResponseEntity<ActivityResponse> removeActivity(@PathVariable UUID classroomId, @PathVariable UUID activityId, @AuthenticationPrincipal AuthPrincipal authPrincipal) {
         Result<ActivityDetailsData, RemoveActivityError> response = removeActivityUseCase.execute(classroomId,activityId,authPrincipal.getUserId());
         return !response.success() ?  ResponseEntity.status(RemoveActivityHttpMapper.toStatus(response.error()))
                 .body(ActivityResponse.fail(RemoveActivityHttpMapper.toMessage(response.error())))
@@ -99,7 +99,7 @@ public class ActivityController {
     }
 
     @PutMapping("/{activityId}")
-    public ResponseEntity<ActivityResponse> updateActivity(@PathVariable UUID classroomId, @PathVariable String activityId, @Valid @RequestBody EditActivityRequest request, @AuthenticationPrincipal AuthPrincipal authPrincipal) {
+    public ResponseEntity<ActivityResponse> updateActivity(@PathVariable UUID classroomId, @PathVariable UUID activityId, @Valid @RequestBody EditActivityRequest request, @AuthenticationPrincipal AuthPrincipal authPrincipal) {
         Result<ActivityDetailsData, EditActivityError> response =  editActivityUseCase.execute(new EditActivityCommand(authPrincipal.getUserId(),
                 classroomId,activityId,request.title(),request.description(),request.dueDate(),request.status(),request.maxScore()));
 
@@ -119,7 +119,7 @@ public class ActivityController {
     @PostMapping("/{activityId}/submit/existing")
     public ResponseEntity<StudentActivityResponse> submitExistingRepository(
             @PathVariable UUID classroomId,
-            @PathVariable String activityId,
+            @PathVariable UUID activityId,
             @Valid @RequestBody SubmitExistingRepositoryRequest request,
             @AuthenticationPrincipal AuthPrincipal authPrincipal
     ) {
@@ -141,7 +141,7 @@ public class ActivityController {
     @PostMapping("/{activityId}/submit/new")
     public ResponseEntity<StudentActivityResponse> submitNewRepository(
             @PathVariable UUID classroomId,
-            @PathVariable String activityId,
+            @PathVariable UUID activityId,
             @Valid @RequestBody SubmitNewRepositoryRequest request,
             @AuthenticationPrincipal AuthPrincipal authPrincipal
     ) {
@@ -164,7 +164,7 @@ public class ActivityController {
     @PostMapping("/{activityId}/submit")
     public ResponseEntity<StudentActivityResponse> submitActivity(
             @PathVariable UUID classroomId,
-            @PathVariable String activityId,
+            @PathVariable UUID activityId,
             @AuthenticationPrincipal AuthPrincipal authPrincipal
     ) {
         Result<StudentActivitySubmissionData, SubmitActivityError> response =
@@ -184,7 +184,7 @@ public class ActivityController {
     @PostMapping("/{activityId}/students/{studentUserId}/grade")
     public ResponseEntity<StudentActivityResponse> markStudentAsGraded(
             @PathVariable UUID classroomId,
-            @PathVariable String activityId,
+            @PathVariable UUID activityId,
             @PathVariable UUID studentUserId,
             @Valid @RequestBody(required = false) MarkStudentAsGradedRequest request,
             @AuthenticationPrincipal AuthPrincipal authPrincipal

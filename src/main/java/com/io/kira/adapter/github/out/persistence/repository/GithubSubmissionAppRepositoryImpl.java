@@ -11,8 +11,6 @@ import com.io.kira.infrastructure.github.persistence.repository.JpaGithubSubmiss
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
 @Repository
 @AllArgsConstructor
 public class GithubSubmissionAppRepositoryImpl implements GithubSubmissionAppRepository {
@@ -23,7 +21,7 @@ public class GithubSubmissionAppRepositoryImpl implements GithubSubmissionAppRep
 
     @Override
     public GithubSubmission save(GithubSubmission githubSubmission) {
-        StudentActivityEntity studentActivityEntity = jpaStudentActivityRepository.findById(UUID.fromString(githubSubmission.getStudentActivityId()))
+        StudentActivityEntity studentActivityEntity = jpaStudentActivityRepository.findById(githubSubmission.getStudentActivityId())
                 .orElseThrow(() -> new IllegalArgumentException("Student activity not found: " + githubSubmission.getStudentActivityId()));
 
         GithubSubmissionEntity entity = GithubSubmissionMapper.toEntity(githubSubmission);

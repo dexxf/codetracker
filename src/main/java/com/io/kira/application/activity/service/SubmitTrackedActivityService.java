@@ -26,7 +26,7 @@ public class SubmitTrackedActivityService implements SubmitTrackedActivityUseCas
     private final GithubActivityIntegrationPort githubActivityIntegrationPort;
 
     @Override
-    public Result<StudentActivitySubmissionData, SubmitActivityError> submit(UUID authId, UUID userId, UUID classroomId, String activityId) {
+    public Result<StudentActivitySubmissionData, SubmitActivityError> submit(UUID authId, UUID userId, UUID classroomId, UUID activityId) {
         if (!activityClassroomAppPort.existsByClassroomId(classroomId))
             return Result.fail(SubmitActivityError.CLASSROOM_NOT_FOUND);
 

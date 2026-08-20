@@ -8,6 +8,7 @@ import com.io.kira.infrastructure.activity.persistence.entity.ActivityEntity;
 import com.io.kira.infrastructure.activity.persistence.entity.StudentActivityEntity;
 import com.io.kira.infrastructure.activity.persistence.repository.JpaActivityRepository;
 import com.io.kira.infrastructure.activity.persistence.repository.JpaStudentActivityRepository;
+import com.io.kira.infrastructure.github.persistence.entity.GithubSubmissionEntity;
 import com.io.kira.infrastructure.user.persistence.entity.UserEntity;
 import com.io.kira.infrastructure.user.persistence.repository.JpaUserRepository;
 import lombok.AllArgsConstructor;
@@ -27,7 +28,7 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
     private final JpaActivityRepository jpaActivityRepository;
 
     @Override
-    public boolean existsSubmission(UUID userId, String activityId) {
+    public boolean existsSubmission(UUID userId, UUID activityId) {
         return jpaStudentActivityRepository.existsByUserEntity_UserIdAndActivityEntity_ActivityId(userId, activityId);
     }
 
@@ -39,7 +40,7 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
     @Override
     @Cacheable(value = ActivityCacheNames.STUDENT_ACTIVITY,
             key = "@studentActivityCacheKey.byUserIdAndActivityId(#userId, #activityId)")
-    public Optional<StudentActivity> findByUserIdAndActivityId(UUID userId, String activityId) {
+    public Optional<StudentActivity> findByUserIdAndActivityId(UUID userId, UUID activityId) {
         return jpaStudentActivityRepository.findByUserEntity_UserIdAndActivityEntity_ActivityId(userId, activityId)
                 .map(StudentActivityMapper::toDomain);
     }
@@ -47,10 +48,10 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
     @Override
     @Cacheable(value = ActivityCacheNames.STUDENT_ACTIVITY,
             key = "@studentActivityCacheKey.repositoryUrlByUserIdAndActivityId(#userId, #activityId)")
-    public Optional<String> findRepositoryUrlByUserIdAndActivityId(UUID userId, String activityId) {
+    public Optional<String> findRepositoryUrlByUserIdAndActivityId(UUID userId, UUID activityId) {
         return jpaStudentActivityRepository.findByUserEntity_UserIdAndActivityEntity_ActivityId(userId, activityId)
                 .map(StudentActivityEntity::getGithubSubmission)
-                .map(entity -> entity.getRepositoryUrl());
+                .map(GithubSubmissionEntity::getRepositoryUrl);
     }
 
     @Override
@@ -67,15 +68,8 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
                 .orElseThrow(() -> new IllegalArgumentException("Activity not found: " + studentActivity.getActivityId()));
         UserEntity userEntity = jpaUserRepository.findById(studentActivity.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + studentActivity.getUserId()));
-
-        StudentActivityEntity entity;
-        if (studentActivity.getStudentActivityId() != null && !studentActivity.getStudentActivityId().isBlank()) {
-            UUID studentActivityId = UUID.fromString(studentActivity.getStudentActivityId());
-            entity = jpaStudentActivityRepository.findById(studentActivityId)
-                    .orElseThrow(() -> new IllegalArgumentException("Student activity not found: " + studentActivity.getStudentActivityId()));
-        } else {
-            entity = new StudentActivityEntity();
-        }
+        StudentActivityEntity entity = jpaStudentActivityRepository.findById(studentActivity.getStudentActivityId())
+                .orElseThrow(() -> new IllegalArgumentException("Student activity not found: " + studentActivity.getStudentActivityId()));
 
         entity.setActivityEntity(activityEntity);
         entity.setUserEntity(userEntity);

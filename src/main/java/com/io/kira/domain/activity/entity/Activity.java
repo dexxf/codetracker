@@ -7,7 +7,7 @@ import java.time.Instant;
 
 public class Activity {
 
-    private final String activityId;
+    private final UUID activityId;
     private final UUID classroomId;
     private final UUID instructorUserId;
     private String title;
@@ -18,7 +18,7 @@ public class Activity {
     private final Instant createdAt;
     private Instant updatedAt;
 
-    private Activity(String activityId, UUID classroomId, UUID instructorUserId, String title, String description,
+    private Activity(UUID activityId, UUID classroomId, UUID instructorUserId, String title, String description,
                      Instant dueDate, ActivityStatus status, Integer maxScore, Instant createdAt, Instant updatedAt) {
         this.activityId = activityId;
         this.classroomId = classroomId;
@@ -36,7 +36,7 @@ public class Activity {
                                      Instant dueDate, Integer maxScore, ActivityStatus activityStatus) {
         Instant now = Instant.now();
         return new Activity(
-                UUID.randomUUID().toString(),
+                UUID.randomUUID(),
                 classroomId,
                 instructorUserId,
                 title,
@@ -49,7 +49,7 @@ public class Activity {
         );
     }
 
-    public static Activity reconstitute(String activityId, UUID classroomId, UUID instructorUserId, String title,
+    public static Activity reconstitute(UUID activityId, UUID classroomId, UUID instructorUserId, String title,
                                         String description, Instant dueDate, ActivityStatus status,
                                         Integer maxScore, Instant createdAt, Instant updatedAt) {
         return new Activity(
@@ -66,7 +66,7 @@ public class Activity {
         );
     }
 
-    public String getActivityId() {
+    public UUID getActivityId() {
         return activityId;
     }
 

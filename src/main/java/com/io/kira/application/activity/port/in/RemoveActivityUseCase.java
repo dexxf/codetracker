@@ -7,6 +7,6 @@ import com.io.kira.application.activity.result.ActivityDetailsData;
 import com.io.kira.common.result.Result;
 
 public interface RemoveActivityUseCase {
-    Result<ActivityDetailsData, RemoveActivityError> execute(UUID classroomId, String activityId, UUID userId);
+    Result<ActivityDetailsData, RemoveActivityError> execute(UUID classroomId, UUID activityId, UUID userId);
 }
 

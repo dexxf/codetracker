@@ -22,7 +22,6 @@ import java.util.UUID;
 public class StudentActivityEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "student_activity_id")
     private UUID studentActivityId;
 

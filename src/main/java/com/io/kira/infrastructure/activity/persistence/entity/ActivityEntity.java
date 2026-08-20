@@ -9,6 +9,7 @@ import lombok.*;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "activity")
@@ -20,7 +21,7 @@ public class ActivityEntity {
 
     @Id
     @Column(name = "activity_id", nullable = false)
-    private String activityId;
+    private UUID activityId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classroom_id", nullable = false)

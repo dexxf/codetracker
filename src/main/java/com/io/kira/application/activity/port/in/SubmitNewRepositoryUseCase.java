@@ -7,6 +7,6 @@ import com.io.kira.application.activity.result.StudentActivitySubmissionData;
 import com.io.kira.common.result.Result;
 
 public interface SubmitNewRepositoryUseCase {
-    Result<StudentActivitySubmissionData, SubmitNewRepositoryError> submitNew(UUID authId, UUID userId, UUID classroomId, String activityId, String repositoryName);
+    Result<StudentActivitySubmissionData, SubmitNewRepositoryError> submitNew(UUID authId, UUID userId, UUID classroomId, UUID activityId, String repositoryName);
 }
 

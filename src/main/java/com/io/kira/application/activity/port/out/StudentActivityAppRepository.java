@@ -7,10 +7,10 @@ import com.io.kira.domain.activity.entity.StudentActivity;
 import java.util.Optional;
 
 public interface StudentActivityAppRepository {
-    boolean existsSubmission(UUID userId, String activityId);
+    boolean existsSubmission(UUID userId, UUID activityId);
     boolean existsByUserId(UUID userId);
-    Optional<StudentActivity> findByUserIdAndActivityId(UUID userId, String activityId);
-    Optional<String> findRepositoryUrlByUserIdAndActivityId(UUID userId, String activityId);
+    Optional<StudentActivity> findByUserIdAndActivityId(UUID userId, UUID activityId);
+    Optional<String> findRepositoryUrlByUserIdAndActivityId(UUID userId, UUID activityId);
     StudentActivity save(StudentActivity studentActivity);
 }
 

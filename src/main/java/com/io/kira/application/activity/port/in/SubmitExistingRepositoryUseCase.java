@@ -7,6 +7,6 @@ import com.io.kira.application.activity.result.StudentActivitySubmissionData;
 import com.io.kira.common.result.Result;
 
 public interface SubmitExistingRepositoryUseCase {
-    Result<StudentActivitySubmissionData, SubmitExistingRepositoryError> submitExisting(UUID authId, UUID userId, UUID classroomId, String activityId, String repositoryUrl);
+    Result<StudentActivitySubmissionData, SubmitExistingRepositoryError> submitExisting(UUID authId, UUID userId, UUID classroomId, UUID activityId, String repositoryUrl);
 }
 

@@ -14,8 +14,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface JpaActivityRepository extends JpaRepository<ActivityEntity, String> {
-    boolean existsByClassroomEntity_ClassroomIdAndActivityId(UUID classroomId, String activityId);
+public interface JpaActivityRepository extends JpaRepository<ActivityEntity, UUID> {
+    boolean existsByClassroomEntity_ClassroomIdAndActivityId(UUID classroomId, UUID activityId);
     List<ActivityEntity> findByClassroomEntity_ClassroomIdAndClassroomEntity_InstructorUserId(UUID classroomId, UUID instructorUserId);
 
     @Query("""
@@ -57,7 +57,7 @@ public interface JpaActivityRepository extends JpaRepository<ActivityEntity, Str
                             AND a.activityId = :activityId
                         """)
         Optional<Integer> findMaxScoreByClassroomIdAndActivityId(@Param("classroomId") UUID classroomId,
-                                                                                                                            @Param("activityId") String activityId);
+                                                                 @Param("activityId") UUID activityId);
 
     @Query("SELECT a FROM ActivityEntity a WHERE a.classroomEntity.classroomId = :classroomId")
     List<ActivityEntity> findActivitiesByClassroomId(@Param("classroomId") UUID classroomId);

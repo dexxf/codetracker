@@ -8,8 +8,8 @@ import java.util.UUID;
 public class GithubSubmission {
 
         private final UUID classroomId;
-        private final String studentActivityId;
-        private final String activityId;
+        private final UUID studentActivityId;
+        private final UUID activityId;
         private String repositoryOwnerUsername;
         private String repositoryId;
         private String repositoryName;
@@ -17,7 +17,7 @@ public class GithubSubmission {
         private String repositoryUrl;
         private Instant submittedAt;
 
-    public GithubSubmission(UUID classroomId, String studentActivityId, String activityId, String repositoryOwnerUsername, String repositoryId, String repositoryName, GithubSubmissionMode mode, String repositoryUrl, Instant submittedAt) {
+    public GithubSubmission(UUID classroomId, UUID studentActivityId, UUID activityId, String repositoryOwnerUsername, String repositoryId, String repositoryName, GithubSubmissionMode mode, String repositoryUrl, Instant submittedAt) {
         this.classroomId = classroomId;
         this.studentActivityId = studentActivityId;
         this.activityId = activityId;
@@ -29,7 +29,7 @@ public class GithubSubmission {
         this.submittedAt = submittedAt;
     }
 
-    public static GithubSubmission createNew(UUID classroomId, String studentActivityId, String activityId, String repositoryOwnerUsername, String repositoryId, String repositoryName, GithubSubmissionMode mode, String repositoryUrl) {
+    public static GithubSubmission createNew(UUID classroomId, UUID studentActivityId, UUID activityId, String repositoryOwnerUsername, String repositoryId, String repositoryName, GithubSubmissionMode mode, String repositoryUrl) {
         return new GithubSubmission
                 (classroomId, studentActivityId, activityId,
                 repositoryOwnerUsername, repositoryId, repositoryName, mode, repositoryUrl, Instant.now());
@@ -39,11 +39,11 @@ public class GithubSubmission {
         return classroomId;
     }
 
-    public String getStudentActivityId() {
+    public UUID getStudentActivityId() {
         return studentActivityId;
     }
 
-    public String getActivityId() {
+    public UUID getActivityId() {
         return activityId;
     }
 

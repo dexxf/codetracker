@@ -23,7 +23,7 @@ public final class RemoveActivityService implements RemoveActivityUseCase {
     private final ActivityAppRepository activityAppRepository;
     private final ActivityClassroomAppPort activityClassroomAppPort;
 
-    public Result<ActivityDetailsData, RemoveActivityError> execute(UUID classroomId, String activityId, UUID userId) {
+    public Result<ActivityDetailsData, RemoveActivityError> execute(UUID classroomId, UUID activityId, UUID userId) {
       boolean isInstructor = activityClassroomAppPort.existsByClassroomIdAndInstructorUserId(classroomId, userId);
 
       if(!isInstructor) return Result.fail(RemoveActivityError.USER_NOT_CLASSROOM_INSTRUCTOR);

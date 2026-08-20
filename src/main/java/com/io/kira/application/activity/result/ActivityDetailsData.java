@@ -7,7 +7,7 @@ import com.io.kira.domain.activity.valueObject.ActivityStatus;
 
 import java.time.Instant;
 
-public record ActivityDetailsData(String activityId, UUID classroomId, UUID instructorUserId, String title, String description,
+public record ActivityDetailsData(UUID activityId, UUID classroomId, UUID instructorUserId, String title, String description,
                            Instant dueDate, ActivityStatus status, Integer maxScore, Instant createdAt, Instant updatedAt) {
 
     public static ActivityDetailsData from(Activity activity) {

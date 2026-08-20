@@ -70,7 +70,7 @@ public class ClassroomEntity {
     cascade = CascadeType.REMOVE,
     fetch = FetchType.LAZY)
     @MapKey(name = "activityId")
-    private Map<String, ActivityEntity> activities = new HashMap<>();
+    private Map<UUID, ActivityEntity> activities = new HashMap<>();
 
     public void setSettings(ClassroomSettingsEntity settings) {
         this.settings = settings;

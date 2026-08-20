@@ -13,7 +13,7 @@ public class StudentActivityMapper {
         }
 
         return StudentActivity.reconstitute(
-                entity.getStudentActivityId().toString(), // TODO: convert Student activity Id attribute in the domain entity to UUID to stay consistent
+                entity.getStudentActivityId(), // TODO: convert Student activity Id attribute in the domain entity to UUID to stay consistent
                 entity.getActivityEntity().getActivityId(),
                 entity.getUserEntity().getUserId(),
                 entity.getSubmissionStatus(),

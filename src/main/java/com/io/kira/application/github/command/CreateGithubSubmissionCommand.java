@@ -4,5 +4,5 @@ import com.io.kira.domain.github.valueobject.GithubSubmissionMode;
 
 import java.util.UUID;
 
-public record CreateGithubSubmissionCommand(String accessToken, UUID classroomId, String studentActivityId, String activityId, String repositoryUrl, GithubSubmissionMode mode) {
+public record CreateGithubSubmissionCommand(String accessToken, UUID classroomId, UUID studentActivityId, UUID activityId, String repositoryUrl, GithubSubmissionMode mode) {
 }

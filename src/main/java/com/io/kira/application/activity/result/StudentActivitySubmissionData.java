@@ -5,7 +5,7 @@ import java.util.UUID;
 import com.io.kira.domain.activity.valueObject.SubmissionStatus;
 
 public record StudentActivitySubmissionData(
-        String activityId,
+        UUID activityId,
         UUID userId,
         SubmissionStatus submissionStatus,
         String feedback,

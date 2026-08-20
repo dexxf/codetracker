@@ -7,6 +7,7 @@ import com.io.kira.domain.activity.result.EditActivityResult;
 import com.io.kira.domain.activity.valueObject.ActivityStatus;
 
 import java.time.Instant;
+import java.util.UUID;
 
 public final class UpdateActivityService {
 
@@ -22,7 +23,7 @@ public final class UpdateActivityService {
         this.activityDomainRepository = activityDomainRepository;
     }
 
-    public Result<Activity, EditActivityResult> updateAndValidate(String activityId, String title, String description, Instant dueDate,
+    public Result<Activity, EditActivityResult> updateAndValidate(UUID activityId, String title, String description, Instant dueDate,
                                                                   ActivityStatus newStatus, Integer maxScore) {
 
         Activity activity = activityDomainRepository.findByActivityId(activityId)

@@ -22,7 +22,7 @@ public class MarkStudentAsGradedService implements MarkStudentAsGradedUseCase {
     private final ActivityClassroomAppPort activityClassroomAppPort;
 
     @Override
-    public Result<StudentActivitySubmissionData, MarkStudentAsGradedError> grade(UUID instructorUserId, UUID classroomId, String activityId, UUID studentUserId, String feedback, Integer score) {
+    public Result<StudentActivitySubmissionData, MarkStudentAsGradedError> grade(UUID instructorUserId, UUID classroomId, UUID activityId, UUID studentUserId, String feedback, Integer score) {
         if (!activityClassroomAppPort.existsByClassroomId(classroomId))
             return Result.fail(MarkStudentAsGradedError.CLASSROOM_NOT_FOUND);
 

@@ -19,19 +19,14 @@ public class ActivityDomainRepositoryImpl implements ActivityDomainRepository {
     private final JpaActivityRepository jpa;
 
     @Override
-    public boolean existsByClassroomIdAndActivityId(UUID classroomId, String activityId) {
+    public boolean existsByClassroomIdAndActivityId(UUID classroomId, UUID activityId) {
         return jpa.existsByClassroomEntity_ClassroomIdAndActivityId(classroomId, activityId);
     }
 
     @Override
     @Cacheable(value = ActivityCacheNames.ACTIVITY,
             key = "@activityCacheKey.byId(#activityId)")
-    public Optional<Activity> findByActivityId(String activityId) {
+    public Optional<Activity> findByActivityId(UUID activityId) {
         return jpa.findById(activityId).map(ActivityMapper::toDomain);
-    }
-
-    @Override
-    public boolean existsById(String id) {
-        return jpa.existsById(id);
     }
 }

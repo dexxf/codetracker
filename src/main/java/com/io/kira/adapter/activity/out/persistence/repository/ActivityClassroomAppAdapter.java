@@ -44,14 +44,14 @@ public class ActivityClassroomAppAdapter implements ActivityClassroomAppPort {
     @Override
     @Cacheable(value = ActivityCacheNames.ACTIVITY,
             key = "@activityCacheKey.existsByClassroomIdAndActivityId(#classroomId, #activityId)")
-    public boolean existsByClassroomIdAndActivityId(UUID classroomId, String activityId) {
+    public boolean existsByClassroomIdAndActivityId(UUID classroomId, UUID activityId) {
         return jpaActivityRepository.existsByClassroomEntity_ClassroomIdAndActivityId(classroomId, activityId);
     }
 
     @Override
     @Cacheable(value = ActivityCacheNames.ACTIVITY,
             key = "@activityCacheKey.maxScoreByClassroomIdAndActivityId(#classroomId, #activityId)")
-    public Optional<Integer> findMaxScoreByClassroomIdAndActivityId(UUID classroomId, String activityId) {
+    public Optional<Integer> findMaxScoreByClassroomIdAndActivityId(UUID classroomId, UUID activityId) {
         return jpaActivityRepository.findMaxScoreByClassroomIdAndActivityId(classroomId, activityId);
     }
 

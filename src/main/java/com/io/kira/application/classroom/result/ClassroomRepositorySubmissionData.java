@@ -9,7 +9,7 @@ public record ClassroomRepositorySubmissionData(
         String firstName,
         String lastName,
         String profileUrl,
-        String activityId,
+        UUID activityId,
         String activityTitle,
         String repositoryName,
         String repositoryUrl,

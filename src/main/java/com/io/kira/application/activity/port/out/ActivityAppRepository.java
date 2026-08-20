@@ -11,8 +11,8 @@ import java.util.Optional;
 public interface ActivityAppRepository {
     Activity save(Activity data);
     List<Activity> findActivitiesByClassroomIdAndInstructorUserId(UUID classroomId, UUID instructorId);
-    Optional<Activity> findById(String activityId);
-    Activity deleteByActivityId(String activityId);
+    Optional<Activity> findById(UUID activityId);
+    Activity deleteByActivityId(UUID activityId);
     void update(Activity updatedActivity);
     List<StudentActivityOverviewData> findStudentActivities(UUID classroomId, UUID userId);
 }
