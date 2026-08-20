@@ -13,11 +13,7 @@ public final class StudentActivity {
     private Integer score;
     private String submittedCommitSha;
 
-    public StudentActivity(String studentActivityId, String activityId, UUID userId, SubmissionStatus submissionStatus, String feedback, Integer score) {
-        this(studentActivityId, activityId, userId, submissionStatus, feedback, score, null);
-    }
-
-    public StudentActivity(String studentActivityId, String activityId, UUID userId, SubmissionStatus submissionStatus, String feedback, Integer score, String submittedCommitSha) {
+    private StudentActivity(String studentActivityId, String activityId, UUID userId, SubmissionStatus submissionStatus, String feedback, Integer score, String submittedCommitSha) {
         this.studentActivityId = studentActivityId;
         this.activityId = activityId;
         this.userId = userId;
@@ -28,7 +24,11 @@ public final class StudentActivity {
     }
 
     public static StudentActivity createNew(String activityId, UUID userId) {
-        return new StudentActivity(null, activityId, userId, SubmissionStatus.PENDING, null, null);
+        return new StudentActivity(null, activityId, userId, SubmissionStatus.PENDING, null, null, null);
+    }
+
+    public static StudentActivity reconstitute(String studentActivityId, String activityId, UUID userId, SubmissionStatus submissionStatus, String feedback, Integer score, String submittedCommitSha) {
+        return new StudentActivity(studentActivityId, activityId, userId, submissionStatus, feedback, score, submittedCommitSha);
     }
 
     public String getStudentActivityId() {

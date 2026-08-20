@@ -1,6 +1,7 @@
 package com.io.kira.adapter.activity.out.persistence.repository;
 
 import com.io.kira.adapter.activity.out.cache.ActivityCacheNames;
+import com.io.kira.adapter.activity.out.persistence.mapper.StudentActivityMapper;
 import com.io.kira.application.activity.port.out.StudentActivityAppRepository;
 import com.io.kira.domain.activity.entity.StudentActivity;
 import com.io.kira.infrastructure.activity.persistence.entity.ActivityEntity;
@@ -40,15 +41,7 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
             key = "@studentActivityCacheKey.byUserIdAndActivityId(#userId, #activityId)")
     public Optional<StudentActivity> findByUserIdAndActivityId(UUID userId, String activityId) {
         return jpaStudentActivityRepository.findByUserEntity_UserIdAndActivityEntity_ActivityId(userId, activityId)
-                .map(savedEntity -> new StudentActivity(
-                                savedEntity.getStudentActivityId().toString(),
-                        savedEntity.getActivityEntity().getActivityId(),
-                        savedEntity.getUserEntity().getUserId(),
-                        savedEntity.getSubmissionStatus(),
-                        savedEntity.getFeedback(),
-                        savedEntity.getScore(),
-                        savedEntity.getSubmittedCommitSha()
-                ));
+                .map(StudentActivityMapper::toDomain);
     }
 
     @Override
@@ -92,15 +85,7 @@ public class StudentActivityAppRepositoryImpl implements StudentActivityAppRepos
         entity.setSubmittedCommitSha(studentActivity.getSubmittedCommitSha());
 
         StudentActivityEntity savedEntity = jpaStudentActivityRepository.save(entity);
-        return new StudentActivity(
-                savedEntity.getStudentActivityId().toString(),
-                savedEntity.getActivityEntity().getActivityId(),
-                savedEntity.getUserEntity().getUserId(),
-                savedEntity.getSubmissionStatus(),
-                savedEntity.getFeedback(),
-                savedEntity.getScore(),
-                savedEntity.getSubmittedCommitSha()
-        );
+        return StudentActivityMapper.toDomain(savedEntity);
     }
 }
 

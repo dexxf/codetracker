@@ -12,14 +12,14 @@ public class StudentActivityMapper {
             return null;
         }
 
-        return new StudentActivity(
+        return StudentActivity.reconstitute(
                 entity.getStudentActivityId().toString(), // TODO: convert Student activity Id attribute in the domain entity to UUID to stay consistent
                 entity.getActivityEntity().getActivityId(),
                 entity.getUserEntity().getUserId(),
                 entity.getSubmissionStatus(),
-            entity.getFeedback(),
-            entity.getScore(),
-            entity.getSubmittedCommitSha()
+                entity.getFeedback(),
+                entity.getScore(),
+                entity.getSubmittedCommitSha()
         );
     }
 }
